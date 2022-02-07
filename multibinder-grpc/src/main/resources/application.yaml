@@ -1,0 +1,30 @@
+spring:
+  cloud:
+    stream:
+      kafka:
+        binder:
+          brokers: 'localhost:9094'
+      bindings:
+        proxy-in-0:
+          destination: dataIn
+          binder: kafka
+        proxy-out-0:
+          destination: dataOut
+#          binder: kafka
+          binder: rabbit
+    function:
+      definition: proxy
+      grpc:
+        port: 55554
+        server: false
+
+management:
+  endpoint:
+    health:
+      show-details: ALWAYS
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+
