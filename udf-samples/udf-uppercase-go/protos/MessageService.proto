@@ -1,7 +1,7 @@
 syntax = "proto3";
 option java_multiple_files = true;
 package org.springframework.cloud.function.grpc;
-option go_package = "github.com/tzolov/poc-go-grpc/message";
+option go_package = "github.com/tanzu/streaming-runtimes/udf-uppercase-go/message";
 
 message GrpcMessage {
   bytes payload = 1;

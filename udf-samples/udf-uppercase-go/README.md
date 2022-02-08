@@ -1,4 +1,4 @@
-# poc-go-grpc
+# udf-uppercase-go
 ## protoc
 
 https://developers.google.com/protocol-buffers/docs/reference/go-generated#package
@@ -19,7 +19,7 @@ protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=p
 form within the `protos` folder:
 
 ```
-go mod init github.com/tzolov/poc-go-grpc/message
+go mod init github.com/vmware-tanzu/streaming-runtimes/udf-uppercase-go/message
 go mod tidy
 ```
 
@@ -33,10 +33,10 @@ go get tzolov.net/go-grpc/message
 ## Docker Image
 
 ```
-docker build -t tzolov/poc-go-grpc:0.1 .
-docker push tzolov/poc-go-grpc:0.1
+docker build -t ghcr.io/vmware-tanzu/streaming-runtimes/udf-uppercase-go:0.1 .
+docker push ghcr.io/vmware-tanzu/streaming-runtimes/udf-uppercase-go:0.1
 ```
 
 ```
-docker run -it -p55554:55554 tzolov/poc-go-grpc:0.1
+docker run -it -p55554:55554 ghcr.io/vmware-tanzu/streaming-runtimes/udf-uppercase-go:0.1
 ```

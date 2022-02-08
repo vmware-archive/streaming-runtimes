@@ -1,4 +1,11 @@
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+.DS_Store
 # Ignore everything in this directory
-*
+#*
 # Except this file
 # !.gitignore

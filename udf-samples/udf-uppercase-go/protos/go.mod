@@ -1,4 +1,4 @@
-module github.com/tzolov/poc-go-grpc/message
+module github.com/tanzu/streaming-runtimes/udf-uppercase-go/message
 
 go 1.17
 

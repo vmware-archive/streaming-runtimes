@@ -6,7 +6,7 @@ import (
 	"net"
 	"strings"
 
-	pb "github.com/tzolov/poc-go-grpc/message"
+	pb "github.com/tanzu/streaming-runtimes/udf-uppercase-go/message"
 
 	"google.golang.org/grpc"
 )

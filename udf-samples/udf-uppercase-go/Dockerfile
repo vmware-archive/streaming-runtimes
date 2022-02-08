@@ -16,8 +16,8 @@ RUN go mod download
 
 COPY *.go ./
 
-RUN go build -o /poc-go-grpc
+RUN go build -o /udf-uppercase-go
 
 EXPOSE 55554
 
-CMD [ "/poc-go-grpc" ]
+CMD [ "/udf-uppercase-go" ]

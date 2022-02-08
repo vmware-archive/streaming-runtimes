@@ -1,9 +1,9 @@
-module github.com/tzolov/poc-go-grpc
+module github.com/tanzu/streaming-runtimes/udf-uppercase-go
 
 go 1.17
 
 require (
-	github.com/tzolov/poc-go-grpc/message v0.0.0-00010101000000-000000000000
+	github.com/tanzu/streaming-runtimes/udf-uppercase-go/message v0.0.0-00010101000000-000000000000
 	google.golang.org/grpc v1.40.0
 )
 
@@ -16,4 +16,4 @@ require (
 	google.golang.org/protobuf v1.27.1 // indirect
 )
 
-replace github.com/tzolov/poc-go-grpc/message => ./protos/
+replace github.com/tanzu/streaming-runtimes/udf-uppercase-go/message => ./protos/

@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>net.tzolov.poc</groupId>
-    <artifactId>uppercase-grpc</artifactId>
+    <artifactId>udf-uppercase-java</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>uppercase-grpc</name>
-    <description>uppercase-grpc</description>
+    <name>udf-uppercase-java</name>
+    <description>Sample UDF in java that converts the content in uppercase</description>
     <properties>
         <java.version>11</java.version>
         <spring-cloud.version>2020.0.4</spring-cloud.version>
