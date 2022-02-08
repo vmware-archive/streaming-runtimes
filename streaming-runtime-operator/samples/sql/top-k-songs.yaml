@@ -178,6 +178,8 @@ spec:
       containers:
         - name: uppercase-grpc
           image: ghcr.io/vmware-tanzu/streaming-runtimes/udf-uppercase-java:latest
+#          image: ghcr.io/vmware-tanzu/streaming-runtimes/udf-uppercase-go:0.1
+#          image: ghcr.io/vmware-tanzu/streaming-runtimes/udf-uppercase-python:0.1
           env:
             - name: SPRING_CLOUD_FUNCTION_DEFINITION
               value: uppercase
