@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: streaming-runtime
+spec:
+  selector:
+    matchLabels:
+      app: streaming-runtime
+  template:
+    metadata:
+      labels:
+        app: streaming-runtime
+    spec:
+      serviceAccountName: streaming-runtime
+      containers:
+        - name: cluster-stream-operator
+          image: tzolov/streaming-runtime:0.0.3-SNAPSHOT
+          env:
+            - name: LOGGING_COM_VMWARE_TANZU_STREAMING_RUNTIME
+              value: debug
+            - name: STREAMINGRUNTIME_AUTO_PROVISION_CLUSTER_STREAM
+              value: "false"
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"

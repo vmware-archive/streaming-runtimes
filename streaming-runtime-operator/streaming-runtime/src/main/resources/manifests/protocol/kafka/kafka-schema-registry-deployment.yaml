@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: s-registry
+  labels:
+    app: kafka
+    component: s-registry
+    type: streaming-spike
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: s-registry
+  template:
+    metadata:
+      labels:
+        app: s-registry
+        component: s-registry
+    spec:
+      containers:
+        - name: s-registry
+          image: confluentinc/cp-schema-registry:5.2.5-10
+          ports:
+            - containerPort: 8081
+          env:
+            - name: SCHEMA_REGISTRY_HOST_NAME
+              value: "s-registry"
+            - name: SCHEMA_REGISTRY_LISTENERS
+              value: "http://0.0.0.0:8081"
+            - name: SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS
+              value: "PLAINTEXT://kafka:9092"
+            - name: SCHEMA_REGISTRY_DEBUG
+              value: "true"

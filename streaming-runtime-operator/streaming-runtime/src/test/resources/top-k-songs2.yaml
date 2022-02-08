@@ -1,0 +1,257 @@
+apiVersion: streaming.tanzu.vmware.com/v1alpha1
+kind: Stream
+metadata:
+  name: kafka-stream-songs
+spec:
+  protocol: "kafka"
+  storage:
+    clusterStream: "cluster-stream-kafka-songs"
+  streamMode: [ "read" ]
+  keys: [ "album", "genre" ]
+  dataSchemaContext:
+    inline:
+      type: sql
+      schema: |
+        CREATE TABLE Songs (
+          `id` BIGINT NOT NULL,
+          `name` STRING NOT NULL,
+          `album` STRING,
+          `artist` STRING,
+          `genre` STRING NOT NULL,
+          `proctime` AS PROCTIME(),
+          `the_kafka_key` STRING
+        )
+    schema:
+      namespace: net.tzolov.poc.playsongs.avro
+      name: Songs
+      fields:
+        - name: id
+          type: long
+        - name: name
+          type: string
+        - name: album
+          type: string
+          optional: true
+        - name: artist
+          type: string
+          optional: true
+        - name: genre
+          type: string
+        - name: the_kafka_key
+          type: string
+          optional: true
+    timeAttributes:
+     - name: proctime # no watermark means processing-time attribute (eg. AS PROCTIME())
+    options:
+      ddl.properties.group.id: testGroup #TODO
+      ddl.value.format: "avro" #TODO assume avro as default value format
+      ddl.key.fields: the_kafka_key
+---
+apiVersion: streaming.tanzu.vmware.com/v1alpha1
+kind: Stream
+metadata:
+  name: kafka-stream-playevents
+spec:
+  protocol: kafka
+  storage:
+    clusterStream: "cluster-stream-kafka-playevents"
+  streamMode: [ "read" ]
+  keys: [ "song_id" ]
+  dataSchemaContext:
+    inline:
+      type: sql
+      schema: |
+        CREATE TABLE PlayEvents (
+          `song_id` BIGINT NOT NULL,
+          `duration` BIGINT,
+          `event_time` TIMESTAMP(3) METADATA FROM 'timestamp',
+          WATERMARK FOR `event_time` AS `event_time` - INTERVAL '30' SECONDS,
+          `the_kafka_key` STRING
+        )
+    schema:
+      namespace: net.tzolov.poc.playsongs.avro
+      name: PlayEvents
+      fields:
+        - name: song_id
+          type: long
+        - name: duration
+          type: long
+          optional: true
+        - name: event_time
+          type: long_timestamp-millis
+          metadata:
+            from: timestamp
+            readonly: true
+        - name: the_kafka_key
+          type: string
+          optional: true
+    metadataFields:
+     - name: event_time
+       type: long_timestamp-millis
+       metadata:
+         from: timestamp
+         readonly: true
+    timeAttributes:
+     - name: event_time
+       watermark: "`event_time` - INTERVAL '30' SECONDS"
+    options:
+      ddl.value.format: "avro" #TODO assume avro as default value format
+      ddl.key.fields: the_kafka_key
+---
+apiVersion: streaming.tanzu.vmware.com/v1alpha1
+kind: Stream
+metadata:
+  name: kafka-stream-songplays
+spec:
+  protocol: "kafka"
+  storage:
+    clusterStream: "cluster-stream-kafka-songplays"
+  streamMode: [ "read", "write" ]
+  keys: [ "name", "genre" ]
+  dataSchemaContext:
+    inline:
+      type: sql
+      schema: |
+        CREATE TABLE SongPlays (
+          `song_id` BIGINT NOT NULL,
+          `album` STRING,
+          `artist` STRING,
+          `name` STRING,
+          `genre` STRING NOT NULL,
+          `duration` BIGINT,
+          `event_time` TIMESTAMP(3) NOT NULL,
+          WATERMARK FOR `event_time` AS `event_time` - INTERVAL '1' SECOND
+        )
+    schema:
+      namespace: net.tzolov.poc.playsongs.avro
+      name: SongPlays
+      fields:
+        - name: song_id
+          type: long
+        - name: album
+          type: string
+          optional: true
+        - name: artist
+          type: string
+          optional: true
+        - name: name
+          type: string
+          optional: true
+        - name: genre
+          type: string
+        - name: duration
+          type: long
+          optional: true
+        - name: event_time
+          type: long_timestamp-millis
+    timeAttributes:
+     - name: event_time
+       watermark: "`event_time` - INTERVAL '1' SECOND"
+    options:
+      ddl.key.fields: song_id
+      ddl.value.format: "json"
+      ddl.properties.allow.auto.create.topics: true
+      ddl.properties.group.id: testGroup3 # Perhaps Group ID can be infered from some Stream or Cluster Stream property
+      ddl.scan.startup.mode: earliest-offset
+
+---
+apiVersion: streaming.tanzu.vmware.com/v1alpha1
+kind: Stream
+metadata:
+  name: kafka-stream-topk-songs-per-genre
+spec:
+  protocol: kafka
+  storage:
+    clusterStream: cluster-stream-kafka-topk-songs-per-genre
+  streamMode: [ "read" ]
+  keys: [ "song_id" ]
+  dataSchemaContext:
+    inline: # only one inlined or schema should be set.
+      type: sql # ignores the yaml's primaryKey and watermarks
+      schema: |
+        CREATE TABLE TopKSongsPerGenre (
+          `window_start` TIMESTAMP(3) NOT NULL,
+          `window_end` TIMESTAMP(3) NOT NULL,
+          `song_id` BIGINT NOT NULL,
+          `name` STRING NOT NULL,
+          `genre` STRING NOT NULL,
+          `song_play_count` BIGINT,
+          PRIMARY KEY (`window_start`, `window_end`, `song_id`, `genre`) NOT ENFORCED
+        )
+    schema:
+      namespace: net.tzolov.poc.playsongs.avro
+      name: TopKSongsPerGenre
+      fields:
+        - name: window_start
+          type: long_timestamp-millis
+        - name: window_end
+          type: long_timestamp-millis
+        - name: song_id
+          type: long
+        - name: name
+          type: string
+        - name: genre
+          type: string
+        - name: song_play_count
+          type: long
+          optional: true
+    primaryKey: [ "window_start", "window_end", "song_id", "genre" ]
+    options:
+      ddl.connector: "upsert-kafka"
+      ddl.properties.allow.auto.create.topics: true
+      ddl.value.format: "json"
+---
+apiVersion: streaming.tanzu.vmware.com/v1alpha1
+kind: Stream
+metadata:
+  name: rabbitmq-stream-1
+spec:
+  keys: [ "truckclass", "truckid" ]
+  streamMode: [ "write" ]
+  protocol: "rabbitmq"
+  storage:
+    clusterStream: "cluster-stream-rabbitmq-1"
+---
+apiVersion: streaming.tanzu.vmware.com/v1alpha1
+kind: Processor
+metadata:
+  name: topk-songs-processor
+spec:
+  inputs:
+    query:
+      - "INSERT INTO [[STREAM:kafka-stream-songplays]] 
+         SELECT Plays.song_id, Songs.album, Songs.artist, Songs.name, Songs.genre, Plays.duration, Plays.event_time   
+         FROM(SELECT * FROM [[STREAM:kafka-stream-playevents]] WHERE duration >= 30000) AS Plays 
+         INNER JOIN [[STREAM:kafka-stream-songs]] ON Plays.song_id = Songs.id"
+
+      - "INSERT INTO [[STREAM:kafka-stream-topk-songs-per-genre]] 
+         SELECT window_start, window_end, song_id, name, genre, play_count 
+         FROM ( 
+            SELECT *, ROW_NUMBER() OVER (PARTITION BY window_start, window_end, genre ORDER BY play_count DESC) AS row_num 
+            FROM ( 
+                SELECT window_start, window_end, song_id, name, genre, COUNT(*) AS play_count 
+                FROM TABLE(TUMBLE(TABLE [[STREAM:kafka-stream-songplays]], DESCRIPTOR(event_time), INTERVAL '60' SECONDS)) 
+                GROUP BY window_start, window_end, song_id, name, genre 
+            ) 
+         ) WHERE row_num <= 3"
+    debug:
+      query: "SELECT * FROM TopKSongsPerGenre"
+      explain: [ 4, 5 ]
+    sources:
+      - name: "kafka-stream-topk-songs-per-genre"
+  outputs:
+    - name: "rabbitmq-stream-1"
+  template:
+    spec:
+      containers:
+        - name: uppercase-grpc
+          image: tzolov/poc-uppercase-grpc:latest
+          env:
+            - name: SPRING_CLOUD_FUNCTION_DEFINITION
+              value: uppercase
+            - name: SPRING_CLOUD_FUNCTION_GRPC_MODE
+              value: server
+            - name: SPRING_CLOUD_FUNCTION_GRPC_PORT
+              value: "55554"
+
+

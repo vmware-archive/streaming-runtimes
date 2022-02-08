@@ -1,0 +1,51 @@
+apiVersion: streaming.tanzu.vmware.com/v1alpha1
+kind: Stream
+metadata:
+  name: kafka-stream-topksongspergenre
+spec:
+  protocol: kafka
+  storage:
+    clusterStream: cluster-stream-kafka-topksongspergenre
+  streamMode: [ "read" ]
+  keys: [ "song_id" ]
+  attributes:
+    ddlPrimaryKey: "PRIMARY KEY (`window_start`, `window_end`, `song_id`, `genre`) NOT ENFORCED"
+    ddlConnector: "upsert-kafka"
+    ddlWithExtension: "'properties.allow.auto.create.topics' = 'true'"
+    ddlValueFormat: "json"
+  payloadSchema:
+    namespace: net.tzolov.poc.playsongs.avro
+    type: record
+    name: TopKSongsPerGenre
+    fields:
+      - name: window_start
+        type:
+          type: long
+          logicalType: timestamp-millis
+      - name: window_end
+        type:
+          type: long
+          logicalType: timestamp-millis
+      - name: song_id
+        type: long
+      - name: name
+        type: string
+      - name: genre
+        type: string
+      - name: song_play_count
+        type: [ "null", "long" ] # Nullable field
+status:
+  conditions:
+    - lastTransitionTime: "2022-01-15T23:48:47.028098Z"
+      reason: StreamDeployed
+      status: "true"
+      type: Ready
+  storageAddress:
+    servers:
+      production:
+        protocol: kafka
+        protocolVersion: 1.0.0
+        url: localhost:8080
+        variables:
+          brokers: kafka.default.svc.cluster.local:9092
+          zkNodes: kafka-zk.default.svc.cluster.local:2181

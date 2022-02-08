@@ -1,0 +1,12 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: streaming-runtime-namespaced-role-binding
+  namespace: streaming-runtime
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: streaming-runtime-resource-role
+subjects:
+  - kind: ServiceAccount
+    name: streaming-runtime

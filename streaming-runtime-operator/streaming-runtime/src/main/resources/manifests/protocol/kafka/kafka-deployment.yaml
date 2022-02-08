@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka-broker
+  labels:
+    app: kafka
+    type: streaming-spike
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kafka
+  template:
+    metadata:
+      labels:
+        app: kafka
+        component: kafka-broker
+    spec:
+      containers:
+        - name: kafka
+          image: wurstmeister/kafka:2.12-2.5.0
+          ports:
+            - containerPort: 9094
+          env:
+            - name: MY_KAFKA_POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: ENABLE_AUTO_EXTEND
+              value: "true"
+            - name: KAFKA_RESERVED_BROKER_MAX_ID
+              value: "999999999"
+            - name: KAFKA_AUTO_CREATE_TOPICS_ENABLE
+              value: "true"
+            - name: KAFKA_LISTENERS
+              value: "PLAINTEXT://:9092,OUTSIDE://:9094"
+            - name: KAFKA_ADVERTISED_LISTENERS
+              value: "PLAINTEXT://$(MY_KAFKA_POD_IP):9092,OUTSIDE://localhost:9094"
+            - name: KAFKA_LISTENER_SECURITY_PROTOCOL_MAP
+              value: "PLAINTEXT:PLAINTEXT,OUTSIDE:PLAINTEXT"
+            - name: KAFKA_INTER_BROKER_LISTENER_NAME
+              value: "PLAINTEXT"
+            - name: KAFKA_PORT
+              value: "9092"
+            - name: KAFKA_ZOOKEEPER_CONNECT
+              value: kafka-zk:2181

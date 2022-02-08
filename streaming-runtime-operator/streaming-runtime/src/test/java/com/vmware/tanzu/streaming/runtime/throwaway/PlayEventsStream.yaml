@@ -1,0 +1,37 @@
+apiVersion: streaming.tanzu.vmware.com/v1alpha1
+kind: Stream
+metadata:
+  name: kafka-stream-playevents
+spec:
+  protocol: kafka
+  storage:
+    clusterStream: "cluster-stream-kafka-playevents"
+  streamMode: [ "read" ]
+  keys: [ "song_id" ]
+  attributes:
+    watermark: "WATERMARK FOR `event_time` AS `event_time` - INTERVAL '30' SECONDS"
+  payloadSchema:
+    namespace: net.tzolov.poc.playsongs.avro
+    type: record
+    name: PlayEvent
+    fields:
+      - name: song_id
+        type: long
+      - name: duration
+        type: [ "null", "long" ] # Nullable field
+status:
+  conditions:
+    - lastTransitionTime: "2022-01-15T23:48:47.028098Z"
+      reason: StreamDeployed
+      status: "true"
+      type: Ready
+  storageAddress:
+    servers:
+      production:
+        protocol: kafka
+        protocolVersion: 1.0.0
+        url: localhost:8080
+        variables:
+          brokers: kafka.default.svc.cluster.local:9092
+          zkNodes: kafka-zk.default.svc.cluster.local:2181
+          schemaRegistry: schema-registry.default.svc.cluster.local:9095

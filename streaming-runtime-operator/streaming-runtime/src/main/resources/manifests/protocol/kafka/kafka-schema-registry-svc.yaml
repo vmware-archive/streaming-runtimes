@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: s-registry
+  labels:
+    app: kafka
+    component: s-registry
+    type: streaming-spike
+spec:
+  ports:
+    - name: registry
+      port: 8081
+      protocol: TCP
+  type: NodePort
+  selector:
+    app: s-registry
+    component: s-registry

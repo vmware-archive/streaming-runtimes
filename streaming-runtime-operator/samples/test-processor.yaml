@@ -1,0 +1,23 @@
+apiVersion: streaming.tanzu.vmware.com/v1alpha1
+kind: Processor
+metadata:
+  name: processor1
+spec:
+  inputs:
+    sources:
+      - name: "kafka-stream-1"
+  outputs:
+    - name: "rabbitmq-stream-1"
+  template:
+    spec:
+      containers:
+        - name: uppercase-grpc
+          image: tzolov/poc-uppercase-grpc:latest
+          env:
+            - name: SPRING_CLOUD_FUNCTION_DEFINITION
+              value: uppercase
+            - name: SPRING_CLOUD_FUNCTION_GRPC_MODE
+              value: server
+            - name: SPRING_CLOUD_FUNCTION_GRPC_PORT
+              value: "55554"
+

@@ -1,0 +1,552 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: streaming-runtime
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: clusterstreams.streaming.tanzu.vmware.com
+spec:
+  group: streaming.tanzu.vmware.com
+  versions:
+    - name: v1alpha1
+      served: true
+      storage: true
+      subresources:
+        status: { }
+      additionalPrinterColumns:
+        - jsonPath: .status.conditions[?(@.type=="Ready")].status
+          name: Ready
+          type: string
+        - jsonPath: .status.conditions[?(@.type=="Ready")].reason
+          name: Reason
+          type: string
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                keys:
+                  type: array
+                  items:
+                    type: string
+                streamModes:
+                  type: array
+                  items:
+                    type: string
+                storage:
+                  type: object
+                  properties:
+                    servers:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          url:
+                            type: string
+                          protocol:
+                            type: string
+                    attributes:
+                      type: object
+                      additionalProperties:
+                        type: string
+                    reclaimPolicy:
+                      type: string
+            status:
+              type: object
+              properties:
+                conditions:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                        description: The unique identifier of a condition, used to distinguish between other conditions in the resource.
+                      status:
+                        type: string
+                        description: The status of the condition, either True, False or Unknown.
+                      lastTransitionTime:
+                        type: string
+                        description: Last time the condition of a type changed from one status to another. The required format is 'yyyy-MM-ddTHH:mm:ssZ', in the UTC time zone.
+                      reason:
+                        type: string
+                        description: The reason for the condition's last transition (a single word in CamelCase).
+                  description: List of status conditions.
+                storageAddress:
+                  type: object
+                  properties:
+                    servers:
+                      type: object
+                      additionalProperties:
+                        type: object
+                        properties:
+                          url:
+                            type: string
+                          protocol:
+                            type: string
+                          protocolVersion:
+                            type: string
+                          description:
+                            type: string
+                          variables:
+                            type: object
+                            additionalProperties:
+                              type: string
+  scope: Cluster
+  names:
+    plural: clusterstreams
+    singular: clusterstream
+    kind: ClusterStream
+    shortNames:
+      - srcs
+
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: streams.streaming.tanzu.vmware.com
+spec:
+  group: streaming.tanzu.vmware.com
+  versions:
+    - name: v1alpha1
+      served: true
+      storage: true
+      subresources:
+        status: { }
+      additionalPrinterColumns:
+        - jsonPath: .status.conditions[?(@.type=="Ready")].status
+          name: Ready
+          type: string
+        - jsonPath: .status.conditions[?(@.type=="Ready")].reason
+          name: Reason
+          type: string
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                keys:
+                  type: array
+                  items:
+                    type: string
+                protocol:
+                  type: string
+                streamMode:
+                  type: array
+                  items:
+                    type: string
+                storage:
+                  type: object
+                  properties:
+                    clusterStream:
+                      type: string
+                attributes:
+                  type: object
+                  additionalProperties:
+                    type: string
+                dataSchemaContext:
+                  type: object
+                  properties:
+                    inline:
+                      type: object
+                      properties:
+                        type:
+                          type: string
+                        schema:
+                          type: string
+                      required: [ "type", "schema" ]
+                    schema:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        namespace:
+                          type: string
+                        fields:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              name:
+                                type: string
+                              type:
+                                type: string
+                              logicalType:
+                                type: string
+                              optional:
+                                type: boolean
+                              watermark:
+                                type: string
+                              metadata:
+                                type: object
+                                properties:
+                                  from:
+                                    type: string
+                                  readonly:
+                                    type: boolean
+                                required: [ "from" ]
+                            required: [ "name", "type" ]
+                      required: [ "name", "namespace", "fields" ]
+                    metadataFields:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                          type:
+                            type: string
+                          logicalType:
+                            type: string
+                          optional:
+                            type: boolean
+                          watermark:
+                            type: string
+                          metadata:
+                            type: object
+                            properties:
+                              from:
+                                type: string
+                              readonly:
+                                type: boolean
+                            required: [ "from" ]
+                        required: [ "name", "type" ]
+                    primaryKey:
+                      type: array
+                      items:
+                        type: string
+                    timeAttributes:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                          watermark:
+                            type: string
+                        required: [ "name" ]
+                    options:
+                      type: object
+                      additionalProperties:
+                        type: string
+                  oneOf:
+                    - properties:
+                      required: [ "inline" ]
+                    - properties:
+                      required: [ "schema" ]
+            status:
+              type: object
+              properties:
+                conditions:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                        description: The unique identifier of a condition, used to distinguish between other conditions in the resource.
+                      status:
+                        type: string
+                        description: The status of the condition, either True, False or Unknown.
+                      lastTransitionTime:
+                        type: string
+                        description: Last time the condition of a type changed from one status to another. The required format is 'yyyy-MM-ddTHH:mm:ssZ', in the UTC time zone.
+                      reason:
+                        type: string
+                        description: The reason for the condition's last transition (a single word in CamelCase).
+                  description: List of status conditions.
+                storageAddress:
+                  type: object
+                  properties:
+                    servers:
+                      type: object
+                      additionalProperties:
+                        type: object
+                        properties:
+                          url:
+                            type: string
+                          protocol:
+                            type: string
+                          protocolVersion:
+                            type: string
+                          description:
+                            type: string
+                          variables:
+                            type: object
+                            additionalProperties:
+                              type: string
+  scope: Namespaced
+  names:
+    plural: streams
+    singular: stream
+    kind: Stream
+    shortNames:
+      - srs
+
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: processors.streaming.tanzu.vmware.com
+spec:
+  group: streaming.tanzu.vmware.com
+  versions:
+    - name: v1alpha1
+      served: true
+      storage: true
+      subresources:
+        status: { }
+      additionalPrinterColumns:
+        - jsonPath: .status.conditions[?(@.type=="Ready")].status
+          name: Ready
+          type: string
+        - jsonPath: .status.conditions[?(@.type=="Ready")].reason
+          name: Reason
+          type: string
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                inputs:
+                  type: object
+                  properties:
+                    query:
+                      type: array
+                      items:
+                        type: string
+                    debug:
+                      type: object
+                      properties:
+                        query:
+                          type: string
+                        explain:
+                          type: array
+                          items:
+                            type: integer
+                    sources:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                outputs:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                template:
+                  type: object
+                  properties:
+                    spec:
+                      type: object
+                      properties:
+                        containers:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              name:
+                                type: string
+                              image:
+                                type: string
+                              env:
+                                type: array
+                                items:
+                                  type: object
+                                  properties:
+                                    name:
+                                      type: string
+                                    value:
+                                      type: string
+            status:
+              type: object
+              properties:
+                conditions:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                        description: The unique identifier of a condition, used to distinguish between other conditions in the resource.
+                      status:
+                        type: string
+                        description: The status of the condition, either True, False or Unknown.
+                      lastTransitionTime:
+                        type: string
+                        description: Last time the condition of a type changed from one status to another. The required format is 'yyyy-MM-ddTHH:mm:ssZ', in the UTC time zone.
+                      reason:
+                        type: string
+                        description: The reason for the condition's last transition (a single word in CamelCase).
+                  description: List of status conditions.
+  scope: Namespaced
+  names:
+    plural: processors
+    singular: processor
+    kind: Processor
+    shortNames:
+      - srp
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: streaming-runtime
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: streaming-runtime-cluster-role
+rules:
+  - apiGroups:
+      - streaming.tanzu.vmware.com
+    resources:
+      - clusterstreams
+      - streams
+      - processors
+    verbs:
+      - get
+      - list
+      - watch
+      - patch
+      - create
+  - apiGroups:
+      - streaming.tanzu.vmware.com
+    resources:
+      - clusterstreams/status
+      - streams/status
+      - processors/status
+    verbs:
+      - patch
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - "events.k8s.io"
+    resources:
+      - events
+    verbs:
+      - create
+  - apiGroups:
+      - ""
+    resources:
+      - services
+      - pods
+      - configmaps
+    verbs:
+      - get
+      - list
+      - watch
+      - patch
+      - create
+  - apiGroups:
+      - apps
+    resources:
+      - deployments
+    verbs:
+      - get
+      - list
+      - create
+      - patch
+      - watch
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: streaming-runtime-cluster-role-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: streaming-runtime-cluster-role
+subjects:
+  - kind: ServiceAccount
+    name: streaming-runtime
+    namespace: streaming-runtime
+#    namespace: default
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: streaming-runtime-resource-role
+  namespace: streaming-runtime
+rules:
+  - apiGroups:
+      - apps
+    resources:
+      - deployments
+    verbs:
+      - get
+      - list
+      - create
+      - patch
+
+  - apiGroups:
+      - "" # "" indicates the core API group
+    resources:
+      - configmaps
+      - services
+      - pods
+    verbs:
+      - list
+      - create
+      - update
+      - watch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: streaming-runtime-namespaced-role-binding
+  namespace: streaming-runtime
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: streaming-runtime-resource-role
+subjects:
+  - kind: ServiceAccount
+    name: streaming-runtime
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: streaming-runtime
+spec:
+  selector:
+    matchLabels:
+      app: streaming-runtime
+  template:
+    metadata:
+      labels:
+        app: streaming-runtime
+    spec:
+      serviceAccountName: streaming-runtime
+      containers:
+        - name: cluster-stream-operator
+          image: tzolov/streaming-runtime:0.0.3-SNAPSHOT
+          env:
+            - name: LOGGING_COM_VMWARE_TANZU_STREAMING_RUNTIME
+              value: debug
+            - name: STREAMINGRUNTIME_AUTO_PROVISION_CLUSTER_STREAM
+              value: "false"
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+
+---

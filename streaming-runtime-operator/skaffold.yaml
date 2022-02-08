@@ -1,0 +1,30 @@
+apiVersion: skaffold/v2beta21
+kind: Config
+
+build:
+  tagPolicy:
+    customTemplate:
+      template: "0.0.1-SNAPSHOT"
+  artifacts:
+#    - image: tzolov/streaming-runtime
+#      buildpacks:
+#        builder: paketobuildpacks/builder:tiny
+#        env:
+#          - BP_NATIVE_IMAGE=true
+    - image: tzolov/streaming-runtime
+      custom:
+        buildCommand: |
+          ./mvnw clean install -Pnative -DskipTests spring-boot:build-image && \
+          docker push tzolov/streaming-runtime:0.0.3-SNAPSHOT
+deploy:
+  kubectl:
+    manifests:
+      - ./crds/cluster-stream-crd.yaml
+      - ./crds/stream-crd.yaml
+      - ./crds/processor-crd.yaml
+    flags:
+      apply:
+        - --force
+  kustomize:
+    paths:
+      - manifests
