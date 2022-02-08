@@ -36,7 +36,7 @@ go get tzolov.net/go-grpc/message
 docker build -t ghcr.io/vmware-tanzu/streaming-runtimes/udf-uppercase-go:0.1 .
 docker push ghcr.io/vmware-tanzu/streaming-runtimes/udf-uppercase-go:0.1
 ```
-
+Test the container:
 ```
 docker run -it -p55554:55554 ghcr.io/vmware-tanzu/streaming-runtimes/udf-uppercase-go:0.1
 ```

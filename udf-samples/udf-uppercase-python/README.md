@@ -18,7 +18,6 @@ Build docker image and push to Docker Hub.
 docker build -t ghcr.io/vmware-tanzu/streaming-runtimes/udf-uppercase-python:0.1 .
 docker push ghcr.io/vmware-tanzu/streaming-runtimes/udf-uppercase-python:0.1
 ```
-NOTE: replace `tzolov` with your docker hub prefix.
 
 Run the `udf-uppercase-python` image:
 ```
