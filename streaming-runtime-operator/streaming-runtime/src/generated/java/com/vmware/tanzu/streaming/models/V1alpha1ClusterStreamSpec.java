@@ -30,7 +30,7 @@ import java.util.List;
 /**
  * V1alpha1ClusterStreamSpec
  */
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2022-01-28T15:22:14.271Z[Etc/UTC]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2022-02-08T13:25:48.598Z[Etc/UTC]")
 public class V1alpha1ClusterStreamSpec {
   public static final String SERIALIZED_NAME_KEYS = "keys";
   @SerializedName(SERIALIZED_NAME_KEYS)

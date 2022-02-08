@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: multibinder-grpc
-          image: ghcr.io/vmware-tanzu/streaming-runtimes/sql-aggregator:latest
+          image: ghcr.io/vmware-tanzu/streaming-runtimes/multibinder-grpc:latest
           ports:
             - containerPort: 8080
           env:

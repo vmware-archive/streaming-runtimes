@@ -6,16 +6,16 @@ build:
     customTemplate:
       template: "0.0.1-SNAPSHOT"
   artifacts:
-#    - image: tzolov/streaming-runtime
+#    - image: ghcr.io/vmware-tanzu/streaming-runtimes/streaming-runtime
 #      buildpacks:
 #        builder: paketobuildpacks/builder:tiny
 #        env:
 #          - BP_NATIVE_IMAGE=true
-    - image: tzolov/streaming-runtime
+    - image: ghcr.io/vmware-tanzu/streaming-runtimes/streaming-runtime
       custom:
         buildCommand: |
           ./mvnw clean install -Pnative -DskipTests spring-boot:build-image && \
-          docker push tzolov/streaming-runtime:0.0.3-SNAPSHOT
+          docker push ghcr.io/vmware-tanzu/streaming-runtimes/streaming-runtime:0.0.3-SNAPSHOT
 deploy:
   kubectl:
     manifests:

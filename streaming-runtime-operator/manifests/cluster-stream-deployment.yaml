@@ -14,7 +14,7 @@ spec:
       serviceAccountName: streaming-runtime
       containers:
         - name: cluster-stream-operator
-          image: tzolov/streaming-runtime:0.0.3-SNAPSHOT
+          image: ghcr.io/vmware-tanzu/streaming-runtimes/streaming-runtime:0.0.3-SNAPSHOT
           env:
             - name: LOGGING_COM_VMWARE_TANZU_STREAMING_RUNTIME
               value: debug

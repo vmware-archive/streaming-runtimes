@@ -40,7 +40,7 @@ spec:
     spec:
       containers:
         - name: songs-generator
-          image: tzolov/poc-songs-generator:latest
+          image: ghcr.io/vmware-tanzu/streaming-runtimes/examples-play-songs-generator:latest
           ports:
             - containerPort: 8080
           env:

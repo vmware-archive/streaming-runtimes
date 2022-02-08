@@ -32,7 +32,7 @@ import java.util.List;
  * ProcessorList is a list of Processor
  */
 @ApiModel(description = "ProcessorList is a list of Processor")
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2022-01-28T15:22:14.271Z[Etc/UTC]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2022-02-08T13:25:48.598Z[Etc/UTC]")
 public class V1alpha1ProcessorList implements io.kubernetes.client.common.KubernetesListObject {
   public static final String SERIALIZED_NAME_API_VERSION = "apiVersion";
   @SerializedName(SERIALIZED_NAME_API_VERSION)

@@ -31,7 +31,7 @@ import java.util.List;
 /**
  * V1alpha1ClusterStreamStatus
  */
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2022-01-28T15:22:14.271Z[Etc/UTC]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2022-02-08T13:25:48.598Z[Etc/UTC]")
 public class V1alpha1ClusterStreamStatus {
   public static final String SERIALIZED_NAME_CONDITIONS = "conditions";
   @SerializedName(SERIALIZED_NAME_CONDITIONS)
