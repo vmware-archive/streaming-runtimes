@@ -17,13 +17,13 @@ ClusterRoleBindings and some Custom Resource Definitions (CRDs) for declarative 
 `ClusterStreams`, `Streams` and `Processors`.
 
 ```shell
-kubectl apply -f 'https://raw.githubusercontent.com/tzolov/streaming-runtime-operator/main/install.yaml' -n streaming-runtime
+kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-operator/install.yaml' -n streaming-runtime
 ```
 
 #### Provision a simple streaming pipeline
 
 ```shell
-kubectl apply -f 'https://raw.githubusercontent.com/tzolov/streaming-runtime-operator/main/samples/test-all.yaml' -n streaming-runtime
+kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-operator/main/samples/test-all.yaml' -n streaming-runtime
 ```
 
 Then check how the `ClusterStream`'s, `Stream`'s and `Processor` are deployed also verify that the multibinder processor
@@ -59,15 +59,15 @@ a stream of play events (think: "song X was played") and a stream of song metada
 
 * Deploy the Top-K pipeline.
 ```shell
-kubectl apply -f 'https://raw.githubusercontent.com/tzolov/streaming-runtime-operator/main/samples/sql/top-k-songs.yaml' -n streaming-runtime
+kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-operator/main/samples/sql/top-k-songs.yaml' -n streaming-runtime
 ```
 alternatively you can use the inline-SQL Stream data schema representation:
 ```shell
-kubectl apply -f 'https://raw.githubusercontent.com/tzolov/streaming-runtime-operator/main/samples/sql/top-k-songs-inline-sql-schema.yaml' -n streaming-runtime
+kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-operator/main/samples/sql/top-k-songs-inline-sql-schema.yaml' -n streaming-runtime
 ```
 and inline-avro data schema representations:
 ```shell
-kubectl apply -f 'https://raw.githubusercontent.com/tzolov/streaming-runtime-operator/main/samples/sql/top-k-songs-inline-avro-schema.yaml' -n streaming-runtime
+kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-operator/main/samples/sql/top-k-songs-inline-avro-schema.yaml' -n streaming-runtime
 ```
 (Note you can use interchangeably and mix the 3 data-schema formats: meta-schema, inline-avro, inline-sql).
 
@@ -75,7 +75,7 @@ kubectl apply -f 'https://raw.githubusercontent.com/tzolov/streaming-runtime-ope
 * Start the Songs and PlayEvents message generator. Messages are encoded in Avro, using the same schemas defined 
   by the `kafka-stream-songs` and `kafka-stream-playevents` Streams and send to the topics defined in those streams.
 ```shell
-kubectl apply -f 'https://raw.githubusercontent.com/tzolov/streaming-runtime-operator/main/samples/sql/songs-generator.yaml' -n default
+kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-operator/main/samples/sql/songs-generator.yaml' -n default
 ```
 The generator connects to the Stream's kafka broker and starts emits messages. You should see in the log statements like:
 ```shell
