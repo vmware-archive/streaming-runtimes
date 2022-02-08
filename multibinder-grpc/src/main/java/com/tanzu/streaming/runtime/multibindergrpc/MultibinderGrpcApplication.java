@@ -1,4 +1,4 @@
-package net.tzolov.poc.multibindergrpc;
+package com.tanzu.streaming.runtime.multibindergrpc;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

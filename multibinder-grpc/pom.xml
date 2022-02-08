@@ -8,7 +8,7 @@
         <version>2.5.6</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>net.tzolov.poc</groupId>
+    <groupId>com.tanzu.streaming-runtime</groupId>
     <artifactId>multibinder-grpc</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>multibinder-grpc</name>
