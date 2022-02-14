@@ -8,7 +8,7 @@ Imagine a stream of credit card authorization attempts, representing ,for exampl
 {"card_number": "1234-2121-1221-1211", "card_type": "dankort", "card_expiry": "2012-11-12", "name": "Preston Abbott"}
 {"card_number": "1228-1221-1221-1431", "card_type": "american_express", "card_expiry": "2011-10-12", "name": "Kelly Hermiston"}
 {"card_number": "1211-1221-1234-2201", "card_type": "visa", "card_expiry": "2015-11-11", "name": "Augustina Daugherty"}
-{"card_number": "1212-1221-1121-1234", "card_type": "discover", "card_expiry": "2013-9-12", "name": "Mr. Chester Stracke"}
+...
 ```
 
 Then we would like to identify the suspicious transactions, in real time, and extract them for further investigations. 
@@ -31,7 +31,7 @@ We can express such validation using the following streaming SQL query:
 14.    HAVING
 15.      COUNT (*) > 5
 ```
-Here we group the incoming authorization attempts by the card numbers (`12-13`) and look only at those authorizations 
+Here we group the incoming authorization attempts by the card numbers ( lines: `12-13`) and look only at those authorizations 
 that have the same card number occurring suspiciously often (`14-15`). 
 Then we put the suspicious card numbers into a new stream (`1`).
 
@@ -41,6 +41,11 @@ For this we split the incoming stream into a series of fixed-sized, non-overlapp
 Here we aggregate the stream in intervals of `5 seconds` assuming that `5` authorization attempts in `5` seconds would be hard for a person to do. 
 Swiping the card or submitting the form five times within five seconds is a little weird. 
 If we see that happening it is flagged as a possible fraud and inserted to the possible-fraud-stream (`1`).
+
+Note that the input stream does not provide a time field for the time when the authorization attempt was performed. 
+Such field would have been preferred option for the time widowing grouping.
+The next best thing is to use the message timestamp assigned by the message broker to each message.
+The implementation details section below explain how this is done to provision an additional `event_time` field to the authorization attempts data schema.
 
 Next we can register a custom function (UDF) to the new, possible-fraud stream to investigate the suspicious transactions further or for example to send warning emails and downstream messages. 
 The UDF function can be implemented in any programming language as long as they adhere to the Streaming-Runtime `gRPC` protocol.
@@ -73,7 +78,7 @@ kubectl delete srs,srcs,srp --all -n streaming-runtime
 kubectl delete deployments -l app=authorization-attempts-data-generator
 ```
 
-## Streaming-Runtime Implementation
+## Implementation details
 
 One possible way of implementing the above scenario with the help of the `Streaming Runtime` is to define three Streams
 and one `Processor` custom resources and use the Processor's built-in query capabilities.
@@ -81,7 +86,7 @@ and one `Processor` custom resources and use the Processor's built-in query capa
 
 Given that the input authorization attempts stream uses an Avro data format like this:
 
-```avro schema
+```json
 {
   "name": "AuthorizationAttempts",
   "namespace": "com.tanzu.streaming.runtime.anomaly.detection",
