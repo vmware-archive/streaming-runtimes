@@ -353,7 +353,7 @@ public class ProcessorReconciler implements Reconciler {
 					new V1ContainerBuilder()
 							.withName(procContainer.getName())
 							.withImage(procContainer.getImage())
-							.withEnv(procContainer.getEnv().stream()
+							.withEnv(Optional.ofNullable(procContainer.getEnv()).orElse(new ArrayList<>()).stream()
 									.map(e -> new V1EnvVarBuilder()
 											.withName(e.getName())
 											.withValue(e.getValue())

@@ -1,0 +1,17 @@
+{
+  "namespace": "com.tanzu.streaming.runtime.clickstream.etl",
+  "type": "record",
+  "name": "Click",
+  "fields": [
+    {
+      "name": "user_id",
+      "type": "string",
+      "doc": "#{id_number.valid}"
+    },
+    {
+      "name": "page",
+      "type": "int",
+      "doc": "#{number.number_between '1','100000'}"
+    }
+  ]
+}

@@ -1,0 +1,136 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka-data-generator
+  labels:
+    app: kafka-data-generator
+    component: kafka-data-generator
+    type: streaming-spike
+    spring-deployment-id: kafka-data-generator
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 80
+      name: kafka-data-generator
+      targetPort: 8080
+      protocol: TCP
+
+  selector:
+    app: kafka-data-generator
+    component: kafka-data-generator
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka-data-generator
+  labels:
+    app: kafka-data-generator
+    type: streaming-spike
+    component: kafka-data-generator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kafka-data-generator
+  template:
+    metadata:
+      labels:
+        app: kafka-data-generator
+        component: kafka-data-generator
+    spec:
+      terminationGracePeriodSeconds: 15
+      containers:
+        - name: kafka-data-generator
+          image: ghcr.io/vmware-tanzu/streaming-runtimes/kafka-data-generator:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: MY_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: KAFKA_DATA_GENERATOR_KAFKASERVER
+              value: kafka.$(MY_NAMESPACE).svc.cluster.local:9092
+            - name: KAFKA_DATA_GENERATOR_SCHEMAREGISTRYSERVER
+              value: http://s-registry.$(MY_NAMESPACE).svc.cluster.local:8081
+            - name: KAFKA_DATA_GENERATOR_TERMINATEAFTER
+              value: '200h'
+            - name: KAFKA_DATA_GENERATOR_SHAREDFIELDNAMES
+              value: 'user_id'
+            - name: KAFKA_DATA_GENERATOR_TOPICS_0_TOPICNAME
+              value: 'users'
+            - name: KAFKA_DATA_GENERATOR_TOPICS_0_AVROSCHEMA
+              value: |-
+                {
+                  "namespace": "com.tanzu.streaming.runtime.clickstream.etl",
+                  "type": "record",
+                  "name": "User",
+                  "fields": [
+                    {
+                      "name": "user_id",
+                      "type": "string",
+                      "doc": "#{id_number.valid}"
+                    },
+                    {
+                      "name": "name",
+                      "type": "string",
+                      "doc": "#{name.fullName}"
+                    },
+                    {
+                      "name": "level",
+                      "type": {
+                        "type": "enum",
+                        "name": "UserLevel",
+                        "symbols": [
+                            "BRONZE",
+                            "SILVER",
+                            "GOLD",
+                            "PLATINUM"
+                        ]
+                      }
+                    }
+                  ]
+                }
+            - name: KAFKA_DATA_GENERATOR_TOPICS_0_VALUEFORMAT
+              value: 'JSON'
+            - name: KAFKA_DATA_GENERATOR_TOPICS_0_SHAREDFIELDSMODE
+              value: 'PRODUCER'
+            - name: KAFKA_DATA_GENERATOR_TOPICS_0_BATCH_SIZE
+              value: '100'
+            - name: KAFKA_DATA_GENERATOR_TOPICS_0_BATCH_INITIALDELAY
+              value: '10ms'
+            - name: KAFKA_DATA_GENERATOR_TOPICS_0_BATCH_MESSAGEDELAY
+              value: '100ms'
+            - name: KAFKA_DATA_GENERATOR_TOPICS_1_TOPICNAME
+              value: 'clicks'
+            - name: KAFKA_DATA_GENERATOR_TOPICS_1_AVROSCHEMA
+              value: |-
+                {
+                  "namespace": "com.tanzu.streaming.runtime.clickstream.etl",
+                  "type": "record",
+                  "name": "Click",
+                  "fields": [
+                    {
+                      "name": "user_id",
+                      "type": "string",
+                      "doc": "#{id_number.valid}"
+                    },
+                    {
+                      "name": "page",
+                      "type": "int",
+                      "doc": "#{number.number_between '1','100000'}"
+                    }
+                  ]
+                }
+            - name: KAFKA_DATA_GENERATOR_TOPICS_1_VALUEFORMAT
+              value: 'JSON'
+            - name: KAFKA_DATA_GENERATOR_TOPICS_1_SHAREDFIELDSMODE
+              value: 'CONSUMER'
+            - name: KAFKA_DATA_GENERATOR_TOPICS_1_BATCH_SIZE
+              value: '1'
+            - name: KAFKA_DATA_GENERATOR_TOPICS_1_BATCH_INITIALDELAY
+              value: '100ms'
+            - name: KAFKA_DATA_GENERATOR_TOPICS_1_BATCH_DELAY
+              value: '500ms'
+            - name: KAFKA_DATA_GENERATOR_TOPICS_1_BATCH_MESSAGEDELAY
+              value: '100ms'

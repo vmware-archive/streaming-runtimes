@@ -1,0 +1,125 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: authorization-attempts-data-generator
+  labels:
+    app: authorization-attempts-data-generator
+    component: authorization-attempts-data-generator
+    type: streaming-spike
+    spring-deployment-id: authorization-attempts-data-generator
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 80
+      name: authorization-attempts-data-generator
+      targetPort: 8080
+      protocol: TCP
+
+  selector:
+    app: authorization-attempts-data-generator
+    component: authorization-attempts-data-generator
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: authorization-attempts-data-generator
+  labels:
+    app: authorization-attempts-data-generator
+    type: streaming-spike
+    component: authorization-attempts-data-generator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: authorization-attempts-data-generator
+  template:
+    metadata:
+      labels:
+        app: authorization-attempts-data-generator
+        component: authorization-attempts-data-generator
+    spec:
+      terminationGracePeriodSeconds: 15
+      containers:
+        - name: authorization-attempts-data-generator
+          image: ghcr.io/vmware-tanzu/streaming-runtimes/kafka-data-generator:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: MY_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: KAFKA_DATA_GENERATOR_KAFKASERVER
+              value: kafka.$(MY_NAMESPACE).svc.cluster.local:9092
+            - name: KAFKA_DATA_GENERATOR_SCHEMAREGISTRYSERVER
+              value: http://s-registry.$(MY_NAMESPACE).svc.cluster.local:8081
+            - name: KAFKA_DATA_GENERATOR_TERMINATEAFTER
+              value: '1h'
+
+            - name: KAFKA_DATA_GENERATOR_TOPICS_0_TOPICNAME
+              value: 'card-authorizations-stream'
+            - name: KAFKA_DATA_GENERATOR_TOPICS_0_VALUEFORMAT
+              value: 'AVRO'
+            - name: KAFKA_DATA_GENERATOR_TOPICS_0_SKIPSENDING
+              value: 'false'
+            - name: KAFKA_DATA_GENERATOR_TOPICS_0_AVROSCHEMA
+              value: |-
+                ---
+                namespace: com.tanzu.streaming.runtime.anomaly.detection
+                type: record
+                name: AuthorizationAttempts
+                fields:
+                  - name: card_number
+                    type: string
+                    doc: "#{business.credit_card_numbers}"
+                  - name: card_type
+                    type: string
+                    doc: "#{business.credit_card_types}"
+                  - name: card_expiry
+                    type: string
+                    doc: "#{business.credit_card_expiry_dates}"
+                  - name: name
+                    type: string
+                    doc: "#{name.fullName}"
+
+            - name: KAFKA_DATA_GENERATOR_TOPICS_0_BATCH_SIZE
+              value: '100'
+            - name: KAFKA_DATA_GENERATOR_TOPICS_0_BATCH_MESSAGEDELAY
+              value: '1s'
+            - name: KAFKA_DATA_GENERATOR_TOPICS_0_BATCH_INITIALDELAY
+              value: '1s'
+            - name: KAFKA_DATA_GENERATOR_TOPICS_0_BATCH_DELAY
+              value: '1s'
+
+            - name: KAFKA_DATA_GENERATOR_TOPICS_1_TOPICNAME
+              value: 'card-authorizations-stream'
+            - name: KAFKA_DATA_GENERATOR_TOPICS_1_VALUEFORMAT
+              value: 'AVRO'
+            - name: KAFKA_DATA_GENERATOR_TOPICS_1_AVROSCHEMA
+              value: |-
+                namespace: com.tanzu.streaming.runtime.anomaly.detection
+                type: record
+                name: AuthorizationAttempts
+                fields:
+                - name: card_number
+                  type: string
+                  doc: "#{options.option '3529-1841-8961-4637','1228-1221-1221-1431','1212-1221-1121-1234','1228-1221-1221-1431','1211-1221-1234-2201'}"
+                - name: card_type
+                  type: string
+                  doc: "#{business.credit_card_types}"
+                - name: card_expiry
+                  type: string
+                  doc: "#{business.credit_card_expiry_dates}"
+                - name: name
+                  type: string
+                  doc: "#{name.fullName}"
+            - name: KAFKA_DATA_GENERATOR_TOPICS_1_KEYFIELDNAME
+              value: 'card_number'
+            - name: KAFKA_DATA_GENERATOR_TOPICS_1_BATCH_SIZE
+              value: '50'
+            - name: KAFKA_DATA_GENERATOR_TOPICS_1_BATCH_MESSAGEDELAY
+              value: '100ms'
+            - name: KAFKA_DATA_GENERATOR_TOPICS_1_BATCH_INITIALDELAY
+              value: '1s'
+            - name: KAFKA_DATA_GENERATOR_TOPICS_1_BATCH_DELAY
+              value: '25s'

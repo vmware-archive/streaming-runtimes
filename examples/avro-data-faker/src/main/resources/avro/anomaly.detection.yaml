@@ -1,0 +1,16 @@
+namespace: com.tanzu.streaming.runtime.anomaly.detection
+type: record
+name: AuthorizationAttempts
+fields:
+  - name: card_number
+    type: string
+    doc: "#{business.credit_card_numbers}"
+  - name: card_type
+    type: string
+    doc: "#{business.credit_card_types}"
+  - name: card_expiry
+    type: string
+    doc: "#{business.credit_card_expiry_dates}"
+  - name: name
+    type: string
+    doc: "#{name.fullName}"

@@ -45,6 +45,7 @@ public class InlineAvroConfluentToAvroConverter implements DataSchemaAvroConvert
 		Map<String, ?> subject = this.restTemplate.getForObject(schemaUrl, Map.class);
 		String avroSchema = (String) subject.get("schema");
 
-		return new org.apache.avro.Schema.Parser().parse(avroSchema);
+		String jsonAvroSchema = AvroHelper.convertYamlOrJsonToJson(avroSchema);
+		return new org.apache.avro.Schema.Parser().parse(jsonAvroSchema);
 	}
 }

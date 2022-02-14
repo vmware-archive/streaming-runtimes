@@ -1,0 +1,62 @@
+{
+  "namespace": "com.tanzu.streaming.runtime.clickstream.etl",
+  "type": "record",
+  "name": "Click",
+  "fields": [
+    {
+      "name": "user_id",
+      "type": "string",
+      "doc": "#{id_number.valid}"
+    },
+    {
+      "name": "page",
+      "type": "int",
+      "doc": "#{number.number_between '1','100000'}"
+    },
+    {
+      "name": "client_timestamp",
+      "type": {
+        "type": "long",
+        "logicalType": "timestamp-millis"
+      },
+      "doc": "#{number.number_between '1644395673583','1654495873583'}"
+    },
+    {
+      "name": "device_type",
+      "type": {
+        "type": "enum",
+        "name": "DeviceType",
+        "symbols": [
+          "mobile",
+          "computer",
+          "tablet"
+        ]
+      }
+    },
+    {
+      "name": "client_event",
+      "type": {
+        "type": "enum",
+        "name": "ClientEvent",
+        "symbols": [
+          "beer_vitrine_nav",
+          "beer_checkout",
+          "beer_product_detail",
+          "beer_products",
+          "beer_selection",
+          "beer_cart"
+        ]
+      }
+    },
+    {
+      "name": "beer_name",
+      "type": "string",
+      "doc": "#{beer.name}"
+    },
+    {
+      "name": "agent",
+      "type": "string",
+      "doc": "#{internet.userAgentAny}"
+    }
+  ]
+}

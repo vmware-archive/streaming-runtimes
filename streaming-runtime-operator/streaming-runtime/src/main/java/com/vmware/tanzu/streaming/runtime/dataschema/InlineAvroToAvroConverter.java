@@ -24,6 +24,7 @@ public class InlineAvroToAvroConverter implements DataSchemaAvroConverter {
 						context.getDataSchemaContext().getInline().getType(), this.getSupportedDataSchemaType()));
 
 		String inlineAvroSchema = context.getDataSchemaContext().getInline().getSchema();
-		return new org.apache.avro.Schema.Parser().parse(inlineAvroSchema);
+		String jsonAvroSchema = AvroHelper.convertYamlOrJsonToJson(inlineAvroSchema);
+		return new org.apache.avro.Schema.Parser().parse(jsonAvroSchema);
 	}
 }

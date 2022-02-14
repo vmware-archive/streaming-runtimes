@@ -1,0 +1,30 @@
+{
+  "namespace": "com.tanzu.streaming.runtime.clickstream.etl",
+  "type": "record",
+  "name": "User",
+  "fields": [
+    {
+      "name": "user_id",
+      "type": "string",
+      "doc": "#{id_number.valid}"
+    },
+    {
+      "name": "name",
+      "type": "string",
+      "doc": "#{name.fullName}"
+    },
+    {
+      "name": "level",
+      "type": {
+        "type": "enum",
+        "name": "UserLevel",
+        "symbols": [
+          "BRONZE",
+          "SILVER",
+          "GOLD",
+          "PLATINUM"
+        ]
+      }
+    }
+  ]
+}
