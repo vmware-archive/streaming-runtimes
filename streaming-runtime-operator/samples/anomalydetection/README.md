@@ -45,6 +45,11 @@ If we see that happening it is flagged as a possible fraud and inserted to the p
 Next we can register a custom function (UDF) to the new, possible-fraud stream to investigate the suspicious transactions further or for example to send warning emails and downstream messages. 
 The UDF function can be implemented in any programming language as long as they adhere to the Streaming-Runtime `gRPC` protocol.
 
+Following diagram illustrates the implementation flow and involved resources:
+![Anomaly Detection Flow](./anomaly-detection-flow.jpg)
+
+
+
 ## Quick start
 
 - Install the streaming-runtime operator:
