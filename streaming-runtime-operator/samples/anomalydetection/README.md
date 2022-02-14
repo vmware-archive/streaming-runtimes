@@ -68,7 +68,7 @@ kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runti
 ```
 
 - Install the authorization attempts random data stream:
-```yaml
+```shell
 kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-operator/samples/anomalydetection/data-generator.yaml' -n default
 ```
 

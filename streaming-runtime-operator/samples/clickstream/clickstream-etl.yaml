@@ -14,7 +14,7 @@ spec:
       schema: |
         namespace: com.tanzu.streaming.runtime.clickstream.etl
         type: record
-        name: User
+        name: Users
         fields:
         - name: user_id
           type: string
@@ -40,7 +40,7 @@ spec:
   dataSchemaContext:
     schema:
       namespace: com.tanzu.streaming.runtime.clickstream.etl
-      name: Click
+      name: Clicks
       fields:
         - name: user_id
           type: string
@@ -73,8 +73,8 @@ spec:
   keys: [ "user_id" ]
   dataSchemaContext:
     schema:
-      namespace: net.tzolov.poc.user.clickstream
-      name: VipAction
+      namespace: com.tanzu.streaming.runtime.clickstream.etl
+      name: VipActions
       fields:
         - name: user_id
           type: string
@@ -112,13 +112,13 @@ spec:
   inputs:
     query:
       - INSERT INTO [[STREAM:kafka-stream-vip-action]] 
-        SELECT User.user_id, User.name, Click.page, Click.action, Click.event_time 
+        SELECT Users.user_id, Users.name, Clicks.page, Clicks.action, Clicks.event_time 
         FROM [[STREAM:kafka-stream-click]]  
-        INNER JOIN [[STREAM:kafka-stream-user]] ON Click.user_id = User.user_id  
-        WHERE User.level = 'PLATINUM'
+        INNER JOIN [[STREAM:kafka-stream-user]] ON Clicks.user_id = Users.user_id  
+        WHERE Users.level = 'PLATINUM'
     debug:
-      query: "SELECT * FROM VipAction"
-      explain: [ 4 ]
+      query: "SELECT * FROM VipActions"
+      explain: [ 3 ]
     sources:
       - name: "kafka-stream-vip-action"
   outputs:

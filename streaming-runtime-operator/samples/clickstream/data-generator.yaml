@@ -1,46 +1,46 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: kafka-data-generator
+  name: clickstream-data-generator
   labels:
-    app: kafka-data-generator
-    component: kafka-data-generator
+    app: clickstream-data-generator
+    component: clickstream-data-generator
     type: streaming-spike
-    spring-deployment-id: kafka-data-generator
+    spring-deployment-id: clickstream-data-generator
 spec:
   type: LoadBalancer
   ports:
     - port: 80
-      name: kafka-data-generator
+      name: clickstream-data-generator
       targetPort: 8080
       protocol: TCP
 
   selector:
-    app: kafka-data-generator
-    component: kafka-data-generator
+    app: clickstream-data-generator
+    component: clickstream-data-generator
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: kafka-data-generator
+  name: clickstream-data-generator
   labels:
-    app: kafka-data-generator
+    app: clickstream-data-generator
     type: streaming-spike
-    component: kafka-data-generator
+    component: clickstream-data-generator
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: kafka-data-generator
+      app: clickstream-data-generator
   template:
     metadata:
       labels:
-        app: kafka-data-generator
-        component: kafka-data-generator
+        app: clickstream-data-generator
+        component: clickstream-data-generator
     spec:
       terminationGracePeriodSeconds: 15
       containers:
-        - name: kafka-data-generator
+        - name: clickstream-data-generator
           image: ghcr.io/vmware-tanzu/streaming-runtimes/kafka-data-generator:latest
           ports:
             - containerPort: 8080
@@ -58,7 +58,7 @@ spec:
             - name: KAFKA_DATA_GENERATOR_SHAREDFIELDNAMES
               value: 'user_id'
             - name: KAFKA_DATA_GENERATOR_TOPICS_0_TOPICNAME
-              value: 'kafka-stream-users'
+              value: 'kafka-stream-user'
             - name: KAFKA_DATA_GENERATOR_TOPICS_0_AVROSCHEMA
               value: |-
                 {
@@ -84,7 +84,7 @@ spec:
                   ]
                 }
             - name: KAFKA_DATA_GENERATOR_TOPICS_0_VALUEFORMAT
-              value: 'AVRO_SCHEMA_REGISTRY'
+              value: 'JSON'
             - name: KAFKA_DATA_GENERATOR_TOPICS_0_SHAREDFIELDSMODE
               value: 'PRODUCER'
             - name: KAFKA_DATA_GENERATOR_TOPICS_0_BATCH_SIZE
@@ -94,7 +94,7 @@ spec:
             - name: KAFKA_DATA_GENERATOR_TOPICS_0_BATCH_MESSAGEDELAY
               value: '100ms'
             - name: KAFKA_DATA_GENERATOR_TOPICS_1_TOPICNAME
-              value: 'kafka-stream-clicks'
+              value: 'kafka-stream-click'
             - name: KAFKA_DATA_GENERATOR_TOPICS_1_AVROSCHEMA
               value: |-
                 namespace: com.tanzu.streaming.runtime.clickstream.etl
@@ -117,7 +117,7 @@ spec:
                     type: string
                     doc: "#{internet.userAgentAny}"
             - name: KAFKA_DATA_GENERATOR_TOPICS_1_VALUEFORMAT
-              value: 'AVRO_SCHEMA_REGISTRY'
+              value: 'JSON'
             - name: KAFKA_DATA_GENERATOR_TOPICS_1_SHAREDFIELDSMODE
               value: 'CONSUMER'
             - name: KAFKA_DATA_GENERATOR_TOPICS_1_BATCH_SIZE
