@@ -17,7 +17,7 @@ spec:
           "name" : "Songs",
           "namespace" : "net.tzolov.poc.playsongs.avro",
           "fields" : [ {
-            "name" : "id",
+            "name" : "song_id",
             "type" : "long"
           }, {
             "name" : "name",
@@ -200,7 +200,7 @@ spec:
       - "INSERT INTO [[STREAM:kafka-stream-songplays]] 
          SELECT Plays.song_id, Songs.album, Songs.artist, Songs.name, Songs.genre, Plays.duration, Plays.event_time   
          FROM(SELECT * FROM [[STREAM:kafka-stream-playevents]] WHERE duration >= 30000) AS Plays 
-         INNER JOIN [[STREAM:kafka-stream-songs]] as Songs ON Plays.song_id = Songs.id"
+         INNER JOIN [[STREAM:kafka-stream-songs]] as Songs ON Plays.song_id = Songs.song_id"
 
       - "INSERT INTO [[STREAM:kafka-stream-topk-songs-per-genre]] 
          SELECT window_start, window_end, song_id, name, genre, play_count 

@@ -1,0 +1,99 @@
+apiVersion: streaming.tanzu.vmware.com/v1alpha1
+kind: Stream
+metadata:
+  name: iot-monitoring-stream
+spec:
+  protocol: "kafka"
+  storage:
+    clusterStream: "iot-monitoring-cluster-stream"
+  streamMode: [ "read" ]
+  keys: [ "error_code" ]
+  dataSchemaContext:
+    schema:
+      namespace: com.tanzu.streaming.runtime.iot.log
+      name: MonitoringStream
+      fields:
+        - name: error_code
+          type: string
+        - name: type
+          type: string
+        - name: application
+          type: string
+        - name: version
+          type: string
+        - name: description
+          type: string
+        - name: event_time
+          type: long_timestamp-millis
+          metadata:
+            from: timestamp
+            readonly: true
+          watermark: "`event_time` - INTERVAL '3' SECONDS"
+    options:
+      ddl.scan.startup.mode: earliest-offset
+---
+apiVersion: streaming.tanzu.vmware.com/v1alpha1
+kind: Stream
+metadata:
+  name: possible-fraud-stream
+spec:
+  protocol: "kafka"
+  storage:
+    clusterStream: "possible-fraud-stream-cluster-stream"
+  streamMode: [ "read", "write" ]
+  keys: [ "card_number" ]
+  dataSchemaContext:
+    schema:
+      namespace: com.tanzu.streaming.runtime.anomaly.detection
+      name: PossibleFraud
+      fields:
+        - name: window_start
+          type: long_timestamp-millis
+        - name: window_end
+          type: long_timestamp-millis
+        - name: card_number
+          type: string
+        - name: authorization_attempts
+          type: long
+    options:
+      ddl.key.fields: card_number
+      ddl.value.format: "json"
+      ddl.properties.allow.auto.create.topics: "true"
+      ddl.scan.startup.mode: earliest-offset
+---
+apiVersion: streaming.tanzu.vmware.com/v1alpha1
+kind: Stream
+metadata:
+  name: udf-output-possible-fraud-stream
+spec:
+  keys: [ "card_id" ]
+  streamMode: [ "write" ]
+  protocol: "rabbitmq"
+  storage:
+    clusterStream: "udf-output-possible-fraud-cluster-stream"
+---
+apiVersion: streaming.tanzu.vmware.com/v1alpha1
+kind: Processor
+metadata:
+  name: possible-fraud-processor
+spec:
+  inputs:
+    query:
+      - "INSERT INTO [[STREAM:possible-fraud-stream]]  
+         SELECT window_start, window_end, card_number, COUNT(*) AS authorization_attempts 
+         FROM TABLE(TUMBLE(TABLE [[STREAM:card-authorizations-stream]], DESCRIPTOR(event_time), INTERVAL '5' SECONDS)) 
+         GROUP BY window_start, window_end, card_number    
+         HAVING COUNT(*) > 5"
+    debug:
+      query: "SELECT * FROM PossibleFraud"
+      explain: [ 2 ]
+    sources:
+      - name: "possible-fraud-stream"
+  outputs:
+    - name: "udf-output-possible-fraud-stream"
+  template:
+    spec:
+      containers:
+        - name: possible-fraud-analysis-udf
+          image: ghcr.io/vmware-tanzu/streaming-runtimes/udf-uppercase-go:0.1
+

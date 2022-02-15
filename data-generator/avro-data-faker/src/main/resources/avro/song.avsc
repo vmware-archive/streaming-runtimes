@@ -1,0 +1,32 @@
+{
+  "namespace": "com.tanzu.streaming.runtime.playsongs.avro",
+  "type": "record",
+  "name": "Song",
+  "fields": [
+    {
+      "name": "song_id",
+      "type": "long",
+      "doc": "#{number.number_between '1','100'}"
+    },
+    {
+      "name": "album",
+      "type": "string",
+      "doc": "#{ancient.hero} #{ancient.god}"
+    },
+    {
+      "name": "artist",
+      "type": "string",
+      "doc": "#{artist.names}"
+    },
+    {
+      "name": "name",
+      "type": "string",
+      "doc": "#{rock_band.name}"
+    },
+    {
+      "name": "genre",
+      "type": "string",
+      "doc": "#{music.genres}"
+    }
+  ]
+}
