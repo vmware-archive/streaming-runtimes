@@ -52,26 +52,32 @@ docker push ghcr.io/vmware-tanzu/streaming-runtimes/udf-uppercase-python:0.1
 Then you can refer this image from within your streaming `Processor` CR definitions. For example:
 
 ```yaml
-apiVersion: streaming.tanzu.vmware.com/v1alpha1
-kind: Processor
-metadata:
-  name: my-streaming-processor
-spec:
-  # UDF configuration
-  inputs: 
-    - name: "my-input-stream" # input streams for the UDF function  
-  outputs: 
-    - name: "my-output-stream" # output streams for the UDF function        
-  template:
-    spec:
-      containers:
-        - name: my-python-ud
-          image: ghcr.io/vmware-tanzu/streaming-runtimes/udf-uppercase-python:0.1
+1.  apiVersion: streaming.tanzu.vmware.com/v1alpha1
+2.  kind: Processor
+3.  metadata:
+4.    name: my-streaming-processor
+5.  spec:
+6.    inputs: 
+7.      - name: "my-input-stream" # input streams for the UDF function  
+8.    outputs: 
+9.      - name: "my-output-stream" # output streams for the UDF function        
+10.   template:
+11.     spec:
+12.       containers:
+13.         - name: my-python-udf-container
+14.           image: ghcr.io/vmware-tanzu/streaming-runtimes/udf-uppercase-python:0.1
 ```
+
+Note that the `my-python-udf-container` (lines `13`-`14`) uses the `udf-uppercase-python:0.1` image.
+
+When deployed by the streaming runtime this processor would look like this:
+
+![Python UDF Flow](./streaming-runtime-python-udf-pipeline.jpg)
+
 
 ## Interaction RPC Modes
 
-The gRPC provides 4 interaction modes
+The `MessagingService` gRPC provides 4 interaction modes:
 
 * Reques/Repply RPC
 * Server-side streaming RPC
