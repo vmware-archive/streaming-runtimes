@@ -8,7 +8,6 @@ With the streaming ETL we get some kind of data events coming into the streaming
 Let's just say `clickstream` data is coming in, and we want to know who are our high status customers who are currently using the website
 so that we can engage with them or to find how much they buy or how long they stay on the site that day.
 
-
 > `Clickstream` data is the pathway that a user takes through their online journey. 
 > For a single website it generally shows how the user progressed from search to purchase. 
 > The clickstream links together the actions a single user has taken within a single session. 
@@ -75,7 +74,7 @@ kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runti
 
 - Install the anomaly detection streaming application:
 ```shell
-kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-operator/samples/clickstream/clickstream-etl.yaml' -n streaming-runtime
+kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-operator/samples/clickstream/streaming-pipeline.yaml' -n streaming-runtime
 ```
 
 - Install the authorization attempts random data stream:

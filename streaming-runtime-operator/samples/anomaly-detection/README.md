@@ -62,7 +62,7 @@ kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runti
 
 - Install the anomaly detection streaming application:
 ```shell
-kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-operator/samples/anomaly-detection/anomaly-detection.yaml' -n streaming-runtime
+kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-operator/samples/anomaly-detection/streaming-pipeline.yaml' -n streaming-runtime
 ```
 
 - Install the authorization attempts random data stream:

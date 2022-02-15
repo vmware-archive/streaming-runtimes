@@ -54,7 +54,7 @@ class MessageService(MessageService_pb2_grpc.MessagingServiceServicer):
             payload=str.encode(request.payload.decode().upper()), headers=request.headers)
 ```
 
-The [top-k-songs.yaml](./top-k-songs.yaml) implements the above pipeline using the Streaming-Runtime custom resources: `ClusterStream`, `Stream` and `Processor`.
+The [top-k-songs.yaml](./streaming-pipeline.yaml) implements the above pipeline using the Streaming-Runtime custom resources: `ClusterStream`, `Stream` and `Processor`.
 
 
 ![pipeline](./top-k-songs.jpg)
@@ -72,15 +72,15 @@ kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runti
 
 * Deploy the Top-K pipeline.
 ```shell
-kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-operator/main/samples/top-k-songs/top-k-songs.yaml' -n streaming-runtime
+kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-operator/main/samples/top-k-songs/streaming-pipeline.yaml' -n streaming-runtime
 ```
   * alternatively you can use the inline-SQL Stream data schema representation:
   ```shell
-  kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-operator/main/samples/top-k-songs/top-k-songs-inline-sql-schema.yaml' -n streaming-runtime
+  kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-operator/main/samples/top-k-songs/streaming-pipeline-inline-sql-schema.yaml' -n streaming-runtime
   ```
   and inline-avro data schema representations:
   ```shell
-  kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-operator/main/samples/top-k-songs/top-k-songs-inline-avro-schema.yaml' -n streaming-runtime
+  kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-operator/main/samples/top-k-songs/streaming-pipeline-inline-avro-schema.yaml' -n streaming-runtime
   ```
 
 
