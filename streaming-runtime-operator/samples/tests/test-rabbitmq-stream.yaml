@@ -1,0 +1,10 @@
+apiVersion: streaming.tanzu.vmware.com/v1alpha1
+kind: Stream
+metadata:
+  name: my-rabbitmq-stream
+spec:
+  keys: ["truckclass", "truckid"]
+  streamMode: ["read"]
+  protocol: "rabbitmq"
+  storage:
+    clusterStream: "my-rabbitmq-cluster-stream"
