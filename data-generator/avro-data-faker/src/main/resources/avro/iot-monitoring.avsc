@@ -6,27 +6,35 @@
     {
       "name": "error_code",
       "type": "string",
-      "doc" : "#{code.asin}"
+      "doc": "#{code.asin}"
+    },
+    {
+      "name": "ts",
+      "type": {
+        "type": "long",
+        "logicalType": "timestamp-millis"
+      },
+      "doc": "[[T(System).currentTimeMillis()]]"
     },
     {
       "name": "type",
       "type": "string",
-      "doc" : "#{options.option 'ERROR','DEBUG','INFO','WARN'}"
+      "doc": "#{options.option 'ERROR','DEBUG','INFO','WARN'}"
     },
     {
       "name": "application",
       "type": "string",
-      "doc" : "#{app.name}"
+      "doc": "#{app.name}"
     },
     {
       "name": "version",
       "type": "string",
-      "doc" : "#{number.number_between '0','10'}.#{number.number_between '0','20'}.#{number.number_between '0','20'}#{options.option ' ',' ',' ',' ',' ',' ',' ','-SNAPSHOT'}"
+      "doc": "#{number.number_between '0','10'}.#{number.number_between '0','20'}.#{number.number_between '0','20'}#{options.option ' ',' ',' ',' ',' ',' ',' ','-SNAPSHOT'}"
     },
     {
       "name": "description",
       "type": "string",
-      "doc" : "#{chuck_norris.fact}"
+      "doc": "#{chuck_norris.fact}"
     }
   ]
 }

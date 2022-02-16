@@ -39,6 +39,8 @@ import org.apache.avro.util.Utf8;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.expression.spel.standard.SpelExpressionParser;
+import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.util.StringUtils;
 
 
@@ -70,6 +72,9 @@ public class AvroRandomDataFaker implements Iterable<GenericData.Record> {
 	 */
 	private final String keyFieldName;
 	private final ConcurrentHashMap<Object, GenericData.Record> keyedRecords;
+	private final StandardEvaluationContext spelContext;
+	private final SpELTemplateParserContext spelTemplateContext;
+	private final SpelExpressionParser spelParser;
 
 	public AvroRandomDataFaker(Schema schema, int count, boolean utf8ForString) {
 		this(schema, count, utf8ForString, null, null, null, System.currentTimeMillis());
@@ -90,6 +95,11 @@ public class AvroRandomDataFaker implements Iterable<GenericData.Record> {
 
 		this.keyFieldName = keyFieldName;
 		this.keyedRecords = new ConcurrentHashMap();
+
+		this.spelContext = new StandardEvaluationContext();
+		this.spelContext.setVariable("faker", faker);
+		this.spelTemplateContext = new SpELTemplateParserContext();
+		this.spelParser = new SpelExpressionParser();
 	}
 
 	@Override
@@ -220,7 +230,11 @@ public class AvroRandomDataFaker implements Iterable<GenericData.Record> {
 	}
 
 	private String fakerExpression(String doc) {
-		return StringUtils.hasText(doc) ? faker.expression(doc) : null;
+		if (StringUtils.hasText(doc)) {
+			String resolvedSpELDoc = this.spelParser.parseExpression(doc, this.spelTemplateContext).getValue(this.spelContext, String.class);
+			return faker.expression(resolvedSpELDoc);
+		}
+		return null;
 	}
 
 	private static final Charset UTF8 = Charset.forName("UTF-8");

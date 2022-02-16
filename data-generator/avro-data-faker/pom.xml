@@ -11,7 +11,6 @@
 	<properties>
 		<maven.compiler.source>11</maven.compiler.source>
 		<maven.compiler.target>11</maven.compiler.target>
-<!--		<jackson.dataformat.verison>2.13.1</jackson.dataformat.verison>-->
 		<jackson.dataformat.verison>2.12.5</jackson.dataformat.verison>
 		<apache.avro.version>1.11.0</apache.avro.version>
 		<spring.core.version>5.3.15</spring.core.version>

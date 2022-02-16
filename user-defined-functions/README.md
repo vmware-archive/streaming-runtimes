@@ -1,9 +1,10 @@
 # Sample User Defined Functions
 
-Streaming Runtime provides `GrpcMessage` schema modeled the Message received and send to the Multibinder.
-It also defines a `MessagingService` exposing four interaction models you can choose.
+The Streaming Runtime provides a `GrpcMessage` schema to model the messages exchanged between the `Multibinder` and the User Defined Functions (UDF).
+It also defines a `MessagingService` offering four interaction modes to choose from. 
 
 ```protobuf
+syntax = "proto3";
 
 message GrpcMessage {
   bytes payload = 1;
@@ -21,13 +22,17 @@ service MessagingService {
 }
 ```
 
-Both of these allow you to generate required stubs to support true plolyglot nature of gRPC while interacting with functions hosted by Streaming Runtime.
+The [MessageService.proto](./MessageService.proto) allows you to generate required stubs to support true polyglot nature of gRPC while interacting with functions hosted by `Streaming Runtime`.
+
+The Multibiner forwards the incoming messages over the `MessagingService` to the pre-configured UDF function.
+The UDF response in turn is sent to the Multibiner's output stream.
+If the `Time Windowing Aggregation` is enabled, the Multibiner will collect all messages part of the window and pass them at once to the UDF to compute aggregated state.
 
 The [udf-uppercase-java](./udf-uppercase-java), [udf-uppercase-go](./udf-uppercase-go) and [udf-uppercase-python](./udf-uppercase-python) sample projects
 show how to build simple UDFs in `Java`, `Python` or `Go` using the `Reques/Repply` RPC mode.
+Also, you can find there instructions how to build the UDF container image and push those to the container registry of choice.
 
-There you can find instructions how to build the UDF into a container image and push it to `ghcr.io` (or the container registry of choice).
-For example in case of the  [Python UDF](./udf-uppercase-python) you can use a `Dockerfile` like this:
+For example in case of the [Python UDF](./udf-uppercase-python) you can use a `Dockerfile` like this:
 
 ```dockerfile
 FROM python:3.9.7-slim
@@ -40,7 +45,7 @@ ENTRYPOINT ["python","/message_service_server.py"]
 CMD []
 ```
 
-to build your udf image:
+to build the container image:
 ```shell
 docker build -t ghcr.io/vmware-tanzu/streaming-runtimes/udf-uppercase-python:0.1 .
 ```
@@ -49,7 +54,8 @@ and push it to the registry:
 docker push ghcr.io/vmware-tanzu/streaming-runtimes/udf-uppercase-python:0.1
 ```
 
-Then you can refer this image from within your streaming `Processor` CR definitions. For example:
+Then you can refer this image from within your streaming `Processor` CR definitions. 
+For example:
 
 ```yaml
 1.  apiVersion: streaming.tanzu.vmware.com/v1alpha1
