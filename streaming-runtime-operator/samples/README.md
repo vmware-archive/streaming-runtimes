@@ -5,8 +5,8 @@ Here we demonstrate how the `Streaming Runtime` can be used to implement various
 * [Anomaly Detection](./anomaly-detection) - for a stream of credit card authorization attempts, shows how to detect the suspicious transactions, in real time, and extract those for further processing.
 * [Clickstream Analysis](./clickstream) -   for an input `clickstream` stream, we want to know who are the high status customers, currently using the website so that we can engage with them or to find how much they buy or how long they stay on the site that day.
 * [Streaming Music Service](./top-k-songs) - music ranking application that continuously computes the latest Top-K music charts based on song play events collected in real-time.
-* [IoT Monitoring analysis](./iot-monitoring) - WIP
-* ... Ideas ???
+* [IoT Monitoring analysis](./iot-monitoring) - real-time analysis of IoT monitoring log.
+* ... more to come
 
 ## Common instructions
 

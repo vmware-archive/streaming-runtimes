@@ -23,40 +23,37 @@ spec:
           type: string
         - name: description
           type: string
-        - name: event_time
+        - name: ts
           type: long_timestamp-millis
-          metadata:
-            from: timestamp
-            readonly: true
-          watermark: "`event_time` - INTERVAL '3' SECONDS"
+          watermark: "`ts` - INTERVAL '3' SECONDS"
     options:
       ddl.scan.startup.mode: earliest-offset
 ---
 apiVersion: streaming.tanzu.vmware.com/v1alpha1
 kind: Stream
 metadata:
-  name: possible-fraud-stream
+  name: error-count-stream
 spec:
   protocol: "kafka"
   storage:
-    clusterStream: "possible-fraud-stream-cluster-stream"
+    clusterStream: "error-count-cluster-stream"
   streamMode: [ "read", "write" ]
-  keys: [ "card_number" ]
+  keys: [ "error_code" ]
   dataSchemaContext:
     schema:
-      namespace: com.tanzu.streaming.runtime.anomaly.detection
-      name: PossibleFraud
+      namespace: com.tanzu.streaming.runtime.iot.log
+      name: ErrorCount
       fields:
         - name: window_start
           type: long_timestamp-millis
         - name: window_end
           type: long_timestamp-millis
-        - name: card_number
+        - name: error_code
           type: string
-        - name: authorization_attempts
+        - name: error_count
           type: long
     options:
-      ddl.key.fields: card_number
+      ddl.key.fields: error_code
       ddl.value.format: "json"
       ddl.properties.allow.auto.create.topics: "true"
       ddl.scan.startup.mode: earliest-offset
@@ -64,13 +61,13 @@ spec:
 apiVersion: streaming.tanzu.vmware.com/v1alpha1
 kind: Stream
 metadata:
-  name: udf-output-possible-fraud-stream
+  name: udf-output-error-count-stream
 spec:
-  keys: [ "card_id" ]
+  keys: [ "error_code" ]
   streamMode: [ "write" ]
   protocol: "rabbitmq"
   storage:
-    clusterStream: "udf-output-possible-fraud-cluster-stream"
+    clusterStream: "udf-output-error-count-cluster-stream"
 ---
 apiVersion: streaming.tanzu.vmware.com/v1alpha1
 kind: Processor
@@ -79,21 +76,21 @@ metadata:
 spec:
   inputs:
     query:
-      - "INSERT INTO [[STREAM:possible-fraud-stream]]  
-         SELECT window_start, window_end, card_number, COUNT(*) AS authorization_attempts 
-         FROM TABLE(TUMBLE(TABLE [[STREAM:card-authorizations-stream]], DESCRIPTOR(event_time), INTERVAL '5' SECONDS)) 
-         GROUP BY window_start, window_end, card_number    
-         HAVING COUNT(*) > 5"
+      - "INSERT INTO [[STREAM:error-count-stream]] 
+         SELECT window_start, window_end, error_code, COUNT(*) AS error_count 
+         FROM TABLE(TUMBLE(TABLE [[STREAM:iot-monitoring-stream]], DESCRIPTOR(ts), INTERVAL '1' MINUTE)) 
+         WHERE type='ERROR' 
+         GROUP BY window_start, window_end, error_code"
     debug:
-      query: "SELECT * FROM PossibleFraud"
+      query: "SELECT * FROM ErrorCount"
       explain: [ 2 ]
     sources:
-      - name: "possible-fraud-stream"
+      - name: "error-count-stream"
   outputs:
-    - name: "udf-output-possible-fraud-stream"
+    - name: "udf-output-error-count-stream"
   template:
     spec:
       containers:
-        - name: possible-fraud-analysis-udf
+        - name: iot-monitoring-error-code-udf
           image: ghcr.io/vmware-tanzu/streaming-runtimes/udf-uppercase-go:0.1
 

@@ -34,7 +34,7 @@ public class DataFakerUtilTest3 {
 
 
 		DataFaker.generateRecords(
-				DataFaker.resourceUriToAvroSchema("classpath:/avro/iot-monitoring.avsc"),
+				DataFaker.resourceUriToAvroSchema("classpath:/avro/iot-monitoring.yaml"),
 				100,
 				sharedFieldValuesContext,
 				SharedFieldValuesContext.Mode.CONSUMER,

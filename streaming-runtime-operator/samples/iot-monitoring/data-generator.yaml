@@ -57,7 +57,7 @@ spec:
               value: '1h'
 
             - name: KAFKA_DATA_GENERATOR_TOPICS_0_TOPICNAME
-              value: 'card-authorizations-stream'
+              value: 'iot-monitoring-stream'
             - name: KAFKA_DATA_GENERATOR_TOPICS_0_VALUEFORMAT
               value: 'AVRO'
             - name: KAFKA_DATA_GENERATOR_TOPICS_0_SKIPSENDING
@@ -71,7 +71,12 @@ spec:
                 fields:
                   - name: error_code
                     type: string
-                    doc: "#{code.asin}"
+                    doc: "#{options.option 'C001_ABORTED','C002_ALREADY_EXISTS','C003_CANCELLED','C004_DEADLINE_EXCEEDED','C005_FAILED_PRECONDITION','C006_INTERNAL','C007_INVALID_ARGUMENT','C008_NOT_FOUND','C009_OUT_OF_RANGE','C010_PERMISSION_DENIED','C011_RESOURCE_EXHAUSTED','C012_UNAVAILABLE','C013_UNIMPLEMENTED','C014_UNKNOWN'}"
+                  - name: ts
+                    type:
+                      type: long
+                      logicalType: timestamp-millis
+                    doc: "[[T(System).currentTimeMillis()]]"                
                   - name: type
                     type: string
                     doc: "#{options.option 'ERROR','DEBUG','INFO','WARN'}"
