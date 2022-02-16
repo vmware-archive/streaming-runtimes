@@ -23,7 +23,7 @@ kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runti
 #### Provision a simple streaming pipeline
 
 ```shell
-kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-operator/main/samples/tests/test-all.yaml' -n streaming-runtime
+kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-samples/tests/test-all.yaml' -n streaming-runtime
 ```
 
 Then check how the `ClusterStream`'s, `Stream`'s and `Processor` are deployed also verify that the multibinder processor

@@ -61,7 +61,7 @@ Since the `Clicks` and `Uers` streams have both a `user_id` we can join them to 
 We are only interested in platinum-level users. This the user-level information is not available in the Clicks stream, but as we were able to join to the Users stream now we can filter based on the Users data (`8-9`).
 
 Following diagram illustrates the implementation flow and involved resources:
-![Clickstreams Flow](./clickstreams-flow.jpg)
+![Clickstreams Flow](clickstreams-flow.jpg)
 
 
 
@@ -74,13 +74,13 @@ kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runti
 
 - Install the anomaly detection streaming application:
 ```shell
-kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-operator/samples/clickstream/streaming-pipeline.yaml' -n streaming-runtime
+kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-samples/clickstream/streaming-pipeline.yaml' -n streaming-runtime
 ```
 
 - Install the authorization attempts random data stream:
 
 ```shell
-kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-operator/samples/clickstream/data-generator.yaml' -n default
+kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-samples/clickstream/data-generator.yaml' -n default
 ```
 
 * Delete the Top-k songs pipeline and the demo song generator:

@@ -63,12 +63,12 @@ The above streaming query will produce a continuous stream (`error-count-stream`
 {"window_start":"2022-02-16 14:21:00","window_end":"2022-02-16 14:22:00","error_code":"C009_OUT_OF_RANGE","error_count":20}
 ```
 
-Next we can register a [User Defined Function (UDF)](../../../user-defined-functions) to process each newly computed `error-count-stream` events.
+Next we can register a [User Defined Function (UDF)](../../user-defined-functions) to process each newly computed `error-count-stream` events.
 The UDF function can be implemented in any programming language as long as they adhere to the Streaming-Runtime `gRPC` protocol.
 Our UDFs for example, can look for the root causes of the frequently occurring error or send alerting notifications to 3rd party systems.
 
 Following diagram illustrates the implementation flow and involved resources:
-![Anomaly Detection Flow](./iot-monitoring-flow.jpg)
+![Anomaly Detection Flow](iot-monitoring-flow.jpg)
 
 ## Quick start
 
@@ -79,12 +79,12 @@ kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runti
 
 - Install the anomaly detection streaming application:
 ```shell
-kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-operator/samples/iot-monitoring/streaming-pipeline.yaml' -n streaming-runtime
+kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-samples/iot-monitoring/streaming-pipeline.yaml' -n streaming-runtime
 ```
 
 - Install the authorization attempts random data stream:
 ```shell
-kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-operator/samples/iot-monitoring/data-generator.yaml' -n default
+kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-samples/iot-monitoring/data-generator.yaml' -n default
 ```
 
 * Delete the Top-k songs pipeline and the demo song generator:

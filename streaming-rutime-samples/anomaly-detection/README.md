@@ -51,7 +51,7 @@ Next we can register a custom function (UDF) to the new, possible-fraud stream t
 The UDF function can be implemented in any programming language as long as they adhere to the Streaming-Runtime `gRPC` protocol.
 
 Following diagram illustrates the implementation flow and involved resources:
-![Anomaly Detection Flow](./anomaly-detection-flow.jpg)
+![Anomaly Detection Flow](anomaly-detection-flow.jpg)
 
 ## Quick start
 
@@ -62,12 +62,12 @@ kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runti
 
 - Install the anomaly detection streaming application:
 ```shell
-kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-operator/samples/anomaly-detection/streaming-pipeline.yaml' -n streaming-runtime
+kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-samples/anomaly-detection/streaming-pipeline.yaml' -n streaming-runtime
 ```
 
 - Install the authorization attempts random data stream:
 ```shell
-kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-operator/samples/anomaly-detection/data-generator.yaml' -n default
+kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-samples/anomaly-detection/data-generator.yaml' -n default
 ```
 
 * Delete the Top-k songs pipeline and the demo song generator:

@@ -54,10 +54,10 @@ class MessageService(MessageService_pb2_grpc.MessagingServiceServicer):
             payload=str.encode(request.payload.decode().upper()), headers=request.headers)
 ```
 
-The [top-k-songs.yaml](./streaming-pipeline.yaml) implements the above pipeline using the Streaming-Runtime custom resources: `ClusterStream`, `Stream` and `Processor`.
+The [top-k-songs.yaml](streaming-pipeline.yaml) implements the above pipeline using the Streaming-Runtime custom resources: `ClusterStream`, `Stream` and `Processor`.
 
 
-![pipeline](./top-k-songs.jpg)
+![pipeline](top-k-songs.jpg)
 
 (The use case is inspired by the https://github.com/confluentinc/examples/tree/6.0.4-post/music)
 
@@ -72,27 +72,27 @@ kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runti
 
 * Deploy the Top-K pipeline.
 ```shell
-kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-operator/main/samples/top-k-songs/streaming-pipeline.yaml' -n streaming-runtime
+kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-samples/top-k-songs/streaming-pipeline.yaml' -n streaming-runtime
 ```
   * alternatively you can use the inline-SQL Stream data schema representation:
   ```shell
-  kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-operator/main/samples/top-k-songs/streaming-pipeline-inline-sql-schema.yaml' -n streaming-runtime
+  kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-sample/top-k-songs/streaming-pipeline-inline-sql-schema.yaml' -n streaming-runtime
   ```
   and inline-avro data schema representations:
   ```shell
-  kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-operator/main/samples/top-k-songs/streaming-pipeline-inline-avro-schema.yaml' -n streaming-runtime
+  kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-sample/top-k-songs/streaming-pipeline-inline-avro-schema.yaml' -n streaming-runtime
   ```
 
 
 * Start the Songs and PlayEvents message generator. Messages are encoded in Avro, using the same schemas defined
   by the `kafka-stream-songs` and `kafka-stream-playevents` Streams and send to the topics defined in those streams.
 ```shell
-kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-operator/main/samples/top-k-songs/data-generator.yaml' -n default
+kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-sample/top-k-songs/data-generator.yaml' -n default
 ```
 
 (or the legacy generator:)
 ```shell
-kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-operator/main/samples/top-k-songs/songs-generator.yaml' -n default
+kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-sample/top-k-songs/songs-generator.yaml' -n default
 ```
 
 * Delete the Top-k songs pipeline and the demo song generator:
