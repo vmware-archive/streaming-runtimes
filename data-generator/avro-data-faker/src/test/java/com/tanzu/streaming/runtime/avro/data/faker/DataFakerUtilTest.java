@@ -14,7 +14,7 @@ public class DataFakerUtilTest {
 
 		// Anomaly Detection records
 		List<GenericData.Record> anomalyDetection = DataFaker.generateRecords(
-				DataFaker.resourceUriToAvroSchema("classpath:/avro/anomaly.detection.yaml"),
+				DataFaker.uriToAvroSchema("classpath:/avro/anomaly.detection.yaml"),
 				35,
 				sharedFieldValuesContext,
 				SharedFieldValuesContext.Mode.PRODUCER,
@@ -24,7 +24,7 @@ public class DataFakerUtilTest {
 
 		// User records
 		List<GenericData.Record> userRecords = DataFaker.generateRecords(
-				DataFaker.resourceUriToAvroSchema("classpath:/avro/user1.avsc"),
+				DataFaker.uriToAvroSchema("classpath:/avro/user1.avsc"),
 				15,
 				sharedFieldValuesContext,
 				SharedFieldValuesContext.Mode.PRODUCER,
@@ -35,7 +35,7 @@ public class DataFakerUtilTest {
 		// Click records
 		List<GenericData.Record> clickRecords = DataFaker.generateRecords(
 //				DataFaker.resourceUriToAvroSchema("classpath:/avro/click.avsc"),
-				DataFaker.resourceUriToAvroSchema("classpath:/avro/click.yaml"),
+				DataFaker.uriToAvroSchema("classpath:/avro/click.yaml"),
 				20,
 				sharedFieldValuesContext,
 				SharedFieldValuesContext.Mode.CONSUMER,
@@ -65,7 +65,7 @@ public class DataFakerUtilTest {
 //		System.out.println(faker.finance().iban());
 
 		List<GenericData.Record> songs = DataFaker.generateRecords(
-				DataFaker.resourceUriToAvroSchema("classpath:/avro/song.avsc"),
+				DataFaker.uriToAvroSchema("classpath:/avro/song.avsc"),
 				10,
 				sharedFieldValuesContext,
 				SharedFieldValuesContext.Mode.CONSUMER,

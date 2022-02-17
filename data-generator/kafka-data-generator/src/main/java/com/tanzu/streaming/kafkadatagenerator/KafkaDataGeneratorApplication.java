@@ -96,8 +96,8 @@ public class KafkaDataGeneratorApplication implements CommandLineRunner {
 					kafkaTemplate(topicProperties.getValueFormat(), topicProperties.getTopicName(), LongSerializer.class);
 
 			Schema avroSchema = StringUtils.hasText(topicProperties.getAvroSchema()) ?
-					DataFaker.textToAvroSchema(topicProperties.getAvroSchema()) :
-					DataFaker.resourceUriToAvroSchema(topicProperties.getAvroSchemaUri());
+					DataFaker.toAvroSchema(topicProperties.getAvroSchema()) :
+					DataFaker.uriToAvroSchema(topicProperties.getAvroSchemaUri());
 
 			AvroRandomDataFaker dataFaker = DataFaker.dataFaker(
 					avroSchema,

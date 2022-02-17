@@ -1,5 +1,5 @@
 {
-  "namespace": "com.tanzu.streaming.runtime.clickstream.etl",
+  "namespace": "my.clickstream",
   "type": "record",
   "name": "User",
   "fields": [
@@ -14,17 +14,14 @@
       "doc": "#{name.fullName}"
     },
     {
-      "name": "level",
-      "type": {
-        "type": "enum",
-        "name": "UserLevel",
-        "symbols": [
-          "BRONZE",
-          "SILVER",
-          "GOLD",
-          "PLATINUM"
-        ]
-      }
+      "name": "department",
+      "type": "string",
+      "doc": "#{commerce.department}"
+    },
+    {
+      "name": "industry",
+      "type": "string",
+      "doc": "#{company.industry}"
     }
   ]
 }

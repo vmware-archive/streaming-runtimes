@@ -2,7 +2,6 @@ package com.tanzu.streaming.runtime.avro.data.faker;
 
 import java.util.List;
 
-import net.datafaker.Faker;
 import org.apache.avro.generic.GenericData;
 
 public class DataFakerUtilTest3 {
@@ -13,7 +12,7 @@ public class DataFakerUtilTest3 {
 		SharedFieldValuesContext sharedFieldValuesContext = new SharedFieldValuesContext(List.of("song_id"));
 
 		List<GenericData.Record> songs = DataFaker.generateRecords(
-				DataFaker.resourceUriToAvroSchema("classpath:/avro/song.avsc"),
+				DataFaker.uriToAvroSchema("classpath:/avro/song.avsc"),
 				100,
 				sharedFieldValuesContext,
 				SharedFieldValuesContext.Mode.PRODUCER,
@@ -21,7 +20,7 @@ public class DataFakerUtilTest3 {
 				System.currentTimeMillis());
 
 		List<GenericData.Record> plays = DataFaker.generateRecords(
-				DataFaker.resourceUriToAvroSchema("classpath:/avro/playsongs.avsc"),
+				DataFaker.uriToAvroSchema("classpath:/avro/playsongs.avsc"),
 				100,
 				sharedFieldValuesContext,
 				SharedFieldValuesContext.Mode.CONSUMER,
@@ -34,7 +33,7 @@ public class DataFakerUtilTest3 {
 
 
 		DataFaker.generateRecords(
-				DataFaker.resourceUriToAvroSchema("classpath:/avro/iot-monitoring.yaml"),
+				DataFaker.uriToAvroSchema("classpath:/avro/iot-monitoring.yaml"),
 				100,
 				sharedFieldValuesContext,
 				SharedFieldValuesContext.Mode.CONSUMER,

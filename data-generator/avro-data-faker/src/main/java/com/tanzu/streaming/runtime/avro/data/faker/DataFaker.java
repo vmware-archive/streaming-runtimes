@@ -93,14 +93,14 @@ public class DataFaker {
 				correlationContext, correlationMode, keyFieldName, seed);
 	}
 
-	public static Schema resourceUriToAvroSchema(String schemaUri) {
-		return resourceUriToAvroSchema(new DefaultResourceLoader().getResource(schemaUri));
+	public static Schema uriToAvroSchema(String schemaUri) {
+		return uriToAvroSchema(new DefaultResourceLoader().getResource(schemaUri));
 	}
 
-	public static Schema resourceUriToAvroSchema(Resource schemaResourceUri) {
+	public static Schema uriToAvroSchema(Resource schemaResourceUri) {
 		try {
 			String schemaStr = new String(IOUtils.toByteArray(schemaResourceUri.getInputStream()));
-			return textToAvroSchema(schemaStr);
+			return toAvroSchema(schemaStr);
 		}
 		catch (IOException e) {
 			logger.error("Failed to parse resources: " + schemaResourceUri + " to Avro schema!", e);
@@ -113,23 +113,8 @@ public class DataFaker {
 	 * @param schemaContent Raw Schema text content.
 	 * @return Returns Avro Schema.
 	 */
-	public static Schema textToAvroSchema(String schemaContent) {
+	public static Schema toAvroSchema(String schemaContent) {
 		return new Schema.Parser().parse(convertYamlOrJsonToJson(schemaContent));
-	}
-
-	/**
-	 * Converts the URI content into a string.
-	 * @param resourceUri Resource URI. Support prefixes such as 'classpath:/', 'file:', 'http:', 'https:'.
-	 * @return Returns the URI resource content as a string.
-	 */
-	public static String resourceUriToString(String resourceUri) {
-		try {
-			InputStream is = new DefaultResourceLoader().getResource(resourceUri).getInputStream();
-			return new String(IOUtils.toByteArray(is));
-		}
-		catch (IOException e) {
-			throw new RuntimeException(e);
-		}
 	}
 
 	/**
