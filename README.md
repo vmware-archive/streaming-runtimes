@@ -56,16 +56,17 @@ If you decide not to use streaming query then the entire architecture might look
 E.g. you only define the input and output `Stream`s and the `Processor` to wire them with your custom UDF implementation. 
 Check the [user-defined-functions](./user-defined-functions) to learn how to build UDFs. 
 
+NOTE: There is an [undergoing work](https://github.com/vmware-tanzu/streaming-runtimes/issues/13) for implementing a very basic `Time Windowed Aggregation` 
+that would allow the developers to calculate aggregates in near-real time directly in their UDFs. 
+This feature would provide an alternative (simple) way to build analytics in addition to elaborate Streaming SQL features explained above. 
+
 Finally, you can chain multiple Streams and Processors (e.g. the output `Stream` of one `Processor` is used an input of another) to build  streaming data pipeline.    
 
 
 ### Build & Run
 
-#### 1. Streaming Runtime Operator
-Follow the [Streaming Runtime Operator](./streaming-runtime-operator) build instructions to build the operator, create a container image and upload it to container registry.
-
-#### 2. User Defined Functions
-Follow the [User Defined Function](./user-defined-functions) about information how implement and build your own UDF and how to use it from within a Processor resource. 
+* Streaming Runtime Operator - follow the [Streaming Runtime Operator](./streaming-runtime-operator) build instructions to build the operator, create a container image and upload it to container registry.
+* User Defined Functions - follow the [User Defined Function](./user-defined-functions) about information how implement and build your own UDF and how to use it from within a Processor resource. 
 
 ## Documentation
 
