@@ -1,0 +1,11 @@
+site_name: Streaming Runtime
+theme:
+  name: material
+  features:
+  - navigation.tabs
+  - navigation.tracking
+  - navigation.tabs.sticky
+  - navigation.top
+markdown_extensions:
+  - pymdownx.tasklist:
+      custom_checkbox: true
