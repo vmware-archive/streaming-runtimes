@@ -84,7 +84,7 @@ spec:
                   ]
                 }
             - name: KAFKA_DATA_GENERATOR_TOPICS_0_VALUEFORMAT
-              value: 'JSON'
+              value: 'AVRO'
             - name: KAFKA_DATA_GENERATOR_TOPICS_0_SHAREDFIELDSMODE
               value: 'PRODUCER'
             - name: KAFKA_DATA_GENERATOR_TOPICS_0_BATCH_SIZE
@@ -117,7 +117,7 @@ spec:
                     type: string
                     doc: "#{internet.userAgentAny}"
             - name: KAFKA_DATA_GENERATOR_TOPICS_1_VALUEFORMAT
-              value: 'JSON'
+              value: 'AVRO'
             - name: KAFKA_DATA_GENERATOR_TOPICS_1_SHAREDFIELDSMODE
               value: 'CONSUMER'
             - name: KAFKA_DATA_GENERATOR_TOPICS_1_BATCH_SIZE

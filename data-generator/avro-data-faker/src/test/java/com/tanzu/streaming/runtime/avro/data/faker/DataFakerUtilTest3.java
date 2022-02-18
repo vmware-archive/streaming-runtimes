@@ -2,6 +2,7 @@ package com.tanzu.streaming.runtime.avro.data.faker;
 
 import java.util.List;
 
+import com.tanzu.streaming.runtime.avro.data.faker.util.SharedFieldValuesContext;
 import org.apache.avro.generic.GenericData;
 
 public class DataFakerUtilTest3 {
@@ -16,7 +17,6 @@ public class DataFakerUtilTest3 {
 				100,
 				sharedFieldValuesContext,
 				SharedFieldValuesContext.Mode.PRODUCER,
-				"song_id",
 				System.currentTimeMillis());
 
 		List<GenericData.Record> plays = DataFaker.generateRecords(
@@ -24,7 +24,6 @@ public class DataFakerUtilTest3 {
 				100,
 				sharedFieldValuesContext,
 				SharedFieldValuesContext.Mode.CONSUMER,
-				null,
 				System.currentTimeMillis());
 
 		songs.forEach(System.out::println);
@@ -37,7 +36,6 @@ public class DataFakerUtilTest3 {
 				100,
 				sharedFieldValuesContext,
 				SharedFieldValuesContext.Mode.CONSUMER,
-				null,
 				System.currentTimeMillis()).forEach(System.out::println);
 	}
 

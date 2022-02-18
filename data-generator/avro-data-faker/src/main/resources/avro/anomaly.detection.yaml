@@ -1,6 +1,7 @@
 namespace: com.tanzu.streaming.runtime.anomaly.detection
 type: record
 name: AuthorizationAttempts
+doc: "key=card_number"
 fields:
   - name: card_number
     type: string

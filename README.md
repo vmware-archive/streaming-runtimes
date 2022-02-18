@@ -65,7 +65,7 @@ Finally, you can chain multiple Streams and Processors (e.g. the output `Stream`
 
 ### Build & Run
 
-* Streaming Runtime Operator - follow the [Streaming Runtime Operator](./streaming-runtime-operator) build instructions to build the operator, create a container image and upload it to container registry.
+* Streaming Runtime Operator - follow the [Streaming Runtime Operator](./streaming-runtime-operator#build) build instructions to build the operator, create a container image and upload it to container registry.
 * User Defined Functions - follow the [User Defined Function](./user-defined-functions) about information how implement and build your own UDF and how to use it from within a Processor resource. 
 
 ## Documentation

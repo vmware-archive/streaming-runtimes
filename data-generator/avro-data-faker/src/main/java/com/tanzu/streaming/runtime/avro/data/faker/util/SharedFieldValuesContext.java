@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.tanzu.streaming.runtime.avro.data.faker;
+package com.tanzu.streaming.runtime.avro.data.faker.util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,7 +88,7 @@ public class SharedFieldValuesContext {
 	}
 
 	/**
-	 * Retrieve a random value for a given field name part of the shared context.
+	 * Retrieve a random value from those collected in the context for the given field name..
 	 * @param fieldName field name to retrieve value from the context's state.
 	 * @param random Random generator with pre-configured seed to ensure deterministic behavior.
 	 * @return Return a random field value form the shared state.
@@ -96,15 +96,14 @@ public class SharedFieldValuesContext {
 	public Object getRandomValue(String fieldName, Random random) {
 		try {
 			this.readLock.lock();
+
 			List<Object[]> fieldValues = this.getState().get(fieldName);
 
 			Assert.notNull(fieldValues, "Could not find field values for field: " + fieldName);
-			int i = random.nextInt(fieldValues.size());
-			Object[] values = fieldValues.get(random.nextInt(fieldValues.size()));
-			Object value = (values.length == 1) ? values[0] : values;
 
-			//System.out.println("fieldName: " + fieldName + " : " + fieldValues.size() + " : " + i + " : " + value + ":" + fieldValues.stream().map(Arrays::toString).collect(Collectors.joining()));
-			return value;
+			Object[] values = fieldValues.get(random.nextInt(fieldValues.size()));
+
+			return  (values.length == 1) ? values[0] : values;
 
 		} finally {
 			this.readLock.unlock();

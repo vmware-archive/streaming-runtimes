@@ -2,6 +2,7 @@
   "namespace": "com.tanzu.streaming.runtime.clickstream.etl",
   "type": "record",
   "name": "User",
+  "doc": "key=user_id",
   "fields": [
     {
       "name": "user_id",

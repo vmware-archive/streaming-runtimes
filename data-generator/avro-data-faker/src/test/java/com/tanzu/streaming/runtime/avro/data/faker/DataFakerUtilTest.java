@@ -2,6 +2,7 @@ package com.tanzu.streaming.runtime.avro.data.faker;
 
 import java.util.List;
 
+import com.tanzu.streaming.runtime.avro.data.faker.util.SharedFieldValuesContext;
 import net.datafaker.Faker;
 import org.apache.avro.generic.GenericData;
 
@@ -18,7 +19,6 @@ public class DataFakerUtilTest {
 				35,
 				sharedFieldValuesContext,
 				SharedFieldValuesContext.Mode.PRODUCER,
-				"card_number",
 				System.currentTimeMillis());
 		anomalyDetection.forEach(System.out::println);
 
@@ -28,7 +28,6 @@ public class DataFakerUtilTest {
 				15,
 				sharedFieldValuesContext,
 				SharedFieldValuesContext.Mode.PRODUCER,
-				"user_id",
 				System.currentTimeMillis());
 
 
@@ -39,7 +38,6 @@ public class DataFakerUtilTest {
 				20,
 				sharedFieldValuesContext,
 				SharedFieldValuesContext.Mode.CONSUMER,
-				null,
 				System.currentTimeMillis()); // (re)use the userId values from the user generation.
 
 
@@ -69,7 +67,6 @@ public class DataFakerUtilTest {
 				10,
 				sharedFieldValuesContext,
 				SharedFieldValuesContext.Mode.CONSUMER,
-				"song_id",
 				System.currentTimeMillis());
 
 		songs.forEach(System.out::println);

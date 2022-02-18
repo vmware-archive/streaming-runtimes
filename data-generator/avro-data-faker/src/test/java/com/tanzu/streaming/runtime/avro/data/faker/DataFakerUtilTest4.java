@@ -2,6 +2,7 @@ package com.tanzu.streaming.runtime.avro.data.faker;
 
 import java.util.List;
 
+import com.tanzu.streaming.runtime.avro.data.faker.util.SharedFieldValuesContext;
 import net.datafaker.Faker;
 import org.apache.avro.generic.GenericData;
 
@@ -18,7 +19,6 @@ public class DataFakerUtilTest4 {
 				15,
 				sharedFieldValuesContext,
 				SharedFieldValuesContext.Mode.PRODUCER,
-				"user_id",
 				System.currentTimeMillis());
 
 
@@ -29,7 +29,6 @@ public class DataFakerUtilTest4 {
 				20,
 				sharedFieldValuesContext,
 				SharedFieldValuesContext.Mode.CONSUMER,
-				null,
 				System.currentTimeMillis()); // (re)use the userId values from the user generation.
 
 

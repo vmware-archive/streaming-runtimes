@@ -20,6 +20,7 @@ import java.io.File;
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -27,6 +28,8 @@ import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.tanzu.streaming.runtime.avro.data.faker.util.SharedFieldValuesContext;
+import com.tanzu.streaming.runtime.avro.data.faker.util.SpELTemplateParserContext;
 import net.datafaker.Faker;
 import org.apache.avro.Schema;
 import org.apache.avro.file.CodecFactory;
@@ -41,6 +44,7 @@ import org.slf4j.LoggerFactory;
 
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
+import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 
@@ -54,6 +58,8 @@ public class AvroRandomDataFaker implements Iterable<GenericData.Record> {
 
 	public static final String USE_DEFAULT = "use-default";
 
+	public static final String KEY_FIELD_NAME = "key";
+
 	private final Schema root;
 	private final int count;
 	private final boolean utf8ForString;
@@ -63,27 +69,22 @@ public class AvroRandomDataFaker implements Iterable<GenericData.Record> {
 	private final SharedFieldValuesContext sharedFieldValuesContext;
 	private final SharedFieldValuesContext.Mode sharedFieldValuesMode;
 
+
 	/**
-	 * If the keyFieldName is set the generator will always return the same Record per same key value.
-	 * For this the generator keeps a map of all generated records per unique key in the keyedRecords. If new
-	 * record is produced that has a record for the same key in the map the existing records is returned.
 	 *
-	 * NOTE: if the key range is big this could lead to OOM.
 	 */
-	private final String keyFieldName;
-	private final ConcurrentHashMap<Object, GenericData.Record> keyedRecords;
+	private final ConcurrentHashMap<Object, GenericRecord> keyedRecords;
 	private final StandardEvaluationContext spelContext;
 	private final SpELTemplateParserContext spelTemplateContext;
 	private final SpelExpressionParser spelParser;
 
 	public AvroRandomDataFaker(Schema schema, int count, boolean utf8ForString) {
-		this(schema, count, utf8ForString, null, null, null, System.currentTimeMillis());
+		this(schema, count, utf8ForString, null, null, System.currentTimeMillis());
 	}
 
 	public AvroRandomDataFaker(Schema schema, int count, boolean utf8ForString,
 			SharedFieldValuesContext sharedFieldValuesContext,
 			SharedFieldValuesContext.Mode sharedFiledValuesMode,
-			String keyFieldName,
 			long seed) {
 		this.root = schema;
 		this.random = new Random(seed);
@@ -93,7 +94,6 @@ public class AvroRandomDataFaker implements Iterable<GenericData.Record> {
 		this.sharedFieldValuesContext = sharedFieldValuesContext;
 		this.sharedFieldValuesMode = sharedFiledValuesMode;
 
-		this.keyFieldName = keyFieldName;
 		this.keyedRecords = new ConcurrentHashMap();
 
 		this.spelContext = new StandardEvaluationContext();
@@ -115,20 +115,7 @@ public class AvroRandomDataFaker implements Iterable<GenericData.Record> {
 			@Override
 			public GenericData.Record next() {
 				n++;
-
-				GenericData.Record record = (GenericData.Record) generate(null, root, random, 0);
-
-				if (record != null && keyFieldName != null) {
-					Object keyValue = record.get(keyFieldName);
-					if (keyValue != null) {
-						keyedRecords.putIfAbsent(keyValue, record);
-						record = keyedRecords.get(keyValue);
-					}
-					else {
-						logger.warn(String.format("No keyFieldName[%s] value found in record",  keyFieldName, record));
-					}
-				}
-				return record;
+				return (GenericData.Record) generate(null, root, random, 0);
 			}
 
 			@Override
@@ -143,6 +130,8 @@ public class AvroRandomDataFaker implements Iterable<GenericData.Record> {
 		switch (schema.getType()) {
 		case RECORD:
 			GenericRecord record = new GenericData.Record(schema);
+			Map<String, String> recordKeyValueExpressions =
+					this.addRecordExpressionsToSpELContext(record.getSchema().getDoc());
 			for (Schema.Field field : schema.getFields()) {
 
 				Object value;
@@ -162,6 +151,11 @@ public class AvroRandomDataFaker implements Iterable<GenericData.Record> {
 					this.sharedFieldValuesContext.addValue(field.name(), value);
 				}
 			}
+
+			record = this.replaceWithKeyedFieldRecord(record, recordKeyValueExpressions.get(KEY_FIELD_NAME));
+
+			this.removeRecordExpressionsFromSpELContext(recordKeyValueExpressions);
+
 			return record;
 		case ENUM:
 			List<String> symbols = schema.getEnumSymbols();
@@ -216,6 +210,27 @@ public class AvroRandomDataFaker implements Iterable<GenericData.Record> {
 		}
 	}
 
+	/**
+	 * If the key field name is set the generator will always return the same Record per same key value.
+	 * For this the generator keeps a map of all generated records per unique key in the keyedRecords. If new
+	 * record is produced that has a record for the same key in the map the existing records is returned.
+	 *
+	 * NOTE: if the key range is big this could lead to OOM.
+	 */
+	private GenericRecord replaceWithKeyedFieldRecord(GenericRecord record, String keyFieldName) {
+		if (record != null && StringUtils.hasText(keyFieldName)) {
+			Object keyValue = record.get(keyFieldName);
+			if (keyValue != null) {
+				this.keyedRecords.putIfAbsent(keyValue, record);
+				record = this.keyedRecords.get(keyValue);
+			}
+			else {
+				logger.warn(String.format("No keyFieldName[%s] value found in record", keyFieldName, record));
+			}
+		}
+		return record;
+	}
+
 	private boolean isUseSharedFieldValues(String fieldName) {
 		return this.sharedFieldValuesMode == SharedFieldValuesContext.Mode.CONSUMER
 				&& this.sharedFieldValuesContext != null
@@ -231,7 +246,8 @@ public class AvroRandomDataFaker implements Iterable<GenericData.Record> {
 
 	private String fakerExpression(String doc) {
 		if (StringUtils.hasText(doc)) {
-			String resolvedSpELDoc = this.spelParser.parseExpression(doc, this.spelTemplateContext).getValue(this.spelContext, String.class);
+			String resolvedSpELDoc = this.spelParser.parseExpression(doc, this.spelTemplateContext)
+					.getValue(this.spelContext, String.class);
 			return faker.expression(resolvedSpELDoc);
 		}
 		return null;
@@ -253,6 +269,51 @@ public class AvroRandomDataFaker implements Iterable<GenericData.Record> {
 		((Buffer) bytes).limit(bytes.capacity());
 		rand.nextBytes(bytes.array());
 		return bytes;
+	}
+
+	private void removeRecordExpressionsFromSpELContext(Map<String, String> recordKeyValues) {
+		recordKeyValues.entrySet().stream().forEach(e -> this.spelContext.setVariable(e.getKey(), null));
+	}
+
+	private Map<String, String> addRecordExpressionsToSpELContext(String recordDoc) {
+
+		if (!StringUtils.hasText(recordDoc)) {
+			return Collections.emptyMap();
+		}
+
+		Map<String, String> recordKeyValues = new HashMap<>();
+
+		String[] keyValuePairs = recordDoc.split(",");
+		if (keyValuePairs.length > 0) {
+			for (String keyValuePair : keyValuePairs) {
+				String[] keyValue = keyValuePair.split("=");
+				if (keyValue.length == 2) {
+					String unresolvedKey = keyValue[0];
+					Assert.hasText(unresolvedKey, "Empty key is not allowed!");
+					String unresolvedValue = keyValue[1];
+					Assert.notNull(unresolvedValue, "Null key value!");
+
+					String spELResolvedKey = this.spelParser.parseExpression(unresolvedKey, spelTemplateContext)
+							.getValue(this.spelContext, String.class);
+					String resolvedKey = this.faker.expression(spELResolvedKey);
+
+					String spELResolvedValue = this.spelParser.parseExpression(unresolvedValue, spelTemplateContext)
+							.getValue(this.spelContext, String.class);
+					String resolvedValue = this.faker.expression(spELResolvedValue);
+
+					logger.info(String.format("Record Doc %s=%s", resolvedKey, resolvedValue));
+
+					this.spelContext.setVariable(resolvedKey, resolvedValue);
+
+					recordKeyValues.put(resolvedKey, resolvedValue);
+				}
+				else {
+					throw new IllegalArgumentException("Illegal key-value pair expression for: " + keyValuePair);
+				}
+			}
+		}
+
+		return recordKeyValues;
 	}
 
 	public static void main(String[] args) throws Exception {

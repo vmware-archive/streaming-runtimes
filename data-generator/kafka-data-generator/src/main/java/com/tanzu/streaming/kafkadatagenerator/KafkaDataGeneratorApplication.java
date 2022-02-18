@@ -32,7 +32,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import com.tanzu.streaming.runtime.avro.data.faker.AvroRandomDataFaker;
 import com.tanzu.streaming.runtime.avro.data.faker.DataFaker;
-import com.tanzu.streaming.runtime.avro.data.faker.SharedFieldValuesContext;
+import com.tanzu.streaming.runtime.avro.data.faker.util.SharedFieldValuesContext;
 import io.confluent.kafka.serializers.AbstractKafkaAvroSerDeConfig;
 import io.confluent.kafka.serializers.KafkaAvroSerializer;
 import io.confluent.kafka.streams.serdes.avro.GenericAvroSerializer;
@@ -104,7 +104,6 @@ public class KafkaDataGeneratorApplication implements CommandLineRunner {
 					topicProperties.getBatch().getSize(),
 					fieldCorrelationContext,
 					topicProperties.getSharedFieldsMode(),
-					topicProperties.getKeyFieldName(),
 					System.currentTimeMillis());
 
 			ScheduledFuture<?> future = scheduler.scheduleWithFixedDelay(
@@ -162,7 +161,6 @@ public class KafkaDataGeneratorApplication implements CommandLineRunner {
 
 		@Override
 		public void run() {
-			logger.info(String.format("Start thread: %s : %s", this.topicProperties.getTopicName(), topicProperties.getKeyFieldName()));
 			final AtomicLong messageKey = new AtomicLong(System.currentTimeMillis());
 			List<GenericData.Record> records = DataFaker.generateRecords(dataFaker);
 			Iterator<GenericData.Record> iterator = records.iterator();
@@ -170,12 +168,10 @@ public class KafkaDataGeneratorApplication implements CommandLineRunner {
 			if (!this.topicProperties.isSkipSending()) {
 				while (!this.exitFlag.get() && iterator.hasNext()) {
 					GenericData.Record record = iterator.next();
-					Object messageValue =
-							(this.topicProperties.getValueFormat() == KafkaDataGeneratorApplicationProperties.ValueFormat.JSON) ?
-									DataFaker.toJson(record) : record;
-
+					Object messageValue = toValueFormat(record);
 					this.kafkaTemplate.sendDefault(messageKey.incrementAndGet(), messageValue);
 					try {
+						logger.info(String.format("Send to %s : %s", this.topicProperties.getTopicName(), messageValue));
 						Thread.sleep(this.topicProperties.getBatch().getMessageDelay().toMillis());
 					}
 					catch (InterruptedException e) {
@@ -184,6 +180,17 @@ public class KafkaDataGeneratorApplication implements CommandLineRunner {
 				}
 			}
 //			logger.info(String.format("Finish thread: %s : %s", this.topicProperties.getTopicName(), topicProperties.getKeyFieldName()));
+		}
+
+		private Object toValueFormat(GenericData.Record record) {
+			switch (this.topicProperties.getValueFormat()) {
+			case JSON:
+				return DataFaker.toJsonObjectNode(record);
+			case YAML:
+				return DataFaker.toYaml(record);
+			default:
+				return record;
+			}
 		}
 	}
 

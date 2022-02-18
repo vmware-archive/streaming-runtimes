@@ -70,7 +70,7 @@ kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runti
 kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-samples/anomaly-detection/data-generator.yaml' -n default
 ```
 
-* Delete the Top-k songs pipeline and the demo song generator:
+* Delete the data pipeline and the data generator:
 ```shell
 kubectl delete srs,srcs,srp --all -n streaming-runtime 
 kubectl delete deployments -l app=authorization-attempts-data-generator
