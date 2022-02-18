@@ -58,8 +58,6 @@ spec:
 
             - name: KAFKA_DATA_GENERATOR_SHAREDFIELDNAMES
               value: 'song_id'
-            - name: KAFKA_DATA_GENERATOR_TOPICS_0_KEYFIELDNAME
-              value: 'song_id'
             - name: KAFKA_DATA_GENERATOR_TOPICS_0_TOPICNAME
               value: 'kafka-stream-songs'
             - name: KAFKA_DATA_GENERATOR_TOPICS_0_AVROSCHEMA
@@ -68,6 +66,7 @@ spec:
                  "namespace": "com.tanzu.streaming.runtime.playsongs.avro",
                  "type": "record",
                  "name": "Song",
+                 "doc": "key=song_id",
                  "fields": [
                      {"name": "song_id", "type": "long",   "doc" : "#{number.number_between '1','1000'}"},
                      {"name": "album",   "type": "string", "doc" : "#{ancient.hero} #{ancient.god}"},

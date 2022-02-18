@@ -23,12 +23,11 @@ import java.util.List;
 import java.util.Map;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
-import com.tanzu.streaming.runtime.avro.data.faker.SharedFieldValuesContext;
+import com.tanzu.streaming.runtime.avro.data.faker.util.SharedFieldValuesContext;
 import io.confluent.kafka.serializers.AbstractKafkaAvroSerDeConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 
@@ -41,7 +40,7 @@ import org.springframework.validation.annotation.Validated;
 @ConfigurationProperties("kafka.data.generator")
 public class KafkaDataGeneratorApplicationProperties {
 
-	public enum ValueFormat {AVRO, AVRO_SCHEMA_REGISTRY, JSON}
+	public enum ValueFormat {AVRO, AVRO_SCHEMA_REGISTRY, JSON, YAML}
 
 	private int scheduledThreadPoolSize = 10;
 
@@ -165,13 +164,6 @@ public class KafkaDataGeneratorApplicationProperties {
 		private String avroSchema;
 
 		/**
-		 * If the keyFieldName is set the generator will always return the same Record per same key value.
-		 *
-		 * NOTE: if the key range is too big this could lead to OOM!
-		 */
-		private String keyFieldName;
-
-		/**
 		 * Value serialization format sent to Kafka topic. Defaults to JSON.
 		 */
 		@NotNull
@@ -218,14 +210,6 @@ public class KafkaDataGeneratorApplicationProperties {
 			this.avroSchema = avroSchema;
 		}
 
-		public String getKeyFieldName() {
-			return keyFieldName;
-		}
-
-		public void setKeyFieldName(String keyFieldName) {
-			this.keyFieldName = keyFieldName;
-		}
-
 		public ValueFormat getValueFormat() {
 			return valueFormat;
 		}
@@ -260,7 +244,6 @@ public class KafkaDataGeneratorApplicationProperties {
 					"topicName='" + topicName + '\'' +
 					", avroSchemaUri=" + avroSchemaUri +
 					", avroSchema='" + avroSchema + '\'' +
-					", keyFieldName='" + keyFieldName + '\'' +
 					", valueFormat=" + valueFormat +
 					", sharedFieldsMode=" + sharedFieldsMode +
 					", batch=" + batch +

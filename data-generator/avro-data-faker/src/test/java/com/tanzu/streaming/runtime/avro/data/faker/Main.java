@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tanzu.streaming.runtime.avro.data.faker.util.SpELTemplateParserContext;
 import net.datafaker.Faker;
 
 import org.springframework.context.expression.MapAccessor;

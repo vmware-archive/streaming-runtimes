@@ -1,10 +1,12 @@
 namespace: com.tanzu.streaming.runtime.iot.log
 type: record
 name: MonitoringStream
+doc: "key=error_code,foo=#{name.fullName} [[T(System).currentTimeMillis()]],bar=[[T(System).currentTimeMillis()]]"
 fields:
   - name: error_code
     type: string
-    doc: "#{options.option 'C001_ABORTED','C002_ALREADY_EXISTS','C003_CANCELLED','C004_DEADLINE_EXCEEDED','C005_FAILED_PRECONDITION','C006_INTERNAL','C007_INVALID_ARGUMENT','C008_NOT_FOUND','C009_OUT_OF_RANGE','C010_PERMISSION_DENIED','C011_RESOURCE_EXHAUSTED','C012_UNAVAILABLE','C013_UNIMPLEMENTED','C014_UNKNOWN'}"
+    doc: "#{options.option 'C001_ABORTED','C002_ALREADY_EXISTS'}"
+#    doc: "#{options.option 'C001_ABORTED','C002_ALREADY_EXISTS','C003_CANCELLED','C004_DEADLINE_EXCEEDED','C005_FAILED_PRECONDITION','C006_INTERNAL','C007_INVALID_ARGUMENT','C008_NOT_FOUND','C009_OUT_OF_RANGE','C010_PERMISSION_DENIED','C011_RESOURCE_EXHAUSTED','C012_UNAVAILABLE','C013_UNIMPLEMENTED','C014_UNKNOWN'}"
   - name: ts
     type:
       type: long
@@ -15,7 +17,7 @@ fields:
     doc: "#{options.option 'ERROR','DEBUG','INFO','WARN'}"
   - name: application
     type: string
-    doc: "#{app.name}"
+    doc: "#{app.name} -- [[#foo]]"
   - name: version
     type: string
     doc: "#{number.number_between '0','10'}.#{number.number_between '0','20'}.#{number.number_between '0','20'}#{options.option ' ',' ',' ',' ',' ',' ',' ','-SNAPSHOT'}"

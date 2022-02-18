@@ -18,18 +18,20 @@ package com.tanzu.streaming.runtime.avro.data.faker;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.dataformat.avro.AvroFactory;
 import com.fasterxml.jackson.dataformat.avro.AvroSchema;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
+import com.tanzu.streaming.runtime.avro.data.faker.util.SharedFieldValuesContext;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericDatumWriter;
@@ -50,6 +52,11 @@ public class DataFaker {
 
 	public static final boolean UTF_8_FOR_STRING = true;
 
+	private static final ObjectMapper yamlMapper =
+			new ObjectMapper(new YAMLFactory().disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER));
+
+	private static final ObjectMapper avroMapper = new ObjectMapper(new AvroFactory());
+
 	private DataFaker() {
 	}
 
@@ -60,14 +67,12 @@ public class DataFaker {
 	public static List<GenericData.Record> generateRecords(Schema schema, int numberOfRecords,
 			SharedFieldValuesContext correlationContext,
 			SharedFieldValuesContext.Mode correlationMode,
-			String keyFieldName,
 			long seed) {
 
 		return generateRecords(dataFaker(schema,
 				numberOfRecords,
 				correlationContext,
 				correlationMode,
-				keyFieldName,
 				seed));
 	}
 
@@ -81,16 +86,15 @@ public class DataFaker {
 
 	public static AvroRandomDataFaker dataFaker(Schema schema, int numberOfRecords) {
 		return new AvroRandomDataFaker(schema, numberOfRecords,
-				!UTF_8_FOR_STRING, null, null, null, System.currentTimeMillis());
+				!UTF_8_FOR_STRING, null, null, System.currentTimeMillis());
 	}
 
 	public static AvroRandomDataFaker dataFaker(Schema schema, int numberOfRecords,
 			SharedFieldValuesContext correlationContext,
 			SharedFieldValuesContext.Mode correlationMode,
-			String keyFieldName,
 			long seed) {
 		return new AvroRandomDataFaker(schema, numberOfRecords, !UTF_8_FOR_STRING,
-				correlationContext, correlationMode, keyFieldName, seed);
+				correlationContext, correlationMode, seed);
 	}
 
 	public static Schema uriToAvroSchema(String schemaUri) {
@@ -114,7 +118,7 @@ public class DataFaker {
 	 * @return Returns Avro Schema.
 	 */
 	public static Schema toAvroSchema(String schemaContent) {
-		return new Schema.Parser().parse(convertYamlOrJsonToJson(schemaContent));
+		return new Schema.Parser().parse(yamlOrJsonToJson(schemaContent));
 	}
 
 	/**
@@ -122,7 +126,7 @@ public class DataFaker {
 	 * @param yamlOrJson Support either YAML or JSON as input.
 	 * @return Returns JSON representation of the YAML or JSON input.
 	 */
-	public static String convertYamlOrJsonToJson(String yamlOrJson) {
+	public static String yamlOrJsonToJson(String yamlOrJson) {
 		try {
 			ObjectMapper yamlReader = new ObjectMapper(new YAMLFactory());
 			Object obj = yamlReader.readValue(yamlOrJson, Object.class);
@@ -140,9 +144,54 @@ public class DataFaker {
 	 * @param genericRecords Input records to convert.
 	 * @return Returns a list of JSON strings that represent the input records.
 	 */
-	public static List<Object> toJson(List<GenericRecord> genericRecords) {
+	public static String toJsonArray(List<GenericData.Record> genericRecords) {
+		try {
+			return new ObjectMapper().writeValueAsString(toJsonObjects(genericRecords));
+		}
+		catch (JsonProcessingException e) {
+			logger.error("Failed to convert GenericRecords into JSON", e);
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * Converts a single Avro GenericRecord into JSON object.
+	 * @param genericRecord record to covert
+	 * @return Returns JSON string representation of the input record.
+	 */
+	public static String toJson(GenericRecord genericRecord) {
+		return toJsonObjectNode(genericRecord).toString();
+	}
+
+	public static String toYamlArray(List<GenericData.Record> genericRecords) {
+		try {
+			List<ObjectNode> jsonObjects = toJsonObjects(genericRecords);
+			return yamlMapper.writeValueAsString(jsonObjects);
+		}
+		catch (JsonProcessingException e) {
+			logger.error("Failed to convert GenericRecords into YAML", e);
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 *
+	 * @param genericRecord
+	 * @return
+	 */
+	public static String toYaml(GenericRecord genericRecord) {
+		try {
+			return yamlMapper.writeValueAsString(toJsonObjectNode(genericRecord));
+		}
+		catch (JsonProcessingException e) {
+			logger.error("Failed to convert GenericRecord into YAML", e);
+			throw new RuntimeException(e);
+		}
+	}
+
+	private static List<ObjectNode> toJsonObjects(List<GenericData.Record> genericRecords) {
 		return genericRecords.stream()
-				.map(DataFaker::toJson)
+				.map(DataFaker::toJsonObjectNode)
 				.collect(Collectors.toList());
 	}
 
@@ -151,17 +200,15 @@ public class DataFaker {
 	 * @param genericRecord record to covert
 	 * @return Returns JSON string representation of the input record.
 	 */
-	public static Object toJson(GenericRecord genericRecord) {
+	public static ObjectNode toJsonObjectNode(GenericRecord genericRecord) {
 		try {
-			ObjectMapper mapper = new ObjectMapper(new AvroFactory());
-
 			try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
 				DatumWriter<GenericRecord> writer = new GenericDatumWriter<>(genericRecord.getSchema());
 				BinaryEncoder encoder = EncoderFactory.get().binaryEncoder(outputStream, null);
 				writer.write(genericRecord, encoder);
 				encoder.flush();
 
-				return mapper.readerFor(ObjectNode.class)
+				return avroMapper.readerFor(ObjectNode.class)
 						.with(new AvroSchema(genericRecord.getSchema()))
 						.readValue(outputStream.toByteArray());
 			}

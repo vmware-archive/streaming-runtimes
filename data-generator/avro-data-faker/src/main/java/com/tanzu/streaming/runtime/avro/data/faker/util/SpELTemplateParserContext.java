@@ -1,4 +1,4 @@
-package com.tanzu.streaming.runtime.avro.data.faker;
+package com.tanzu.streaming.runtime.avro.data.faker.util;
 
 import org.springframework.expression.ParserContext;
 
