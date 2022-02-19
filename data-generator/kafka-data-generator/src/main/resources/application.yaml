@@ -10,14 +10,14 @@ kafka:
           avroSchemaUri: 'classpath:/avro/user.avsc'
           valueFormat: AVRO_SCHEMA_REGISTRY
           batch: # The data generator produces new data in batch of records.
-            size: 100 # Number of the records produced in one batch generation iteration.
+            size: 1 # Number of the records produced in one batch generation iteration.
             initialDelay: 10ms # The time to delay before the first batch records generation.
             messageDelay: 100ms # The delay between sending each message in the batch to the Kafka topic.
             # The batch delay is not set defaulting to never rescheduling record batches for this topic. E.g. run once and stop.
 
         - topicName: clicks
           avroSchemaUri: 'classpath:/avro/click.avsc'
-          valueFormat: JSON
+          valueFormat: AVRO_SCHEMA_REGISTRY
           batch:
             size: 1 # Number of the records produced in one batch generation iteration.
             initialDelay: 10ms # The time to delay before the first batch records generation.

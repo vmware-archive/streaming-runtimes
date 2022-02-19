@@ -73,8 +73,8 @@ public class AvroRandomDataFaker implements Iterable<GenericData.Record> {
 	public static final String TO_SHARE_VARIABLE_NAME = "to_share";
 
 	public static final String NAMES_SEPARATOR = ",";
-	public static final String PAIR_SEPARATOR = ";";
-	public static final String KEY_VALUE_SEPARATOR = "=";
+	public static final String PAIRS_SEPARATOR = ";";
+	public static final String KEYVALUES_SEPARATOR = "=";
 
 	private final Schema root;
 	private final int count;
@@ -300,7 +300,7 @@ public class AvroRandomDataFaker implements Iterable<GenericData.Record> {
 				record = this.uniqueOnFieldNameRecords.get(keyValue);
 			}
 			else {
-				logger.warn(String.format("No keyFieldName[%s] value found in record", keyFieldName, record));
+				logger.warn(String.format("No keyFieldName[%s] value found in record %s", keyFieldName, record));
 			}
 		}
 		return record;
@@ -331,7 +331,7 @@ public class AvroRandomDataFaker implements Iterable<GenericData.Record> {
 		return bytes;
 	}
 
-	private static Map<String, String> docToKeyValuePairs(String doc) {
+	private Map<String, String> docToKeyValuePairs(String doc) {
 
 		if (!StringUtils.hasText(doc)) {
 			return Collections.emptyMap();
@@ -339,8 +339,8 @@ public class AvroRandomDataFaker implements Iterable<GenericData.Record> {
 
 		Map<String, String> keyValues = new HashMap<>();
 
-		Stream.of(doc.split(PAIR_SEPARATOR)).forEach(keyValuePair -> {
-			String[] keyValue = keyValuePair.split(KEY_VALUE_SEPARATOR);
+		Stream.of(doc.split(PAIRS_SEPARATOR)).forEach(keyValuePair -> {
+			String[] keyValue = keyValuePair.split(KEYVALUES_SEPARATOR);
 			if (keyValue.length == 2) {
 				String unresolvedKey = keyValue[0];
 				Assert.hasText(unresolvedKey, "Empty key is not allowed!");
