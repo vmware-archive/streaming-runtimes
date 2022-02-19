@@ -90,7 +90,6 @@ public class SharedFieldValuesContext {
 			Object[] values = fieldValues.get(this.random.nextInt(fieldValues.size()));
 
 			return (values.length == 1) ? values[0] : values;
-
 		}
 		finally {
 			this.readLock.unlock();

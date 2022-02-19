@@ -98,7 +98,7 @@ kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runti
 * Delete the Top-k songs pipeline and the demo song generator:
 ```shell
 kubectl delete srs,srcs,srp --all -n streaming-runtime 
-kubectl delete deployments -l top-k-songs-data-generator
+kubectl delete deployments -l app=top-k-songs-data-generator
 
 #to stop the legacy generator
 kubectl delete deployments -l app=songs-generator

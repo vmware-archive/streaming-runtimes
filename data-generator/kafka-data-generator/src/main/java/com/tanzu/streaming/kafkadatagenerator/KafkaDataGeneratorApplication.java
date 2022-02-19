@@ -75,7 +75,7 @@ public class KafkaDataGeneratorApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) {
 
-		SharedFieldValuesContext fieldCorrelationContext = new SharedFieldValuesContext(new Random());
+		SharedFieldValuesContext sharedFieldsContext = new SharedFieldValuesContext(new Random());
 
 		ScheduledExecutorService scheduler =
 				Executors.newScheduledThreadPool(this.properties.getScheduledThreadPoolSize());
@@ -102,7 +102,7 @@ public class KafkaDataGeneratorApplication implements CommandLineRunner {
 			AvroRandomDataFaker dataFaker = DataGenerator.dataFaker(
 					avroSchema,
 					topicProperties.getBatch().getSize(),
-					fieldCorrelationContext,
+					sharedFieldsContext,
 					System.currentTimeMillis());
 
 			ScheduledFuture<?> future = scheduler.scheduleWithFixedDelay(
@@ -160,6 +160,10 @@ public class KafkaDataGeneratorApplication implements CommandLineRunner {
 
 		@Override
 		public void run() {
+
+			logger.info(String.format("New data generation thread for: %s",
+					this.topicProperties.getTopicName()));
+
 			final AtomicLong messageKey = new AtomicLong(System.currentTimeMillis());
 			List<GenericData.Record> records = DataGenerator.generateRecords(dataFaker);
 			Iterator<GenericData.Record> iterator = records.iterator();
@@ -170,7 +174,7 @@ public class KafkaDataGeneratorApplication implements CommandLineRunner {
 					Object messageValue = toValueFormat(record);
 					this.kafkaTemplate.sendDefault(messageKey.incrementAndGet(), messageValue);
 					try {
-						logger.info(String.format("Send to %s : %s", this.topicProperties.getTopicName(), messageValue));
+						//logger.info(String.format("Send to %s : %s", this.topicProperties.getTopicName(), messageValue));
 						Thread.sleep(this.topicProperties.getBatch().getMessageDelay().toMillis());
 					}
 					catch (InterruptedException e) {
@@ -178,7 +182,6 @@ public class KafkaDataGeneratorApplication implements CommandLineRunner {
 					}
 				}
 			}
-//			logger.info(String.format("Finish thread: %s : %s", this.topicProperties.getTopicName(), topicProperties.getKeyFieldName()));
 		}
 
 		private Object toValueFormat(GenericData.Record record) {
