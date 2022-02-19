@@ -1,6 +1,7 @@
 package com.tanzu.streaming.runtime.avro.data.faker;
 
 import java.util.List;
+import java.util.Random;
 
 import com.tanzu.streaming.runtime.avro.data.faker.util.SharedFieldValuesContext;
 import net.datafaker.Faker;
@@ -11,33 +12,30 @@ public class DataFakerUtilTest {
 
 	public static void main(String[] args) {
 
-		SharedFieldValuesContext sharedFieldValuesContext = new SharedFieldValuesContext(List.of("user_id"));
+		SharedFieldValuesContext sharedFieldValuesContext = new SharedFieldValuesContext(new Random());
 
 		// Anomaly Detection records
-		List<GenericData.Record> anomalyDetection = DataFaker.generateRecords(
-				DataFaker.uriToAvroSchema("classpath:/avro/anomaly.detection.yaml"),
+		List<GenericData.Record> anomalyDetection = DataGenerator.generateRecords(
+				DataGenerator.uriToSchema("classpath:/avro/anomaly.detection.yaml"),
 				35,
 				sharedFieldValuesContext,
-				SharedFieldValuesContext.Mode.PRODUCER,
 				System.currentTimeMillis());
 		anomalyDetection.forEach(System.out::println);
 
 		// User records
-		List<GenericData.Record> userRecords = DataFaker.generateRecords(
-				DataFaker.uriToAvroSchema("classpath:/avro/user1.avsc"),
+		List<GenericData.Record> userRecords = DataGenerator.generateRecords(
+				DataGenerator.uriToSchema("classpath:/avro/user1.avsc"),
 				15,
 				sharedFieldValuesContext,
-				SharedFieldValuesContext.Mode.PRODUCER,
 				System.currentTimeMillis());
 
 
 		// Click records
-		List<GenericData.Record> clickRecords = DataFaker.generateRecords(
+		List<GenericData.Record> clickRecords = DataGenerator.generateRecords(
 //				DataFaker.resourceUriToAvroSchema("classpath:/avro/click.avsc"),
-				DataFaker.uriToAvroSchema("classpath:/avro/click.yaml"),
+				DataGenerator.uriToSchema("classpath:/avro/click.yaml"),
 				20,
 				sharedFieldValuesContext,
-				SharedFieldValuesContext.Mode.CONSUMER,
 				System.currentTimeMillis()); // (re)use the userId values from the user generation.
 
 
@@ -62,11 +60,10 @@ public class DataFakerUtilTest {
 
 //		System.out.println(faker.finance().iban());
 
-		List<GenericData.Record> songs = DataFaker.generateRecords(
-				DataFaker.uriToAvroSchema("classpath:/avro/song.avsc"),
+		List<GenericData.Record> songs = DataGenerator.generateRecords(
+				DataGenerator.uriToSchema("classpath:/avro/song.avsc"),
 				10,
 				sharedFieldValuesContext,
-				SharedFieldValuesContext.Mode.CONSUMER,
 				System.currentTimeMillis());
 
 		songs.forEach(System.out::println);

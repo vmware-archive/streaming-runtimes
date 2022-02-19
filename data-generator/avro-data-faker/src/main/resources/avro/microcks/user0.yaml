@@ -1,0 +1,18 @@
+#{"id": "{{randomString(32)}}", "sendAt": "{{now()}}", "fullName": "Laurent Broudoux", "email": "laurent@microcks.io", "age": 41}
+---
+namespace: io.simple.clicksteram
+type: record
+name: User
+fields:
+  - name: id
+    type: string
+  - name: sendAt
+    type:
+      type: long
+      logicalType: timestamp-millis
+  - name: fullName
+    type: string
+  - name: email
+    type: string
+  - name: age
+    type: int

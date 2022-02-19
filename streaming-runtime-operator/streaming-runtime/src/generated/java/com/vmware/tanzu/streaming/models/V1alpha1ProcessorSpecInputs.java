@@ -31,7 +31,7 @@ import java.util.List;
 /**
  * V1alpha1ProcessorSpecInputs
  */
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2022-02-08T13:25:48.598Z[Etc/UTC]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2022-02-18T13:08:36.493Z[Etc/UTC]")
 public class V1alpha1ProcessorSpecInputs {
   public static final String SERIALIZED_NAME_DEBUG = "debug";
   @SerializedName(SERIALIZED_NAME_DEBUG)

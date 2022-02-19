@@ -10,20 +10,18 @@ public class DataFakerUtilTest3 {
 
 	public static void main(String[] args) {
 
-		SharedFieldValuesContext sharedFieldValuesContext = new SharedFieldValuesContext(List.of("song_id"));
+		SharedFieldValuesContext sharedFieldValuesContext = new SharedFieldValuesContext();
 
-		List<GenericData.Record> songs = DataFaker.generateRecords(
-				DataFaker.uriToAvroSchema("classpath:/avro/song.avsc"),
+		List<GenericData.Record> songs = DataGenerator.generateRecords(
+				DataGenerator.uriToSchema("classpath:/avro/song.avsc"),
 				100,
 				sharedFieldValuesContext,
-				SharedFieldValuesContext.Mode.PRODUCER,
 				System.currentTimeMillis());
 
-		List<GenericData.Record> plays = DataFaker.generateRecords(
-				DataFaker.uriToAvroSchema("classpath:/avro/playsongs.avsc"),
+		List<GenericData.Record> plays = DataGenerator.generateRecords(
+				DataGenerator.uriToSchema("classpath:/avro/playsongs.avsc"),
 				100,
 				sharedFieldValuesContext,
-				SharedFieldValuesContext.Mode.CONSUMER,
 				System.currentTimeMillis());
 
 		songs.forEach(System.out::println);
@@ -31,11 +29,10 @@ public class DataFakerUtilTest3 {
 		plays.forEach(System.out::println);
 
 
-		DataFaker.generateRecords(
-				DataFaker.uriToAvroSchema("classpath:/avro/iot-monitoring.yaml"),
+		DataGenerator.generateRecords(
+				DataGenerator.uriToSchema("classpath:/avro/iot-monitoring.yaml"),
 				100,
 				sharedFieldValuesContext,
-				SharedFieldValuesContext.Mode.CONSUMER,
 				System.currentTimeMillis()).forEach(System.out::println);
 	}
 

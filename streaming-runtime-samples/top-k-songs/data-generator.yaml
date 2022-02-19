@@ -56,8 +56,6 @@ spec:
             - name: KAFKA_DATA_GENERATOR_TERMINATEAFTER
               value: '200h'
 
-            - name: KAFKA_DATA_GENERATOR_SHAREDFIELDNAMES
-              value: 'song_id'
             - name: KAFKA_DATA_GENERATOR_TOPICS_0_TOPICNAME
               value: 'kafka-stream-songs'
             - name: KAFKA_DATA_GENERATOR_TOPICS_0_AVROSCHEMA
@@ -66,7 +64,7 @@ spec:
                  "namespace": "com.tanzu.streaming.runtime.playsongs.avro",
                  "type": "record",
                  "name": "Song",
-                 "doc": "key=song_id",
+                 "doc": "unique_on=song_id:to_share=song_id",
                  "fields": [
                      {"name": "song_id", "type": "long",   "doc" : "#{number.number_between '1','1000'}"},
                      {"name": "album",   "type": "string", "doc" : "#{ancient.hero} #{ancient.god}"},
@@ -77,8 +75,6 @@ spec:
                 }
             - name: KAFKA_DATA_GENERATOR_TOPICS_0_VALUEFORMAT
               value: 'AVRO'
-            - name: KAFKA_DATA_GENERATOR_TOPICS_0_SHAREDFIELDSMODE
-              value: 'PRODUCER'
             - name: KAFKA_DATA_GENERATOR_TOPICS_0_BATCH_SIZE
               value: '100'
             - name: KAFKA_DATA_GENERATOR_TOPICS_0_BATCH_INITIALDELAY
@@ -95,14 +91,12 @@ spec:
                  "type": "record",
                  "name": "PlayEvent",
                  "fields": [
-                   {"name": "song_id",  "type": "long" },
+                   {"name": "song_id",  "type": "long", "doc":"[[#shared.field('song.song_id')]]" },
                    {"name": "duration", "type": "long", "doc":"#{number.number_between '30000','1000000'}" }
                  ]
                 }
             - name: KAFKA_DATA_GENERATOR_TOPICS_1_VALUEFORMAT
               value: 'AVRO'
-            - name: KAFKA_DATA_GENERATOR_TOPICS_1_SHAREDFIELDSMODE
-              value: 'CONSUMER'
             - name: KAFKA_DATA_GENERATOR_TOPICS_1_BATCH_SIZE
               value: '1'
             - name: KAFKA_DATA_GENERATOR_TOPICS_1_BATCH_INITIALDELAY

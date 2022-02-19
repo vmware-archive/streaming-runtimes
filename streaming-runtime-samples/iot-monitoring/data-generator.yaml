@@ -64,7 +64,6 @@ spec:
               value: 'false'
             - name: KAFKA_DATA_GENERATOR_TOPICS_0_AVROSCHEMA
               value: |-
-                ---
                 namespace: com.tanzu.streaming.runtime.iot.log
                 type: record
                 name: MonitoringStream

@@ -44,7 +44,7 @@ and then generate few instances for it:
 
 ```java
 String usersSchema = "...";  
-List<GenericData.Record> users = DataFaker.generateRecords(DataFaker.toAvroSchema(usersSchema), 3);
+List<GenericData.Record> users = DataGenerator.generateRecords(DataGenerator.toAvroSchema(usersSchema), 3);
 users.forEach(System.out::println);
 ```
 you should see something like this:

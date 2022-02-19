@@ -1,34 +1,31 @@
 package com.tanzu.streaming.runtime.avro.data.faker;
 
-import java.util.List;
+import com.tanzu.streaming.runtime.avro.data.faker.util.SharedFieldValuesContext;
+import com.tanzu.streaming.runtime.avro.data.faker.util.SpELTemplateParserContext;
+import net.datafaker.Faker;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import org.apache.avro.generic.GenericData;
+import org.springframework.expression.spel.standard.SpelExpressionParser;
+import org.springframework.expression.spel.support.StandardEvaluationContext;
 
 public class Main2 {
-	public static void main(String[] args) throws JsonProcessingException {
-		List<GenericData.Record> userRecords = DataFaker.generateRecords(
-				DataFaker.uriToAvroSchema("classpath:/avro/iot-monitoring.yaml"),
-				15,
-				null,
-				null,
-				System.currentTimeMillis());
+	public static void main(String[] args) {
+		Faker faker = new Faker();
+		StandardEvaluationContext spelContext = new StandardEvaluationContext();
+		spelContext.setVariable("faker", faker);
+		SpELTemplateParserContext spelTemplateContext = new SpELTemplateParserContext();
+		SpelExpressionParser spelParser = new SpelExpressionParser();
 
-		userRecords.forEach(System.out::println);
+		String bla = "keyField=card_number,boza=#{name.fullName} [[T(System).currentTimeMillis()]],koza=[[T(System).currentTimeMillis()]]";
 
+		SharedFieldValuesContext sharedContext = new SharedFieldValuesContext();
 
-		System.out.println(DataFaker.toJsonArray(userRecords));
-		System.out.println("***");
-		System.out.println(DataFaker.toYamlArray(userRecords));
+		sharedContext.addValue("user_id", "value1");
+		sharedContext.addValue("user_id", "value2");
 
-//		Faker faker = new Faker();
-//		StandardEvaluationContext spelContext = new StandardEvaluationContext();
-//		spelContext.setVariable("faker", faker);
-//		SpELTemplateParserContext spelTemplateContext = new SpELTemplateParserContext();
-//		SpelExpressionParser spelParser = new SpelExpressionParser();
-//
-//		String bla = "keyField=card_number,boza=#{name.fullName} [[T(System).currentTimeMillis()]],koza=[[T(System).currentTimeMillis()]]";
-//
+		spelContext.setVariable("shared", sharedContext);
+
+		System.out.println(spelParser.parseExpression("[[#shared.getRandomValue('user_id')]]",
+				spelTemplateContext).getValue(spelContext, String.class));
 //		String[] pairs = bla.split(",");
 //		for (String pair : pairs) {
 //			String[] keyValue = pair.split("=");

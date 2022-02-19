@@ -2,6 +2,7 @@
   "namespace": "my.clickstream",
   "type": "record",
   "name": "User",
+  "doc": "to_share=user_id",
   "fields": [
     {
       "name": "user_id",

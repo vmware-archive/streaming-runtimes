@@ -5,14 +5,10 @@ kafka:
 
       kafkaServer: 'localhost:9094'
       schemaRegistryServer: 'http://localhost:8081'
-
-      sharedFieldNames: [ 'user_id' ]
-
       topics:
         - topicName: users
           avroSchemaUri: 'classpath:/avro/user.avsc'
           valueFormat: AVRO_SCHEMA_REGISTRY
-          sharedFieldsMode: PRODUCER # Store the generated shared field values in the shared context.
           batch: # The data generator produces new data in batch of records.
             size: 100 # Number of the records produced in one batch generation iteration.
             initialDelay: 10ms # The time to delay before the first batch records generation.
@@ -22,7 +18,6 @@ kafka:
         - topicName: clicks
           avroSchemaUri: 'classpath:/avro/click.avsc'
           valueFormat: JSON
-          sharedFieldsMode: CONSUMER # For the fields listed in the sharedFieldNames, use randomized values from the shared fields context instead of generating new values!
           batch:
             size: 1 # Number of the records produced in one batch generation iteration.
             initialDelay: 10ms # The time to delay before the first batch records generation.

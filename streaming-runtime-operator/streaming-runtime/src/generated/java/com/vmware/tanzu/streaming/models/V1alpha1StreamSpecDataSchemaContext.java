@@ -35,7 +35,7 @@ import java.util.Map;
 /**
  * V1alpha1StreamSpecDataSchemaContext
  */
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2022-02-08T13:25:48.598Z[Etc/UTC]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2022-02-18T13:08:36.493Z[Etc/UTC]")
 public class V1alpha1StreamSpecDataSchemaContext {
   public static final String SERIALIZED_NAME_INLINE = "inline";
   @SerializedName(SERIALIZED_NAME_INLINE)
