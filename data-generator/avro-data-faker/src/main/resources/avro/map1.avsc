@@ -1,0 +1,20 @@
+{
+  "namespace": "my.clickstream",
+  "type": "record",
+  "name": "MapSample",
+  "fields": [
+    {
+      "name": "myMap",
+      "type": {
+        "type": "map",
+        "values": "string"
+      },
+      "doc": "key=#{id_number.valid};value=#{commerce.department};length=#{number.number_between '0','10'}",
+    },
+    {
+      "name": "user_id",
+      "type": "string",
+      "doc": "#{id_number.valid}"
+    }
+  ]
+}

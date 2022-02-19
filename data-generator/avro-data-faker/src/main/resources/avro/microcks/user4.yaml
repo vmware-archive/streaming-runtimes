@@ -1,0 +1,24 @@
+---
+namespace: io.simple.clicksteram
+type: record
+name: User
+doc: "unique_on=id;name=#{name.fullName};to_share=id"
+fields:
+  - name: id
+    type: string
+    doc: "#{id_number.valid}"
+#    doc: "[[#faker.idNumber().valid()]]"
+  - name: sendAt
+    type:
+      type: long
+      logicalType: timestamp-millis
+    doc: "[[T(System).currentTimeMillis()]]"
+  - name: fullName
+    type: string
+    doc: "[[#name]]"
+  - name: email
+    type: string
+    doc: "#{internet.emailAddress '[[#name.toLowerCase().replaceAll(\"\\s+\", \".\")]]'}"
+  - name: age
+    type: int
+    doc: "#{number.number_between '8','80'}"

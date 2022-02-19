@@ -18,7 +18,6 @@ package com.tanzu.streaming.runtime.avro.data.faker.util;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
@@ -38,15 +37,6 @@ import org.springframework.util.Assert;
  */
 public class SharedFieldValuesContext {
 
-
-	public enum Mode {PRODUCER, CONSUMER}
-
-	/**
-	 * Names of the fields for which we can collect and correlate values. They can come from and be applied to
-	 * multiple Schemas.
-	 */
-	private final List<String> sharedFieldNames;
-
 	/**
 	 * Holds the current state in form of fieldName -> ListOf Values (note that the value can be an array).
 	 */
@@ -54,22 +44,18 @@ public class SharedFieldValuesContext {
 
 	private final Lock readLock;
 	private final Lock writeLock;
+	private final Random random;
 
-	public SharedFieldValuesContext(List<String> fieldNames) {
+	public SharedFieldValuesContext() {
+		this(new Random());
+	}
 
-		this.sharedFieldNames = fieldNames;
+	public SharedFieldValuesContext(Random random) {
+		this.random = random;
 
 		ReadWriteLock lock = new ReentrantReadWriteLock();
 		this.writeLock = lock.writeLock();
 		this.readLock = lock.readLock();
-	}
-
-	public List<String> getSharedFieldNames() {
-		return this.sharedFieldNames;
-	}
-
-	public Map<String, List<Object[]>> getState() {
-		return this.state;
 	}
 
 	/**
@@ -80,9 +66,10 @@ public class SharedFieldValuesContext {
 	public void addValue(String fieldName, Object... objects) {
 		try {
 			this.writeLock.lock();
-			getState().putIfAbsent(fieldName, new ArrayList<>());
-			getState().get(fieldName).add(objects);
-		} finally {
+			this.state.putIfAbsent(fieldName, new ArrayList<>());
+			this.state.get(fieldName).add(objects);
+		}
+		finally {
 			this.writeLock.unlock();
 		}
 	}
@@ -90,22 +77,22 @@ public class SharedFieldValuesContext {
 	/**
 	 * Retrieve a random value from those collected in the context for the given field name..
 	 * @param fieldName field name to retrieve value from the context's state.
-	 * @param random Random generator with pre-configured seed to ensure deterministic behavior.
 	 * @return Return a random field value form the shared state.
 	 */
-	public Object getRandomValue(String fieldName, Random random) {
+	public Object field(String fieldName) {
 		try {
 			this.readLock.lock();
 
-			List<Object[]> fieldValues = this.getState().get(fieldName);
+			List<Object[]> fieldValues = this.state.get(fieldName);
 
 			Assert.notNull(fieldValues, "Could not find field values for field: " + fieldName);
 
-			Object[] values = fieldValues.get(random.nextInt(fieldValues.size()));
+			Object[] values = fieldValues.get(this.random.nextInt(fieldValues.size()));
 
-			return  (values.length == 1) ? values[0] : values;
+			return (values.length == 1) ? values[0] : values;
 
-		} finally {
+		}
+		finally {
 			this.readLock.unlock();
 		}
 	}

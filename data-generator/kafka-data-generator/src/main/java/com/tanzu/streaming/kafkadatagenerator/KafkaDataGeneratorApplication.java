@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -31,7 +32,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
 import com.tanzu.streaming.runtime.avro.data.faker.AvroRandomDataFaker;
-import com.tanzu.streaming.runtime.avro.data.faker.DataFaker;
+import com.tanzu.streaming.runtime.avro.data.faker.DataGenerator;
 import com.tanzu.streaming.runtime.avro.data.faker.util.SharedFieldValuesContext;
 import io.confluent.kafka.serializers.AbstractKafkaAvroSerDeConfig;
 import io.confluent.kafka.serializers.KafkaAvroSerializer;
@@ -74,8 +75,7 @@ public class KafkaDataGeneratorApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) {
 
-		SharedFieldValuesContext fieldCorrelationContext
-				= new SharedFieldValuesContext(this.properties.getSharedFieldNames());
+		SharedFieldValuesContext fieldCorrelationContext = new SharedFieldValuesContext(new Random());
 
 		ScheduledExecutorService scheduler =
 				Executors.newScheduledThreadPool(this.properties.getScheduledThreadPoolSize());
@@ -96,14 +96,13 @@ public class KafkaDataGeneratorApplication implements CommandLineRunner {
 					kafkaTemplate(topicProperties.getValueFormat(), topicProperties.getTopicName(), LongSerializer.class);
 
 			Schema avroSchema = StringUtils.hasText(topicProperties.getAvroSchema()) ?
-					DataFaker.toAvroSchema(topicProperties.getAvroSchema()) :
-					DataFaker.uriToAvroSchema(topicProperties.getAvroSchemaUri());
+					DataGenerator.toSchema(topicProperties.getAvroSchema()) :
+					DataGenerator.resourceToSchema(topicProperties.getAvroSchemaUri());
 
-			AvroRandomDataFaker dataFaker = DataFaker.dataFaker(
+			AvroRandomDataFaker dataFaker = DataGenerator.dataFaker(
 					avroSchema,
 					topicProperties.getBatch().getSize(),
 					fieldCorrelationContext,
-					topicProperties.getSharedFieldsMode(),
 					System.currentTimeMillis());
 
 			ScheduledFuture<?> future = scheduler.scheduleWithFixedDelay(
@@ -162,7 +161,7 @@ public class KafkaDataGeneratorApplication implements CommandLineRunner {
 		@Override
 		public void run() {
 			final AtomicLong messageKey = new AtomicLong(System.currentTimeMillis());
-			List<GenericData.Record> records = DataFaker.generateRecords(dataFaker);
+			List<GenericData.Record> records = DataGenerator.generateRecords(dataFaker);
 			Iterator<GenericData.Record> iterator = records.iterator();
 
 			if (!this.topicProperties.isSkipSending()) {
@@ -185,9 +184,9 @@ public class KafkaDataGeneratorApplication implements CommandLineRunner {
 		private Object toValueFormat(GenericData.Record record) {
 			switch (this.topicProperties.getValueFormat()) {
 			case JSON:
-				return DataFaker.toJsonObjectNode(record);
+				return DataGenerator.toJsonObjectNode(record);
 			case YAML:
-				return DataFaker.toYaml(record);
+				return DataGenerator.toYaml(record);
 			default:
 				return record;
 			}

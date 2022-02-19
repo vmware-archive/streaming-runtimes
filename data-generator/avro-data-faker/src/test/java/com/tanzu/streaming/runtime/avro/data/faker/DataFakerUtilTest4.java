@@ -11,24 +11,21 @@ public class DataFakerUtilTest4 {
 
 	public static void main(String[] args) {
 
-		SharedFieldValuesContext sharedFieldValuesContext = new SharedFieldValuesContext(List.of("user_id"));
+		SharedFieldValuesContext sharedFieldValuesContext = new SharedFieldValuesContext();
 
 		// User records
-		List<GenericData.Record> userRecords = DataFaker.generateRecords(
-				DataFaker.uriToAvroSchema("classpath:/avro/user.avsc"),
+		List<GenericData.Record> userRecords = DataGenerator.generateRecords(
+				DataGenerator.uriToSchema("classpath:/avro/user.avsc"),
 				15,
 				sharedFieldValuesContext,
-				SharedFieldValuesContext.Mode.PRODUCER,
 				System.currentTimeMillis());
 
 
 		// Click records
-		List<GenericData.Record> clickRecords = DataFaker.generateRecords(
-//				DataFaker.resourceUriToAvroSchema("classpath:/avro/click.avsc"),
-				DataFaker.uriToAvroSchema("classpath:/avro/click.yaml"),
+		List<GenericData.Record> clickRecords = DataGenerator.generateRecords(
+				DataGenerator.uriToSchema("classpath:/avro/click.yaml"),
 				20,
 				sharedFieldValuesContext,
-				SharedFieldValuesContext.Mode.CONSUMER,
 				System.currentTimeMillis()); // (re)use the userId values from the user generation.
 
 
@@ -64,7 +61,7 @@ public class DataFakerUtilTest4 {
 				+ "  ]\n"
 				+ "}";
 
-		List<GenericData.Record> users = DataFaker.generateRecords(DataFaker.toAvroSchema(usersSchema), 3);
+		List<GenericData.Record> users = DataGenerator.generateRecords(DataGenerator.toSchema(usersSchema), 3);
 		users.forEach(System.out::println);
 
 		String usersSchemaWithFaker = "{\n"
@@ -95,7 +92,7 @@ public class DataFakerUtilTest4 {
 				+ "  ]\n"
 				+ "}";
 
-		DataFaker.generateRecords(DataFaker.toAvroSchema(usersSchemaWithFaker), 3)
+		DataGenerator.generateRecords(DataGenerator.toSchema(usersSchemaWithFaker), 3)
 				.forEach(System.out::println);
 
 	}

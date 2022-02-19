@@ -55,8 +55,6 @@ spec:
               value: http://s-registry.$(MY_NAMESPACE).svc.cluster.local:8081
             - name: KAFKA_DATA_GENERATOR_TERMINATEAFTER
               value: '200h'
-            - name: KAFKA_DATA_GENERATOR_SHAREDFIELDNAMES
-              value: 'user_id'
             - name: KAFKA_DATA_GENERATOR_TOPICS_0_TOPICNAME
               value: 'kafka-stream-user'
             - name: KAFKA_DATA_GENERATOR_TOPICS_0_AVROSCHEMA
@@ -65,6 +63,7 @@ spec:
                   "namespace": "com.tanzu.streaming.runtime.clickstream.etl",
                   "type": "record",
                   "name": "User",
+                  "doc": "to_share=user_id",
                   "fields": [
                     {
                       "name": "user_id",
@@ -85,8 +84,6 @@ spec:
                 }
             - name: KAFKA_DATA_GENERATOR_TOPICS_0_VALUEFORMAT
               value: 'AVRO'
-            - name: KAFKA_DATA_GENERATOR_TOPICS_0_SHAREDFIELDSMODE
-              value: 'PRODUCER'
             - name: KAFKA_DATA_GENERATOR_TOPICS_0_BATCH_SIZE
               value: '100'
             - name: KAFKA_DATA_GENERATOR_TOPICS_0_BATCH_INITIALDELAY
@@ -103,7 +100,7 @@ spec:
                 fields:
                   - name: user_id
                     type: string
-                    doc: "#{id_number.valid}"
+                    doc: "[[#shared.field('click.user_id')]]"
                   - name: page
                     type: int
                     doc: "#{number.number_between '1','100000'}"
@@ -118,8 +115,6 @@ spec:
                     doc: "#{internet.userAgentAny}"
             - name: KAFKA_DATA_GENERATOR_TOPICS_1_VALUEFORMAT
               value: 'AVRO'
-            - name: KAFKA_DATA_GENERATOR_TOPICS_1_SHAREDFIELDSMODE
-              value: 'CONSUMER'
             - name: KAFKA_DATA_GENERATOR_TOPICS_1_BATCH_SIZE
               value: '1'
             - name: KAFKA_DATA_GENERATOR_TOPICS_1_BATCH_INITIALDELAY

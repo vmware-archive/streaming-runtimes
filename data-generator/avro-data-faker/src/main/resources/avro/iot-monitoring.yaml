@@ -1,7 +1,7 @@
 namespace: com.tanzu.streaming.runtime.iot.log
 type: record
 name: MonitoringStream
-doc: "key=error_code,foo=#{name.fullName} [[T(System).currentTimeMillis()]],bar=[[T(System).currentTimeMillis()]]"
+doc: "unique_on=error_code;foo=#{name.fullName} [[T(System).currentTimeMillis()]];bar=[[T(System).currentTimeMillis()]]"
 fields:
   - name: error_code
     type: string

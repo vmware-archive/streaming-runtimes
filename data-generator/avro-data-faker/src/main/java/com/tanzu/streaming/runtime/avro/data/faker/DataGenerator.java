@@ -46,9 +46,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
 
-public class DataFaker {
+public class DataGenerator {
 
-	protected static final Logger logger = LoggerFactory.getLogger(DataFaker.class);
+	protected static final Logger logger = LoggerFactory.getLogger(DataGenerator.class);
 
 	public static final boolean UTF_8_FOR_STRING = true;
 
@@ -57,7 +57,7 @@ public class DataFaker {
 
 	private static final ObjectMapper avroMapper = new ObjectMapper(new AvroFactory());
 
-	private DataFaker() {
+	private DataGenerator() {
 	}
 
 	public static List<GenericData.Record> generateRecords(Schema schema, int numberOfRecords) {
@@ -65,15 +65,14 @@ public class DataFaker {
 	}
 
 	public static List<GenericData.Record> generateRecords(Schema schema, int numberOfRecords,
-			SharedFieldValuesContext correlationContext,
-			SharedFieldValuesContext.Mode correlationMode,
-			long seed) {
+			SharedFieldValuesContext correlationContext) {
+		return generateRecords(dataFaker(schema, numberOfRecords, correlationContext, System.currentTimeMillis()));
+	}
 
-		return generateRecords(dataFaker(schema,
-				numberOfRecords,
-				correlationContext,
-				correlationMode,
-				seed));
+	public static List<GenericData.Record> generateRecords(Schema schema, int numberOfRecords,
+			SharedFieldValuesContext correlationContext, long seed) {
+
+		return generateRecords(dataFaker(schema, numberOfRecords, correlationContext, seed));
 	}
 
 	public static List<GenericData.Record> generateRecords(AvroRandomDataFaker avroRandomDataFaker) {
@@ -86,25 +85,24 @@ public class DataFaker {
 
 	public static AvroRandomDataFaker dataFaker(Schema schema, int numberOfRecords) {
 		return new AvroRandomDataFaker(schema, numberOfRecords,
-				!UTF_8_FOR_STRING, null, null, System.currentTimeMillis());
+				!UTF_8_FOR_STRING, null, System.currentTimeMillis());
 	}
 
 	public static AvroRandomDataFaker dataFaker(Schema schema, int numberOfRecords,
 			SharedFieldValuesContext correlationContext,
-			SharedFieldValuesContext.Mode correlationMode,
 			long seed) {
 		return new AvroRandomDataFaker(schema, numberOfRecords, !UTF_8_FOR_STRING,
-				correlationContext, correlationMode, seed);
+				correlationContext, seed);
 	}
 
-	public static Schema uriToAvroSchema(String schemaUri) {
-		return uriToAvroSchema(new DefaultResourceLoader().getResource(schemaUri));
+	public static Schema uriToSchema(String schemaUri) {
+		return resourceToSchema(new DefaultResourceLoader().getResource(schemaUri));
 	}
 
-	public static Schema uriToAvroSchema(Resource schemaResourceUri) {
+	public static Schema resourceToSchema(Resource schemaResourceUri) {
 		try {
 			String schemaStr = new String(IOUtils.toByteArray(schemaResourceUri.getInputStream()));
-			return toAvroSchema(schemaStr);
+			return toSchema(schemaStr);
 		}
 		catch (IOException e) {
 			logger.error("Failed to parse resources: " + schemaResourceUri + " to Avro schema!", e);
@@ -117,7 +115,7 @@ public class DataFaker {
 	 * @param schemaContent Raw Schema text content.
 	 * @return Returns Avro Schema.
 	 */
-	public static Schema toAvroSchema(String schemaContent) {
+	public static Schema toSchema(String schemaContent) {
 		return new Schema.Parser().parse(yamlOrJsonToJson(schemaContent));
 	}
 
@@ -191,7 +189,7 @@ public class DataFaker {
 
 	private static List<ObjectNode> toJsonObjects(List<GenericData.Record> genericRecords) {
 		return genericRecords.stream()
-				.map(DataFaker::toJsonObjectNode)
+				.map(DataGenerator::toJsonObjectNode)
 				.collect(Collectors.toList());
 	}
 

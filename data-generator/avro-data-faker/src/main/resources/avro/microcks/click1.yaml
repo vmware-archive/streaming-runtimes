@@ -1,0 +1,17 @@
+---
+namespace: io.simple.clicksteram
+type: record
+name: Click
+fields:
+  - name: user_id
+    type: string
+    doc: "[[#shared.field('user.id')]]"
+  - name: page
+    type: int
+    doc: "#{number.number_between '1','100000'}"
+  - name: action
+    type: string
+    doc: "#{options.option 'vitrine_nav','checkout','product_detail','products','selection','cart'}"
+  - name: user_agent
+    type: string
+    doc: "#{internet.userAgentAny}"

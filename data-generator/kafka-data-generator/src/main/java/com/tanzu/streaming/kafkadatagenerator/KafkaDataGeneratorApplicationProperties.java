@@ -27,7 +27,6 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
-import com.tanzu.streaming.runtime.avro.data.faker.util.SharedFieldValuesContext;
 import io.confluent.kafka.serializers.AbstractKafkaAvroSerDeConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 
@@ -54,20 +53,6 @@ public class KafkaDataGeneratorApplicationProperties {
 	 * Optional Kafka Confluence schema registry. Required if the AVRO_SCHEMA_REGISTRY format is used.
 	 */
 	private String schemaRegistryServer = "http://localhost:8081";
-
-	/**
-	 * Some field values generated in one topic can be reused as random values in another.
-	 * This permits sharing field's data values (such as Id fields) between different topics, allowing more meaningful
-	 * data processing (e.g. join between topics).
-	 *
-	 * To enable field value sharing, list the field names here. The shared field names should have the same names and
-	 * types in the shared topic's schemas.
-	 *
-	 * The shared field values context is shared amongst all topics. Each topic can set the sharedFieldsMode to either
-	 * PRODUCER or CONSUMER to indicate if it will contribute field values to the context or use the existing context
-	 * values to populate the generated topic field values.
-	 */
-	private List<String> sharedFieldNames = new ArrayList<>();
 
 	/**
 	 * Terminate the generator after given duration of time. Defaults to 1 billion years, e.g. run forever.
@@ -102,14 +87,6 @@ public class KafkaDataGeneratorApplicationProperties {
 
 	public void setSchemaRegistryServer(String schemaRegistryServer) {
 		this.schemaRegistryServer = schemaRegistryServer;
-	}
-
-	public List<String> getSharedFieldNames() {
-		return sharedFieldNames;
-	}
-
-	public void setSharedFieldNames(List<String> sharedFieldNames) {
-		this.sharedFieldNames = sharedFieldNames;
 	}
 
 	public Duration getTerminateAfter() {
@@ -170,12 +147,6 @@ public class KafkaDataGeneratorApplicationProperties {
 		private ValueFormat valueFormat = ValueFormat.JSON;
 
 		/**
-		 * Indicates if this topic data generation should store the generated field values in the shared field context
-		 * (e.g. PRODUCER) or use, randomly, the pre-generated values from the context (e.g. CONSUMER).
-		 */
-		private SharedFieldValuesContext.Mode sharedFieldsMode;
-
-		/**
 		 * The data generator produces new data in batch of records.
 		 */
 		@Valid
@@ -218,14 +189,6 @@ public class KafkaDataGeneratorApplicationProperties {
 			this.valueFormat = valueFormat;
 		}
 
-		public SharedFieldValuesContext.Mode getSharedFieldsMode() {
-			return sharedFieldsMode;
-		}
-
-		public void setSharedFieldsMode(SharedFieldValuesContext.Mode sharedFieldsMode) {
-			this.sharedFieldsMode = sharedFieldsMode;
-		}
-
 		public Batch getBatch() {
 			return batch;
 		}
@@ -245,7 +208,6 @@ public class KafkaDataGeneratorApplicationProperties {
 					", avroSchemaUri=" + avroSchemaUri +
 					", avroSchema='" + avroSchema + '\'' +
 					", valueFormat=" + valueFormat +
-					", sharedFieldsMode=" + sharedFieldsMode +
 					", batch=" + batch +
 					'}';
 		}

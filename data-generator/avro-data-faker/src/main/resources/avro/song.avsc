@@ -2,7 +2,7 @@
   "namespace": "com.tanzu.streaming.runtime.playsongs.avro",
   "type": "record",
   "name": "Song",
-  "doc": "key=song_id",
+  "doc": "unique_on=song_id",
   "fields": [
     {
       "name": "song_id",
