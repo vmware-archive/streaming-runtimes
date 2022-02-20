@@ -1,0 +1,32 @@
+kafka:
+  data:
+    generator:
+      terminateAfter: 300s
+
+      kafkaServer: 'localhost:9094'
+      schemaRegistryServer: 'http://localhost:8081'
+      topics:
+        - topicName: users
+          avroSchemaUri: 'classpath:/avro/user.avsc'
+          valueFormat: AVRO_SCHEMA_REGISTRY
+          batch: # The data generator produces new data in batch of records.
+            size: 1 # Number of the records produced in one batch generation iteration.
+            initialDelay: 10ms # The time to delay before the first batch records generation.
+            messageDelay: 100ms # The delay between sending each message in the batch to the Kafka topic.
+            # The batch delay is not set defaulting to never rescheduling record batches for this topic. E.g. run once and stop.
+
+        - topicName: clicks
+          avroSchemaUri: 'classpath:/avro/click.avsc'
+          valueFormat: JSON
+#          valueFormat: AVRO_SCHEMA_REGISTRY
+          batch:
+            size: 1 # Number of the records produced in one batch generation iteration.
+            initialDelay: 10ms # The time to delay before the first batch records generation.
+            delay: 500ms # The delay between the end of one batch records generation and the commencement of the next.
+            messageDelay: 100ms # The delay between sending each message in the batch to the Kafka topic.
+
+server:
+  shutdown: graceful
+spring:
+  lifecycle:
+    timeout-per-shutdown-phase: "10s"

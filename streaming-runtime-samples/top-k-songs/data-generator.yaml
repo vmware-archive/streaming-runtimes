@@ -91,7 +91,7 @@ spec:
                  "type": "record",
                  "name": "PlayEvent",
                  "fields": [
-                   {"name": "song_id",  "type": "long", "doc":"[[#shared.field('song.song_id')]]" },
+                   {"name": "song_id",  "type": "long", "doc":"[[#shared.field('song.song_id')?:9999]]" },
                    {"name": "duration", "type": "long", "doc":"#{number.number_between '30000','1000000'}" }
                  ]
                 }

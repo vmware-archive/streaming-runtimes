@@ -150,7 +150,7 @@ public class KafkaDataGeneratorApplicationProperties {
 		 * The data generator produces new data in batch of records.
 		 */
 		@Valid
-		private Batch batch = new Batch();
+		private final Batch batch = new Batch();
 
 		/**
 		 * If set to true the random data is generated but not send to the topic.

@@ -5,9 +5,10 @@ name: Click
 fields:
   - name: user_id
     type: string
-    doc: "[[#shared.field('user.id')]]"
+    doc: "[[#shared.field('user.id')?:'666-66-6666']]"
   - name: page
-    type: int
+    type: long
+#    doc: "[[#shared.field('user.id666')?:'6666']]"
     doc: "#{number.number_between '1','100000'}"
   - name: action
     type: string
