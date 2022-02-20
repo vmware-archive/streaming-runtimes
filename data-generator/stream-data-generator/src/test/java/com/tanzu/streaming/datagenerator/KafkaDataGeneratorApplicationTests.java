@@ -1,4 +1,4 @@
-package com.tanzu.streaming.kafkadatagenerator;
+package com.tanzu.streaming.datagenerator;
 
 import org.junit.jupiter.api.Test;
 

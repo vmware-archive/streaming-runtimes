@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.tanzu.streaming</groupId>
-	<artifactId>kafka-data-generator</artifactId>
+	<artifactId>stream-data-generator</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>kafka-data-generator</name>
-	<description>kafka-data-generator</description>
+	<name>stream-data-generator</name>
+	<description>stream-data-generator</description>
 	<properties>
 		<java.version>11</java.version>
 	</properties>

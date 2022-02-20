@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.tanzu.streaming.kafkadatagenerator;
+package com.tanzu.streaming.datagenerator;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -37,7 +37,7 @@ import org.springframework.validation.annotation.Validated;
 
 @Validated
 @ConfigurationProperties("kafka.data.generator")
-public class KafkaDataGeneratorApplicationProperties {
+public class StreamDataGeneratorApplicationProperties {
 
 	public enum ValueFormat {AVRO, AVRO_SCHEMA_REGISTRY, JSON, YAML}
 

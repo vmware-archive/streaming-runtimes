@@ -1,47 +1,47 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: kafka-data-generator
+  name: stream-data-generator
   labels:
-    app: kafka-data-generator
-    component: kafka-data-generator
+    app: stream-data-generator
+    component: stream-data-generator
     type: streaming-spike
-    spring-deployment-id: kafka-data-generator
+    spring-deployment-id: stream-data-generator
 spec:
   type: LoadBalancer
   ports:
     - port: 80
-      name: kafka-data-generator
+      name: stream-data-generator
       targetPort: 8080
       protocol: TCP
 
   selector:
-    app: kafka-data-generator
-    component: kafka-data-generator
+    app: stream-data-generator
+    component: stream-data-generator
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: kafka-data-generator
+  name: stream-data-generator
   labels:
-    app: kafka-data-generator
+    app: stream-data-generator
     type: streaming-spike
-    component: kafka-data-generator
+    component: stream-data-generator
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: kafka-data-generator
+      app: stream-data-generator
   template:
     metadata:
       labels:
-        app: kafka-data-generator
-        component: kafka-data-generator
+        app: stream-data-generator
+        component: stream-data-generator
     spec:
       terminationGracePeriodSeconds: 15
       containers:
-        - name: kafka-data-generator
-          image: ghcr.io/vmware-tanzu/streaming-runtimes/kafka-data-generator:latest
+        - name: stream-data-generator
+          image: ghcr.io/vmware-tanzu/streaming-runtimes/stream-data-generator:latest
           ports:
             - containerPort: 8080
           env:
