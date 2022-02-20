@@ -6,7 +6,7 @@
     {
       "name": "user_id",
       "type": "string",
-      "doc": "[[#shared.field('user.user_id')]]"
+      "doc": "[[#shared.field('user.user_id')?:'666-66-6666']]"
     },
     {
       "name": "page",

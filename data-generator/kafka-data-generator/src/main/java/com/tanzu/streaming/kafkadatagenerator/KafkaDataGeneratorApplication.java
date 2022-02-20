@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -30,6 +31,7 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
 
 import com.tanzu.streaming.runtime.avro.data.faker.AvroRandomDataFaker;
 import com.tanzu.streaming.runtime.avro.data.faker.DataGenerator;
@@ -161,12 +163,13 @@ public class KafkaDataGeneratorApplication implements CommandLineRunner {
 		@Override
 		public void run() {
 
-			logger.info(String.format("New data generation thread for: %s",
-					this.topicProperties.getTopicName()));
+			//logger.info(String.format("New data generation thread for: %s", this.topicProperties.getTopicName()));
 
 			final AtomicLong messageKey = new AtomicLong(System.currentTimeMillis());
 			List<GenericData.Record> records = DataGenerator.generateRecords(dataFaker);
-			Iterator<GenericData.Record> iterator = records.iterator();
+			List<GenericData.Record> nonNullRecords = records.stream().filter(Objects::nonNull)
+					.collect(Collectors.toList());
+			Iterator<GenericData.Record> iterator = nonNullRecords.iterator();
 
 			if (!this.topicProperties.isSkipSending()) {
 				while (!this.exitFlag.get() && iterator.hasNext()) {
@@ -174,7 +177,6 @@ public class KafkaDataGeneratorApplication implements CommandLineRunner {
 					Object messageValue = toValueFormat(record);
 					this.kafkaTemplate.sendDefault(messageKey.incrementAndGet(), messageValue);
 					try {
-						//logger.info(String.format("Send to %s : %s", this.topicProperties.getTopicName(), messageValue));
 						Thread.sleep(this.topicProperties.getBatch().getMessageDelay().toMillis());
 					}
 					catch (InterruptedException e) {

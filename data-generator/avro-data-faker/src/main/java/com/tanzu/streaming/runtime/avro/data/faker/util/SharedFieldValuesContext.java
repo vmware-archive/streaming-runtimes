@@ -24,6 +24,10 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import com.tanzu.streaming.runtime.avro.data.faker.AvroRandomDataFaker;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.springframework.util.Assert;
 
 /**
@@ -37,6 +41,7 @@ import org.springframework.util.Assert;
  */
 public class SharedFieldValuesContext {
 
+	protected static final Logger logger = LoggerFactory.getLogger(SharedFieldValuesContext.class);
 	/**
 	 * Holds the current state in form of fieldName -> ListOf Values (note that the value can be an array).
 	 */
@@ -82,14 +87,15 @@ public class SharedFieldValuesContext {
 	public Object field(String fieldName) {
 		try {
 			this.readLock.lock();
-
 			List<Object[]> fieldValues = this.state.get(fieldName);
 
-			Assert.notNull(fieldValues, "Could not find field values for field: " + fieldName);
+			if (fieldValues == null) {
+				logger.warn("Null shared value for: " + fieldName);
+				return null;
+			}
 
 			Object[] values = fieldValues.get(this.random.nextInt(fieldValues.size()));
-
-			return (values.length == 1) ? values[0] : values;
+			return (values != null && values.length == 1) ? values[0] : values;
 		}
 		finally {
 			this.readLock.unlock();

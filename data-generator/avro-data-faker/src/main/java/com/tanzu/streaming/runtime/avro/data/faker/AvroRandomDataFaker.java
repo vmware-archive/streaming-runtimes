@@ -27,6 +27,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -70,14 +71,19 @@ public class AvroRandomDataFaker implements Iterable<GenericData.Record> {
 	public static final String SHARED_VARIABLE_NAME = "shared";
 	public static final String FAKER_VARIABLE_NAME = "faker";
 	public static final String UNIQUE_ON_VARIABLE_NAME = "unique_on";
-	public static final String TO_SHARE_VARIABLE_NAME = "to_share";
 
-	public static final String NAMES_SEPARATOR = ",";
+	public static final String TO_SHARE_VARIABLE_NAME = "to_share";
+	public static final String TO_SHARE_FIELD_NAMES_SEPARATOR = ",";
+
 	public static final String PAIRS_SEPARATOR = ";";
 	public static final String KEYVALUES_SEPARATOR = "=";
 
+	public static final String MAP_KEY = "key";
+	public static final String MAP_VALUE = "value";
+	public static final String MAP_LENGTH = "length";
+
 	private final Schema root;
-	private final int count;
+	private final int numberOfRecords;
 	private final boolean utf8ForString;
 	private final Faker faker;
 	private final Random random;
@@ -108,16 +114,16 @@ public class AvroRandomDataFaker implements Iterable<GenericData.Record> {
 	private final SpELTemplateParserContext spelTemplateContext;
 	private final SpelExpressionParser spelParser;
 
-	public AvroRandomDataFaker(Schema schema, int count, boolean utf8ForString) {
-		this(schema, count, utf8ForString, null, System.currentTimeMillis());
+	public AvroRandomDataFaker(Schema schema, int numberOfRecords, boolean utf8ForString) {
+		this(schema, numberOfRecords, utf8ForString, null, System.currentTimeMillis());
 	}
 
-	public AvroRandomDataFaker(Schema schema, int count, boolean utf8ForString,
+	public AvroRandomDataFaker(Schema schema, int numberOfRecords, boolean utf8ForString,
 			SharedFieldValuesContext sharedFieldValuesContext, long seed) {
 
 		this.root = schema;
 		this.random = new Random(seed);
-		this.count = count;
+		this.numberOfRecords = numberOfRecords;
 		this.utf8ForString = utf8ForString;
 		this.faker = new Faker(this.random);
 		this.sharedFieldValuesContext = sharedFieldValuesContext;
@@ -139,16 +145,16 @@ public class AvroRandomDataFaker implements Iterable<GenericData.Record> {
 	@Override
 	public Iterator<GenericData.Record> iterator() {
 		return new Iterator<>() {
-			private int n;
+			private int index;
 
 			@Override
 			public boolean hasNext() {
-				return n < count;
+				return index < numberOfRecords;
 			}
 
 			@Override
 			public GenericData.Record next() {
-				n++;
+				index++;
 				return (GenericData.Record) generate(null, root, random, 0);
 			}
 
@@ -163,49 +169,66 @@ public class AvroRandomDataFaker implements Iterable<GenericData.Record> {
 	private Object generate(String doc, Schema schema, Random random, int d) {
 		switch (schema.getType()) {
 		case RECORD:
+
 			GenericRecord record = new GenericData.Record(schema);
 
-			//	Extract the record level key/value expressions.
-			//	The kay/values resolved from the record's Doc are kept in the SpEL context and can be used by the  field expressions.
-			//	The `key=...` name is reserved to set the keyed field name for the record.
-			//	The `retain.field.values=...` name is reserved for sharing field values with multiple generators.
-			Map<String, String> resolvedRecordKeyValues = docToKeyValuePairs(record.getSchema().getDoc())
-					.entrySet().stream().collect(
-							Collectors.toMap(
-									entry -> resolveDocExpressions(entry.getKey()),
-									entry -> resolveDocExpressions(entry.getValue())
-							)
-					);
+			Map<String, String> resolvedRecordKeyValues = null;
 
-			// Add temporarily to the SpEL Context. Only for the duration of this record processing.
-			resolvedRecordKeyValues.forEach(this.spelContext::setVariable);
+			try {
+				//	Extract the key/value expressions from Record's doc.
+				//	Multiple key=value pairs can be chained with the help of the ';' separator.
+				//	The kay/values resolved from the record's Doc are kept in the SpEL context and can be used by the  field expressions.
+				//	The `unique_on=...` name is reserved to set the keyed field name for the record.
+				//	The `to_share=...` name is reserved for sharing field values with multiple generators.
+				//	The `faker` name is reserved for holding a Faker instance. Use [[#faker.xxx()]] expressions to use it.
+				resolvedRecordKeyValues = parseDocToKeyValuePairs(record.getSchema().getDoc())
+						.entrySet().stream().collect(
+								Collectors.toMap(
+										entry -> resolveDocExpressions(entry.getKey()),
+										entry -> resolveDocExpressions(entry.getValue())
+								)
+						);
 
-			for (Schema.Field field : schema.getFields()) {
+				// Add the parsed record key/values paris to the SpEL Context.
+				// Paris are added only for the duration of this record processing, then they are removed!
+				// E.g. those values are not shared across multiple Record instance generations.
+				resolvedRecordKeyValues.forEach(this.spelContext::setVariable);
 
-				// Allow accessing the field default value (when present) via the [[#default]] expression.
-				if (field.hasDefaultValue()) {
-					this.spelContext.setVariable(DEFAULT_VARIABLE_NAME, GenericData.get().getDefaultValue(field));
+				for (Schema.Field field : schema.getFields()) {
+
+					// Allow accessing the field default value (when present) via the [[#default]] expression.
+					if (field.hasDefaultValue()) {
+						this.spelContext.setVariable(DEFAULT_VARIABLE_NAME, GenericData.get().getDefaultValue(field));
+					}
+
+					Object value = generate(field.doc(), field.schema(), random, d + 1);
+
+					record.put(field.name(), value);
+
+					if (this.sharedFieldValuesContext != null && fieldNamesToRetainValuesFor(resolvedRecordKeyValues).contains(field.name())) {
+						String sharedKey = String.format("%s.%s", record.getSchema().getName(), field.name())
+								.toLowerCase();
+						this.sharedFieldValuesContext.addValue(sharedKey, value);
+					}
+
+					// Remove field's default value from the spel context.
+					this.spelContext.setVariable(DEFAULT_VARIABLE_NAME, null);
 				}
 
-				Object value = generate(field.doc(), field.schema(), random, d + 1);
-
-				record.put(field.name(), value);
-
-				if (this.sharedFieldValuesContext != null && fieldNamesToRetainValuesFor(resolvedRecordKeyValues).contains(field.name())) {
-					String sharedKey = String.format("%s.%s", record.getSchema().getName(), field.name()).toLowerCase();
-					this.sharedFieldValuesContext.addValue(sharedKey, value);
-				}
-
-				// Remove field's default value from the spel context.
-				this.spelContext.setVariable(DEFAULT_VARIABLE_NAME, null);
+				// If the record's "unique_on" field-name is set and a record for that field has already been generated,
+				// then return the existing record. This prevents having multiple different records sharing the same unique_on field!
+				record = this.replaceWithUniqueFieldRecord(record, resolvedRecordKeyValues.get(UNIQUE_ON_VARIABLE_NAME));
 			}
-
-			// If the record's "unique_on" field-name is set and a record for that field has already been generated,
-			// then return the existing record. This prevents having multiple different records sharing the same unique_on field!
-			record = this.replaceWithUniqueFieldRecord(record, resolvedRecordKeyValues.get(UNIQUE_ON_VARIABLE_NAME));
-
-			// Remove the record's k/v variables from the SpEL context.
-			resolvedRecordKeyValues.forEach((key, value) -> this.spelContext.setVariable(key, null));
+			catch (Exception e) {
+				logger.error("Failed to generate record data", e);
+				return null;
+			}
+			finally {
+				// Remove the record's k/v variables from the SpEL context.
+				if (resolvedRecordKeyValues != null) {
+					resolvedRecordKeyValues.forEach((key, value) -> this.spelContext.setVariable(key, null));
+				}
+			}
 
 			return record;
 		case ENUM:
@@ -219,14 +242,14 @@ public class AvroRandomDataFaker implements Iterable<GenericData.Record> {
 				array.add(generate(doc, schema.getElementType(), random, d + 1));
 			return array;
 		case MAP:
-			Map<String, String> unresolvedKeyValues = docToKeyValuePairs(doc);
+			Map<String, String> unresolvedKeyValues = parseDocToKeyValuePairs(doc);
 			int mapLength = Integer.parseInt(resolveDocExpressions(
-					unresolvedKeyValues.getOrDefault("length", "" + Math.max((random.nextInt(5) + 2) - d, 0))));
+					unresolvedKeyValues.getOrDefault(MAP_LENGTH, "" + Math.max((random.nextInt(5) + 2) - d, 0))));
 			Map<Object, Object> map = new HashMap(mapLength);
 			for (int i = 0; i < mapLength; i++) {
-				Object key = unresolvedKeyValues.containsKey("key") ?
-						resolveDocExpressions(unresolvedKeyValues.get("key")) : randomString(random, 40);
-				String unresolvedValue = unresolvedKeyValues.get("value"); // we do NOT want to resolve this here!
+				Object key = unresolvedKeyValues.containsKey(MAP_KEY) ?
+						resolveDocExpressions(unresolvedKeyValues.get(MAP_KEY)) : randomString(random, 40);
+				String unresolvedValue = unresolvedKeyValues.get(MAP_VALUE); // we do NOT want to resolve this here!
 				map.put(key, generate(unresolvedValue, schema.getValueType(), random, d + 1));
 			}
 			return map;
@@ -277,7 +300,7 @@ public class AvroRandomDataFaker implements Iterable<GenericData.Record> {
 	private Set<String> fieldNamesToRetainValuesFor(Map<String, String> recordKeyValues) {
 		Set<String> retainFieldNames = new HashSet<>();
 		if (recordKeyValues.containsKey(TO_SHARE_VARIABLE_NAME)) {
-			String[] fieldNames = recordKeyValues.get(TO_SHARE_VARIABLE_NAME).split(NAMES_SEPARATOR);
+			String[] fieldNames = recordKeyValues.get(TO_SHARE_VARIABLE_NAME).split(TO_SHARE_FIELD_NAMES_SEPARATOR);
 			if (fieldNames.length > 0) {
 				retainFieldNames.addAll(Set.of(fieldNames));
 			}
@@ -308,10 +331,17 @@ public class AvroRandomDataFaker implements Iterable<GenericData.Record> {
 
 	private String resolveDocExpressions(String doc) {
 		if (doc == null) {
-			return null;
+			throw new IllegalArgumentException("Null doc");
+		}
+		if (!StringUtils.hasText(doc)) {
+			return doc;
 		}
 		String resolvedSpELDoc = this.spelParser.parseExpression(doc, this.spelTemplateContext)
 				.getValue(this.spelContext, String.class);
+
+		if (resolvedSpELDoc == null) {
+			throw new IllegalStateException(String.format("Null SpEL resolution for doc:%s ", doc));
+		}
 		return faker.expression(resolvedSpELDoc);
 	}
 
@@ -331,10 +361,26 @@ public class AvroRandomDataFaker implements Iterable<GenericData.Record> {
 		return bytes;
 	}
 
-	private Map<String, String> docToKeyValuePairs(String doc) {
+	/**
+	 * Optimization, since the Schema docs are immutable.
+	 */
+	private ConcurrentHashMap<String, Map<String, String>> unresolvedDocKeyValuePairsCache = new ConcurrentHashMap<>();
+
+	/**
+	 * Parse multi key=value pairs Doc expressions. Later are used either in the Record or Map docs.
+	 * Expected format is: "doc": "key1=value1;key2=value2...keyN=valueN".
+	 * The keys and the values can be faker/spel expressions. This parser does NOT resolve such expressions.
+	 * @param doc Record or Map multi-pair expression.
+	 * @return Returns a map of the key and values found in the doc. Both the key and the values are raw (unresolved).
+	 */
+	private Map<String, String> parseDocToKeyValuePairs(String doc) {
 
 		if (!StringUtils.hasText(doc)) {
 			return Collections.emptyMap();
+		}
+
+		if (this.unresolvedDocKeyValuePairsCache.containsKey(doc)) {
+			return this.unresolvedDocKeyValuePairsCache.get(doc);
 		}
 
 		Map<String, String> keyValues = new HashMap<>();
@@ -356,6 +402,8 @@ public class AvroRandomDataFaker implements Iterable<GenericData.Record> {
 				throw new IllegalArgumentException("Illegal key-value pair expression for: " + keyValuePair);
 			}
 		});
+
+		this.unresolvedDocKeyValuePairsCache.putIfAbsent(doc, keyValues);
 
 		return keyValues;
 	}
