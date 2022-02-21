@@ -83,7 +83,9 @@ kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runti
 kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-samples/clickstream/data-generator.yaml' -n default
 ```
 
-* Delete the Top-k songs pipeline and the demo song generator:
+- Follow the [explore Kafka](../#explore-kafka-topics) and [explore Rabbit](../#explore-kafka-topics) to see what data is generated and how it is processed though the pipeline.
+
+- Delete the Top-k songs pipeline and the demo song generator:
 ```shell
 kubectl delete srs,srcs,srp --all -n streaming-runtime 
 kubectl delete deployments -l app=clickstream-data-generator
