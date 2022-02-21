@@ -65,7 +65,8 @@ public class StreamDataGeneratorApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) {
 
-		SharedFieldValuesContext sharedFieldsContext = new SharedFieldValuesContext(new Random());
+		long randomSeed = System.currentTimeMillis();
+		SharedFieldValuesContext sharedFieldsContext = new SharedFieldValuesContext(new Random(randomSeed));
 
 		ScheduledExecutorService scheduler =
 				Executors.newScheduledThreadPool(this.properties.getScheduledThreadPoolSize());
@@ -74,29 +75,28 @@ public class StreamDataGeneratorApplication implements CommandLineRunner {
 
 		List<ScheduledFuture> scheduledFutures = new ArrayList<>();
 
-		for (StreamDataGeneratorApplicationProperties.Topic topicProperties : this.properties.getTopics()) {
+		for (StreamDataGeneratorApplicationProperties.RecordStream topicProperties : this.properties.getStreams()) {
 
 			MutuallyExclusiveConfigurationPropertiesException.throwIfMultipleNonNullValuesIn((entries) -> {
 				entries.put("avro-schema", topicProperties.getAvroSchema());
 				entries.put("avro-schema-uri", topicProperties.getAvroSchemaUri());
 			});
 
+			Schema avroSchema = StringUtils.hasText(topicProperties.getAvroSchema()) ?
+					DataUtil.contentToSchema(topicProperties.getAvroSchema()) :
+					DataUtil.resourceToSchema(topicProperties.getAvroSchemaUri());
+
+			DataGenerator dataGenerator =
+					new DataGenerator(avroSchema, topicProperties.getBatch().getSize(),
+							!UTF_8_FOR_STRING, sharedFieldsContext, randomSeed);
+
 			// TODO parametrize the key serializer.
 			MessageSender messageSender = new KafkaMessageSender(
 					this.properties.getKafkaServer(), this.properties.getSchemaRegistryServer(),
-					topicProperties.getValueFormat(), topicProperties.getTopicName(), LongSerializer.class);
-
-			Schema avroSchema = StringUtils.hasText(topicProperties.getAvroSchema()) ?
-					DataUtil.toSchema(topicProperties.getAvroSchema()) :
-					DataUtil.resourceToSchema(topicProperties.getAvroSchemaUri());
-
-			DataGenerator avroRandomData =
-					new DataGenerator(avroSchema, topicProperties.getBatch().getSize(),
-							!UTF_8_FOR_STRING,
-							sharedFieldsContext, System.currentTimeMillis());
+					topicProperties.getValueFormat(), topicProperties.getStreamName(), LongSerializer.class);
 
 			RecordSenderThread recordSenderThread = new RecordSenderThread(
-					messageSender, avroRandomData, topicProperties, exitFlag);
+					messageSender, dataGenerator, topicProperties, exitFlag);
 
 			ScheduledFuture<?> future = scheduler.scheduleWithFixedDelay(
 					recordSenderThread,

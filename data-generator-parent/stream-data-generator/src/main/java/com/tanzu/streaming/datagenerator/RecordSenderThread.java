@@ -12,13 +12,13 @@ public class RecordSenderThread implements Runnable {
 
 	private final MessageSender messageSender;
 	private final DataGenerator avroRandomData;
-	private final StreamDataGeneratorApplicationProperties.Topic topicProperties;
+	private final StreamDataGeneratorApplicationProperties.RecordStream topicProperties;
 	private final AtomicBoolean exitFlag;
 
 	public RecordSenderThread(
 			MessageSender messageSender,
 			DataGenerator dataFaker,
-			StreamDataGeneratorApplicationProperties.Topic topicProperties,
+			StreamDataGeneratorApplicationProperties.RecordStream topicProperties,
 			AtomicBoolean exitFlag) {
 
 		this.messageSender = messageSender;

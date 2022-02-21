@@ -57,16 +57,6 @@ public class DataUtil {
 	private DataUtil() {
 	}
 
-	public static void print(DataGenerator dataGenerator) {
-		toList(dataGenerator).forEach(System.out::println);
-	}
-
-	public static List<GenericData.Record> toList(DataGenerator avroRandomData) {
-		return StreamSupport.stream(
-						Spliterators.spliteratorUnknownSize(avroRandomData.iterator(), Spliterator.ORDERED),
-						false)
-				.collect(Collectors.toList());
-	}
 
 	public static Schema uriToSchema(String schemaUri) {
 		return resourceToSchema(new DefaultResourceLoader().getResource(schemaUri));
@@ -75,7 +65,7 @@ public class DataUtil {
 	public static Schema resourceToSchema(Resource schemaResourceUri) {
 		try {
 			String schemaStr = new String(IOUtils.toByteArray(schemaResourceUri.getInputStream()));
-			return toSchema(schemaStr);
+			return contentToSchema(schemaStr);
 		}
 		catch (IOException e) {
 			logger.error("Failed to parse resources: " + schemaResourceUri + " to Avro schema!", e);
@@ -88,7 +78,7 @@ public class DataUtil {
 	 * @param schemaContent Raw Schema text content.
 	 * @return Returns Avro Schema.
 	 */
-	public static Schema toSchema(String schemaContent) {
+	public static Schema contentToSchema(String schemaContent) {
 		return new Schema.Parser().parse(yamlOrJsonToJson(schemaContent));
 	}
 
@@ -115,15 +105,15 @@ public class DataUtil {
 	 * @param genericRecords Input records to convert.
 	 * @return Returns a list of JSON strings that represent the input records.
 	 */
-	public static String toJsonArray(List<GenericData.Record> genericRecords) {
-		try {
-			return new ObjectMapper().writeValueAsString(toJsonObjects(genericRecords));
-		}
-		catch (JsonProcessingException e) {
-			logger.error("Failed to convert GenericRecords into JSON", e);
-			throw new RuntimeException(e);
-		}
-	}
+//	public static String toJsonArray(List<GenericData.Record> genericRecords) {
+//		try {
+//			return new ObjectMapper().writeValueAsString(toJsonObjects(genericRecords));
+//		}
+//		catch (JsonProcessingException e) {
+//			logger.error("Failed to convert GenericRecords into JSON", e);
+//			throw new RuntimeException(e);
+//		}
+//	}
 
 	/**
 	 * Converts a single Avro GenericRecord into JSON object.
@@ -134,16 +124,16 @@ public class DataUtil {
 		return toJsonObjectNode(genericRecord).toString();
 	}
 
-	public static String toYamlArray(List<GenericData.Record> genericRecords) {
-		try {
-			List<ObjectNode> jsonObjects = toJsonObjects(genericRecords);
-			return yamlMapper.writeValueAsString(jsonObjects);
-		}
-		catch (JsonProcessingException e) {
-			logger.error("Failed to convert GenericRecords into YAML", e);
-			throw new RuntimeException(e);
-		}
-	}
+//	public static String toYamlArray(List<GenericData.Record> genericRecords) {
+//		try {
+//			List<ObjectNode> jsonObjects = toJsonObjects(genericRecords);
+//			return yamlMapper.writeValueAsString(jsonObjects);
+//		}
+//		catch (JsonProcessingException e) {
+//			logger.error("Failed to convert GenericRecords into YAML", e);
+//			throw new RuntimeException(e);
+//		}
+//	}
 
 	/**
 	 *
@@ -160,11 +150,11 @@ public class DataUtil {
 		}
 	}
 
-	private static List<ObjectNode> toJsonObjects(List<GenericData.Record> genericRecords) {
-		return genericRecords.stream()
-				.map(DataUtil::toJsonObjectNode)
-				.collect(Collectors.toList());
-	}
+//	private static List<ObjectNode> toJsonObjects(List<GenericData.Record> genericRecords) {
+//		return genericRecords.stream()
+//				.map(DataUtil::toJsonObjectNode)
+//				.collect(Collectors.toList());
+//	}
 
 	/**
 	 * Converts a single Avro GenericRecord into JSON object.
@@ -190,4 +180,14 @@ public class DataUtil {
 		}
 	}
 
+	public static void print(DataGenerator dataGenerator) {
+		toList(dataGenerator).forEach(System.out::println);
+	}
+
+	public static List<GenericData.Record> toList(DataGenerator avroRandomData) {
+		return StreamSupport.stream(
+						Spliterators.spliteratorUnknownSize(avroRandomData.iterator(), Spliterator.ORDERED),
+						false)
+				.collect(Collectors.toList());
+	}
 }

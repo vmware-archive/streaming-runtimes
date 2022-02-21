@@ -29,7 +29,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.core.io.Resource;
 import org.springframework.util.StringUtils;
 
-@ConfigurationProperties("kafka.data.generator")
+@ConfigurationProperties("stream.data.generator")
 public class StreamDataGeneratorApplicationProperties {
 
 	public enum ValueFormat {AVRO, AVRO_SCHEMA_REGISTRY, JSON, YAML}
@@ -54,7 +54,7 @@ public class StreamDataGeneratorApplicationProperties {
 	/**
 	 * Configuration for each topic.
 	 */
-	private List<Topic> topics = new ArrayList<>();
+	private List<RecordStream> streams = new ArrayList<>();
 
 	public int getScheduledThreadPoolSize() {
 		return scheduledThreadPoolSize;
@@ -88,8 +88,8 @@ public class StreamDataGeneratorApplicationProperties {
 		this.terminateAfter = terminateAfter;
 	}
 
-	public List<Topic> getTopics() {
-		return topics;
+	public List<RecordStream> getStreams() {
+		return streams;
 	}
 
 	/**
@@ -112,11 +112,11 @@ public class StreamDataGeneratorApplicationProperties {
 		return commonKafkaProperties;
 	}
 
-	public static class Topic {
+	public static class RecordStream {
 		/**
 		 * Kafka topic name.
 		 */
-		private String topicName;
+		private String streamName;
 
 		/**
 		 * Annotated Avro schema used by the DataFaker for data generation.
@@ -145,12 +145,12 @@ public class StreamDataGeneratorApplicationProperties {
 		 */
 		private boolean skipSending = false;
 
-		public String getTopicName() {
-			return topicName;
+		public String getStreamName() {
+			return streamName;
 		}
 
-		public void setTopicName(String topicName) {
-			this.topicName = topicName;
+		public void setStreamName(String streamName) {
+			this.streamName = streamName;
 		}
 
 		public Resource getAvroSchemaUri() {
@@ -191,8 +191,8 @@ public class StreamDataGeneratorApplicationProperties {
 
 		@Override
 		public String toString() {
-			return "Topic{" +
-					"topicName='" + topicName + '\'' +
+			return "Stream{" +
+					"streamName='" + streamName + '\'' +
 					", avroSchemaUri=" + avroSchemaUri +
 					", avroSchema='" + avroSchema + '\'' +
 					", valueFormat=" + valueFormat +
