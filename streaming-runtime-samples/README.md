@@ -46,3 +46,40 @@ Make sure to substitute the `<use-case-folder>` placeholder with the folder name
 
 then follow the use-case's own instructions.
 
+
+### Explore Kafka or RabbitMQ content
+
+#### Explore Kafka Topics
+Use the `kubectl get all` to find the Kafka broker pod name and then
+```shell
+kubectl exec -it pod/<your-kafka-pod> -- /bin/bash`
+```
+to SSH to kafka broker container.
+
+From within the kafka-broker container use the bin utils to list the topics or check their content:
+
+```shell
+/opt/kafka/bin/kafka-topics.sh --list --bootstrap-server localhost:9092
+```
+
+Then to list the topic content:
+```shell
+/opt/kafka/bin/kafka-console-consumer.sh --topic <topic-name> --from-beginning --bootstrap-server localhost:9092
+```
+
+To delete a topic:
+```shell
+/opt/kafka/bin/kafka-topics.sh --delete --topic <topic-name> --bootstrap-server localhost:9092
+```
+
+#### Explore Rabbit Queues
+
+To access the Rabbit management UI first forward the `15672` port:
+```shell
+kubectl port-forward svc/rabbitmq 15672:15672
+```
+
+1. Then open [http://localhost:15672/#/exchanges](http://localhost:15672/#/exchanges) and find the exchange name related to your use-case.
+2. Open the `Queues` tab and create new queue called `myTempQueue` (use the default configuration).
+3. Go back to the `Exchang` tab, select the use-case exchange and bind it to the new `myTempQueue` queue, with `#` as a `Routing key`!
+4. From the `Queue` tab select the `myTempQueue` queue and click the `Get Messages` button.
