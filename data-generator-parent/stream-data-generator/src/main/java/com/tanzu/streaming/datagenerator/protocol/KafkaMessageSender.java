@@ -24,11 +24,11 @@ public class KafkaMessageSender implements MessageSender {
 	public KafkaMessageSender(String kafkaServer,
 			String schemaRegistryServer,
 			StreamDataGeneratorApplicationProperties.ValueFormat serType,
-			String topicName,
+			String streamName,
 			Class<? extends Serializer> keySerializerClass) {
 
 		this.kafkaTemplate = createKafkaTemplate(
-				kafkaServer, schemaRegistryServer, serType, topicName, keySerializerClass);
+				kafkaServer, schemaRegistryServer, serType, streamName, keySerializerClass);
 	}
 
 	@Override
@@ -40,7 +40,7 @@ public class KafkaMessageSender implements MessageSender {
 			String kafkaServer,
 			String schemaRegistryServer,
 			StreamDataGeneratorApplicationProperties.ValueFormat serType,
-			String topicName,
+			String streamName,
 			Class<? extends Serializer> keySerializerClass) {
 
 		Class<? extends Serializer> valueSerializerClass = null;
@@ -66,7 +66,7 @@ public class KafkaMessageSender implements MessageSender {
 		DefaultKafkaProducerFactory<Long, Object> pf = new DefaultKafkaProducerFactory<>(kafkaProperties);
 		KafkaTemplate<Long, Object> kafkaTemplate = new KafkaTemplate<>(pf, true);
 
-		kafkaTemplate.setDefaultTopic(topicName);
+		kafkaTemplate.setDefaultTopic(streamName);
 
 		return kafkaTemplate;
 	}

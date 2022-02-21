@@ -37,9 +37,9 @@ public class InlineAvroConfluentToAvroConverter implements DataSchemaAvroConvert
 		if (!StringUtils.hasText(schemaUrl) || "default".equalsIgnoreCase(schemaUrl)) {
 			String schemaRegistryUrl = context.getOptions().get("stream.status.server.schemaRegistry");
 			Assert.hasText(schemaRegistryUrl, "Missing schema registry Url ");
-			String topicName = context.getOptions().get("ddl.topic");
-			Assert.hasText(topicName, "Missing topic name ");
-			schemaUrl = String.format("%s/subjects/%s-value/versions/latest", schemaRegistryUrl, topicName);
+			String streamName = context.getOptions().get("ddl.topic");
+			Assert.hasText(streamName, "Missing topic name ");
+			schemaUrl = String.format("%s/subjects/%s-value/versions/latest", schemaRegistryUrl, streamName);
 		}
 
 		Map<String, ?> subject = this.restTemplate.getForObject(schemaUrl, Map.class);

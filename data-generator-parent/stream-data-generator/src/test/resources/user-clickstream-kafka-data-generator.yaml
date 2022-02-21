@@ -49,17 +49,17 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
-            - name: KAFKA_DATA_GENERATOR_KAFKASERVER
+            - name: STREAM_DATA_GENERATOR_KAFKASERVER
               value: kafka.$(MY_NAMESPACE).svc.cluster.local:9092
-            - name: KAFKA_DATA_GENERATOR_SCHEMAREGISTRYSERVER
+            - name: STREAM_DATA_GENERATOR_SCHEMAREGISTRYSERVER
               value: http://s-registry.$(MY_NAMESPACE).svc.cluster.local:8081
-            - name: KAFKA_DATA_GENERATOR_TERMINATEAFTER
+            - name: STREAM_DATA_GENERATOR_TERMINATEAFTER
               value: '200h'
-            - name: KAFKA_DATA_GENERATOR_SHAREDFIELDNAMES
+            - name: STREAM_DATA_GENERATOR_SHAREDFIELDNAMES
               value: 'user_id'
-            - name: KAFKA_DATA_GENERATOR_TOPICS_0_TOPICNAME
+            - name: STREAM_DATA_GENERATOR_STREAMS_0_STREAMNAME
               value: 'users'
-            - name: KAFKA_DATA_GENERATOR_TOPICS_0_AVROSCHEMA
+            - name: STREAM_DATA_GENERATOR_STREAMS_0_AVROSCHEMA
               value: |-
                 {
                   "namespace": "com.tanzu.streaming.runtime.clickstream.etl",
@@ -91,19 +91,19 @@ spec:
                     }
                   ]
                 }
-            - name: KAFKA_DATA_GENERATOR_TOPICS_0_VALUEFORMAT
+            - name: STREAM_DATA_GENERATOR_STREAMS_0_VALUEFORMAT
               value: 'JSON'
-            - name: KAFKA_DATA_GENERATOR_TOPICS_0_SHAREDFIELDSMODE
+            - name: STREAM_DATA_GENERATOR_STREAMS_0_SHAREDFIELDSMODE
               value: 'PRODUCER'
-            - name: KAFKA_DATA_GENERATOR_TOPICS_0_BATCH_SIZE
+            - name: STREAM_DATA_GENERATOR_STREAMS_0_BATCH_SIZE
               value: '100'
-            - name: KAFKA_DATA_GENERATOR_TOPICS_0_BATCH_INITIALDELAY
+            - name: STREAM_DATA_GENERATOR_STREAMS_0_BATCH_INITIALDELAY
               value: '10ms'
-            - name: KAFKA_DATA_GENERATOR_TOPICS_0_BATCH_MESSAGEDELAY
+            - name: STREAM_DATA_GENERATOR_STREAMS_0_BATCH_MESSAGEDELAY
               value: '100ms'
-            - name: KAFKA_DATA_GENERATOR_TOPICS_1_TOPICNAME
+            - name: STREAM_DATA_GENERATOR_STREAMS_1_STREAMNAME
               value: 'clicks'
-            - name: KAFKA_DATA_GENERATOR_TOPICS_1_AVROSCHEMA
+            - name: STREAM_DATA_GENERATOR_STREAMS_1_AVROSCHEMA
               value: |-
                 {
                   "namespace": "com.tanzu.streaming.runtime.clickstream.etl",
@@ -122,15 +122,15 @@ spec:
                     }
                   ]
                 }
-            - name: KAFKA_DATA_GENERATOR_TOPICS_1_VALUEFORMAT
+            - name: STREAM_DATA_GENERATOR_STREAMS_1_VALUEFORMAT
               value: 'JSON'
-            - name: KAFKA_DATA_GENERATOR_TOPICS_1_SHAREDFIELDSMODE
+            - name: STREAM_DATA_GENERATOR_STREAMS_1_SHAREDFIELDSMODE
               value: 'CONSUMER'
-            - name: KAFKA_DATA_GENERATOR_TOPICS_1_BATCH_SIZE
+            - name: STREAM_DATA_GENERATOR_STREAMS_1_BATCH_SIZE
               value: '1'
-            - name: KAFKA_DATA_GENERATOR_TOPICS_1_BATCH_INITIALDELAY
+            - name: STREAM_DATA_GENERATOR_STREAMS_1_BATCH_INITIALDELAY
               value: '100ms'
-            - name: KAFKA_DATA_GENERATOR_TOPICS_1_BATCH_DELAY
+            - name: STREAM_DATA_GENERATOR_STREAMS_1_BATCH_DELAY
               value: '500ms'
-            - name: KAFKA_DATA_GENERATOR_TOPICS_1_BATCH_MESSAGEDELAY
+            - name: STREAM_DATA_GENERATOR_STREAMS_1_BATCH_MESSAGEDELAY
               value: '100ms'

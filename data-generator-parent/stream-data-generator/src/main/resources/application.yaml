@@ -1,12 +1,12 @@
-kafka:
+stream:
   data:
     generator:
       terminateAfter: 300s
 
       kafkaServer: 'localhost:9094'
       schemaRegistryServer: 'http://localhost:8081'
-      topics:
-        - topicName: kafka-stream-songs
+      streams:
+        - streamName: kafka-stream-songs
           avroSchema: |-
             {
              "namespace": "com.tanzu.streaming.runtime.playsongs.avro",
@@ -28,7 +28,7 @@ kafka:
             messageDelay: 10ms
             # The batch delay is not set defaulting to never rescheduling record batches for this topic. E.g. run once and stop.
 
-        - topicName: kafka-stream-playevents
+        - streamName: kafka-stream-playevents
           avroSchema: |-
             {
              "namespace": "com.tanzu.streaming.runtime.playsongs.avro",

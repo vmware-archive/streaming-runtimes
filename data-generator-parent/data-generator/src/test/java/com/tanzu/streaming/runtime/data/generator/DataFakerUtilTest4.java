@@ -60,7 +60,7 @@ public class DataFakerUtilTest4 {
 				+ "}";
 
 		List<GenericData.Record> users = DataUtil.toList(new DataGenerator(
-				DataUtil.toSchema(usersSchema), 3));
+				DataUtil.contentToSchema(usersSchema), 3));
 		users.forEach(System.out::println);
 
 		String usersSchemaWithFaker = "{\n"
@@ -91,7 +91,7 @@ public class DataFakerUtilTest4 {
 				+ "  ]\n"
 				+ "}";
 
-		DataUtil.toList(new DataGenerator(DataUtil.toSchema(usersSchemaWithFaker), 3))
+		DataUtil.toList(new DataGenerator(DataUtil.contentToSchema(usersSchemaWithFaker), 3))
 				.forEach(System.out::println);
 
 	}

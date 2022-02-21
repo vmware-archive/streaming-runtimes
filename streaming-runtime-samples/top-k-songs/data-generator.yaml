@@ -49,16 +49,16 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
-            - name: KAFKA_DATA_GENERATOR_KAFKASERVER
+            - name: STREAM_DATA_GENERATOR_KAFKASERVER
               value: kafka.$(MY_NAMESPACE).svc.cluster.local:9092
-            - name: KAFKA_DATA_GENERATOR_SCHEMAREGISTRYSERVER
+            - name: STREAM_DATA_GENERATOR_SCHEMAREGISTRYSERVER
               value: http://s-registry.$(MY_NAMESPACE).svc.cluster.local:8081
-            - name: KAFKA_DATA_GENERATOR_TERMINATEAFTER
+            - name: STREAM_DATA_GENERATOR_TERMINATEAFTER
               value: '200h'
 
-            - name: KAFKA_DATA_GENERATOR_TOPICS_0_TOPICNAME
+            - name: STREAM_DATA_GENERATOR_STREAMS_0_STREAMNAME
               value: 'kafka-stream-songs'
-            - name: KAFKA_DATA_GENERATOR_TOPICS_0_AVROSCHEMA
+            - name: STREAM_DATA_GENERATOR_STREAMS_0_AVROSCHEMA
               value: |-
                 {
                  "namespace": "com.tanzu.streaming.runtime.playsongs.avro",
@@ -73,18 +73,18 @@ spec:
                      {"name": "genre",   "type": "string", "doc" : "#{music.genres}"}
                  ]
                 }
-            - name: KAFKA_DATA_GENERATOR_TOPICS_0_VALUEFORMAT
+            - name: STREAM_DATA_GENERATOR_STREAMS_0_VALUEFORMAT
               value: 'AVRO_SCHEMA_REGISTRY'
-            - name: KAFKA_DATA_GENERATOR_TOPICS_0_BATCH_SIZE
+            - name: STREAM_DATA_GENERATOR_STREAMS_0_BATCH_SIZE
               value: '100'
-            - name: KAFKA_DATA_GENERATOR_TOPICS_0_BATCH_INITIALDELAY
+            - name: STREAM_DATA_GENERATOR_STREAMS_0_BATCH_INITIALDELAY
               value: '1ms'
-            - name: KAFKA_DATA_GENERATOR_TOPICS_0_BATCH_MESSAGEDELAY
+            - name: STREAM_DATA_GENERATOR_STREAMS_0_BATCH_MESSAGEDELAY
               value: '10ms'
 
-            - name: KAFKA_DATA_GENERATOR_TOPICS_1_TOPICNAME
+            - name: STREAM_DATA_GENERATOR_STREAMS_1_STREAMNAME
               value: 'kafka-stream-playevents'
-            - name: KAFKA_DATA_GENERATOR_TOPICS_1_AVROSCHEMA
+            - name: STREAM_DATA_GENERATOR_STREAMS_1_AVROSCHEMA
               value: |-
                 {
                  "namespace": "com.tanzu.streaming.runtime.playsongs.avro",
@@ -95,13 +95,13 @@ spec:
                    {"name": "duration", "type": "long", "doc":"#{number.number_between '30000','1000000'}" }
                  ]
                 }
-            - name: KAFKA_DATA_GENERATOR_TOPICS_1_VALUEFORMAT
+            - name: STREAM_DATA_GENERATOR_STREAMS_1_VALUEFORMAT
               value: 'AVRO_SCHEMA_REGISTRY'
-            - name: KAFKA_DATA_GENERATOR_TOPICS_1_BATCH_SIZE
+            - name: STREAM_DATA_GENERATOR_STREAMS_1_BATCH_SIZE
               value: '1'
-            - name: KAFKA_DATA_GENERATOR_TOPICS_1_BATCH_INITIALDELAY
+            - name: STREAM_DATA_GENERATOR_STREAMS_1_BATCH_INITIALDELAY
               value: '10ms'
-            - name: KAFKA_DATA_GENERATOR_TOPICS_1_BATCH_DELAY
+            - name: STREAM_DATA_GENERATOR_STREAMS_1_BATCH_DELAY
               value: '100ms'
-            - name: KAFKA_DATA_GENERATOR_TOPICS_1_BATCH_MESSAGEDELAY
+            - name: STREAM_DATA_GENERATOR_STREAMS_1_BATCH_MESSAGEDELAY
               value: '100ms'
