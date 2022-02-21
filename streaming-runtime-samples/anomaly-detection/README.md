@@ -70,7 +70,7 @@ kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runti
 kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-samples/anomaly-detection/data-generator.yaml' -n default
 ```
 
-- Follow the [explore kafka](../streaming-runtime-samples#explore-kafka-topics) and [explore Rabbit](../README.md#explore-kafka-topics) to see what data is generated and how it is processed though the pipeline. 
+- Follow the [explore kafka](../#explore-kafka-topics) and [explore Rabbit](../#explore-kafka-topics) to see what data is generated and how it is processed though the pipeline. 
 
 - To delete the data pipeline and the data generator:
 ```shell
