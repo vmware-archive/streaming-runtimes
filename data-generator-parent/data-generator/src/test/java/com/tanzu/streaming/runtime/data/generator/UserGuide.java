@@ -1,20 +1,18 @@
 package com.tanzu.streaming.runtime.data.generator;
 
-import java.util.List;
 import java.util.Random;
 
 import com.tanzu.streaming.runtime.data.generator.context.SharedFieldValuesContext;
-import org.apache.avro.generic.GenericData;
 
-public class QuickUserGuide {
+public class UserGuide {
 
 	public static void main(String[] args) {
-		new QuickUserGuide().case0();
-		new QuickUserGuide().case1();
-		new QuickUserGuide().case2();
-		new QuickUserGuide().case3();
-		new QuickUserGuide().case4();
-		new QuickUserGuide().case5();
+		new UserGuide().case0();
+		new UserGuide().case1();
+		new UserGuide().case2();
+		new UserGuide().case3();
+		new UserGuide().case4();
+		new UserGuide().case5();
 	}
 
 	private void case0() {
@@ -79,6 +77,7 @@ public class QuickUserGuide {
 	}
 
 	private void case4() {
+
 // Let's introduce the Click stream data (click.yaml)  as well.
 		System.out.println("Case 4");
 		SharedFieldValuesContext sharedFieldValuesContext = new SharedFieldValuesContext(new Random());
@@ -87,7 +86,7 @@ public class QuickUserGuide {
 				DataUtil.uriToSchema("classpath:/avro/userguide/user3.yaml"), 5,
 				sharedFieldValuesContext));
 
-		System.out.println("---");
+		System.out.println("=========================================================================");
 
 		DataUtil.print(new DataGenerator(
 				DataUtil.uriToSchema("classpath:/avro/userguide/click.yaml"), 5,
@@ -114,17 +113,18 @@ public class QuickUserGuide {
 		System.out.println("Case 5");
 
 		// The SharedFieldValuesContext help correlation
-		SharedFieldValuesContext sharedFieldValuesContext = new SharedFieldValuesContext(new Random());
+		try (SharedFieldValuesContext sharedFieldValuesContext = new SharedFieldValuesContext(new Random())) {
 
-		DataUtil.print(new DataGenerator(
-				DataUtil.uriToSchema("classpath:/avro/userguide/user4.yaml"), 5,
-				sharedFieldValuesContext));
+			DataUtil.print(new DataGenerator(
+					DataUtil.uriToSchema("classpath:/avro/userguide/user4.yaml"), 3,
+					sharedFieldValuesContext));
 
-		System.out.println("---");
+			System.out.println("---");
 
-		DataUtil.print(new DataGenerator(
-				DataUtil.uriToSchema("classpath:/avro/userguide/click1.yaml"), 5,
-				sharedFieldValuesContext));
+			DataUtil.print(new DataGenerator(
+					DataUtil.uriToSchema("classpath:/avro/userguide/click1.yaml"), 3,
+					sharedFieldValuesContext));
+		}
 
 //		{"id":"238-73-3972","sendAt":1645226876143,"fullName":"Kristle Stehr","email":"kristle.stehr@gmail.com","age":68}
 //		{"id":"136-86-3142","sendAt":1645226876154,"fullName":"Dr. Galen Stokes","email":"dr..galen.stokes@yahoo.com","age":43}

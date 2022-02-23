@@ -1,0 +1,11 @@
+---
+namespace: my.petshop
+type: record
+name: PetShop
+fields:
+  - name: pet_shop
+    type: string
+  - name: cats
+    type:
+      type: map
+      values: string

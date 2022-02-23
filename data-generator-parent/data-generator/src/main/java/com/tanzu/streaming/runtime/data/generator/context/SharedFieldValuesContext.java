@@ -16,6 +16,8 @@
 
 package com.tanzu.streaming.runtime.data.generator.context;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -36,7 +38,7 @@ import org.slf4j.LoggerFactory;
  *  - The field values in the correlation context can be generated from multiple schemas.
  *  - The field values in the correlation context can be used in multiple target schemas.
  */
-public class SharedFieldValuesContext {
+public class SharedFieldValuesContext implements Closeable {
 
 	protected static final Logger logger = LoggerFactory.getLogger(SharedFieldValuesContext.class);
 	/**
@@ -96,6 +98,17 @@ public class SharedFieldValuesContext {
 		}
 		finally {
 			this.readLock.unlock();
+		}
+	}
+
+	@Override
+	public void close() {
+		try {
+			this.writeLock.lock();
+			this.state.clear();
+		}
+		finally {
+			this.writeLock.unlock();
 		}
 	}
 }

@@ -238,10 +238,10 @@ public class DataGenerator implements Iterable<GenericData.Record> {
 
 			try {
 				//	Extract the key/value expressions from Record's doc.
-				//	Multiple key=value pairs can be chained with the help of the ';' separator.
+				//	Multiple key=value pairs are allowed, using the ';' separator.
 				//	The kay/values resolved from the record's Doc are kept in the SpEL context and can be used by the  field expressions.
-				//	The `unique_on=...` name is reserved to set the keyed field name for the record.
-				//	The `to_share=...` name is reserved for sharing field values with multiple generators.
+				//	The `unique_on` name is reserved to set the keyed field name for the record.
+				//	The `to_share` name is reserved for sharing field values with multiple generators.
 				//	The `faker` name is reserved for holding a Faker instance. Use [[#faker.xxx()]] expressions to use it.
 				resolvedRecordKeyValues = parseDocToKeyValuePairs(record.getSchema().getDoc())
 						.entrySet().stream().collect(
@@ -282,7 +282,7 @@ public class DataGenerator implements Iterable<GenericData.Record> {
 				record = this.replaceWithUniqueFieldRecord(record, resolvedRecordKeyValues.get(UNIQUE_ON_VARIABLE_NAME));
 			}
 			catch (Exception e) {
-				logger.error("Failed to generate record data", e);
+				logger.error(String.format("Returns a NULL record for Schema: %s", schema.getName()), e);
 				return null;
 			}
 			finally {
