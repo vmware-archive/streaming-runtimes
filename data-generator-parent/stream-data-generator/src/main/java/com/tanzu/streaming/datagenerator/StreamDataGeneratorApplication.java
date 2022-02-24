@@ -66,57 +66,59 @@ public class StreamDataGeneratorApplication implements CommandLineRunner {
 	public void run(String... args) {
 
 		long randomSeed = System.currentTimeMillis();
-		SharedFieldValuesContext sharedFieldsContext = new SharedFieldValuesContext(new Random(randomSeed));
 
-		ScheduledExecutorService scheduler =
-				Executors.newScheduledThreadPool(this.properties.getScheduledThreadPoolSize());
+		try (SharedFieldValuesContext sharedFieldsContext = new SharedFieldValuesContext(new Random(randomSeed))) {
 
-		AtomicBoolean exitFlag = new AtomicBoolean(false);
+			ScheduledExecutorService scheduler =
+					Executors.newScheduledThreadPool(this.properties.getScheduledThreadPoolSize());
 
-		List<ScheduledFuture> scheduledFutures = new ArrayList<>();
+			AtomicBoolean exitFlag = new AtomicBoolean(false);
 
-		for (StreamDataGeneratorApplicationProperties.RecordStream topicProperties : this.properties.getStreams()) {
+			List<ScheduledFuture> scheduledFutures = new ArrayList<>();
 
-			MutuallyExclusiveConfigurationPropertiesException.throwIfMultipleNonNullValuesIn((entries) -> {
-				entries.put("avro-schema", topicProperties.getAvroSchema());
-				entries.put("avro-schema-uri", topicProperties.getAvroSchemaUri());
-			});
+			for (StreamDataGeneratorApplicationProperties.RecordStream topicProperties : this.properties.getStreams()) {
 
-			Schema avroSchema = StringUtils.hasText(topicProperties.getAvroSchema()) ?
-					DataUtil.contentToSchema(topicProperties.getAvroSchema()) :
-					DataUtil.resourceToSchema(topicProperties.getAvroSchemaUri());
+				MutuallyExclusiveConfigurationPropertiesException.throwIfMultipleNonNullValuesIn((entries) -> {
+					entries.put("avro-schema", topicProperties.getAvroSchema());
+					entries.put("avro-schema-uri", topicProperties.getAvroSchemaUri());
+				});
 
-			DataGenerator dataGenerator =
-					new DataGenerator(avroSchema, topicProperties.getBatch().getSize(),
-							!UTF_8_FOR_STRING, sharedFieldsContext, randomSeed);
+				Schema avroSchema = StringUtils.hasText(topicProperties.getAvroSchema()) ?
+						DataUtil.contentToSchema(topicProperties.getAvroSchema()) :
+						DataUtil.resourceToSchema(topicProperties.getAvroSchemaUri());
 
-			// TODO parametrize the key serializer.
-			MessageSender messageSender = new KafkaMessageSender(
-					this.properties.getKafkaServer(), this.properties.getSchemaRegistryServer(),
-					topicProperties.getValueFormat(), topicProperties.getStreamName(), LongSerializer.class);
+				DataGenerator dataGenerator =
+						new DataGenerator(avroSchema, topicProperties.getBatch().getSize(),
+								!UTF_8_FOR_STRING, sharedFieldsContext, randomSeed);
 
-			RecordSenderThread recordSenderThread = new RecordSenderThread(
-					messageSender, dataGenerator, topicProperties, exitFlag);
+				// TODO parametrize the key serializer.
+				MessageSender messageSender = new KafkaMessageSender(
+						this.properties.getKafkaServer(), this.properties.getSchemaRegistryServer(),
+						topicProperties.getValueFormat(), topicProperties.getStreamName(), LongSerializer.class);
 
-			ScheduledFuture<?> future = scheduler.scheduleWithFixedDelay(
-					recordSenderThread,
-					topicProperties.getBatch().getInitialDelay().toMillis(),
-					topicProperties.getBatch().getDelay().toMillis(),
-					TimeUnit.MILLISECONDS);
+				RecordSenderThread recordSenderThread = new RecordSenderThread(
+						messageSender, dataGenerator, topicProperties, exitFlag);
 
-			scheduledFutures.add(future);
+				ScheduledFuture<?> future = scheduler.scheduleWithFixedDelay(
+						recordSenderThread,
+						topicProperties.getBatch().getInitialDelay().toMillis(),
+						topicProperties.getBatch().getDelay().toMillis(),
+						TimeUnit.MILLISECONDS);
+
+				scheduledFutures.add(future);
+			}
+
+			try {
+				Thread.sleep(this.properties.getTerminateAfter().toMillis());
+			}
+			catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+
+			exitFlag.set(true);
+			scheduledFutures.forEach(future -> future.cancel(true));
+			awaitTerminationAfterShutdown(scheduler);
 		}
-
-		try {
-			Thread.sleep(this.properties.getTerminateAfter().toMillis());
-		}
-		catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-
-		exitFlag.set(true);
-		scheduledFutures.forEach(future -> future.cancel(true));
-		awaitTerminationAfterShutdown(scheduler);
 	}
 
 	private void awaitTerminationAfterShutdown(ExecutorService threadPool) {

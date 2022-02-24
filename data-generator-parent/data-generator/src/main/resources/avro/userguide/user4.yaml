@@ -6,7 +6,8 @@ doc: "unique_on=id;name=#{name.fullName};to_share=id"
 fields:
   - name: id
     type: string
-    doc: "#{id_number.valid}"
+    doc: "#{options.option '100-00-0000','200-00-0000'}"
+#    doc: "#{id_number.valid}"
 #    doc: "[[#faker.idNumber().valid()]]"
   - name: sendAt
     type:
