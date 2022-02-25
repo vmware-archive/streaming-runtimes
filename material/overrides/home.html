@@ -1,0 +1,468 @@
+{% extends "overrides/main-styles.html" %}
+
+<!-- Render hero under tabs -->
+{% block tabs %}
+{{ super() }}
+
+<!-- Hero for landing page -->
+<!-- 1st Section -->
+<section class="tx-container">
+    <div class="md-grid md-typeset">
+        <div class="tx-hero">
+
+            <!-- Hero image -->
+            <div class="tx-hero__image">
+                <img
+                        src="assets/images/waves.png"
+                        alt=""
+                        width="600"
+                        draggable="false"
+                >
+            </div>
+
+            <!-- Hero content -->
+            <div class="tx-hero__content">
+                <h1  id="leverage-architecture">Streaming Runtime</h1>
+                <p>
+                    Kubernetes' execution environment, designed to simplify the development and the operation of streaming data processing applications.
+                    It enables complex data processing scenarios including Time Windowing Aggregation, streaming joins as well as user-defined functions to process the streamed data.
+                    <br>
+                </p><br>
+
+                <p>
+
+                <a
+                        href="{{ page.next_page.url | url }}"
+                        title="{{ page.next_page.title | e }}"
+                        class="md-button md-button--primary"
+                >
+                    Get started
+                </a><br>
+
+                <a
+                    href="https://github.com/vmware-tanzu/streaming-runtimes"
+                    title="{{ lang.t('source.link.title') }}"
+                    class="md-button">
+                    Contribute on GitHub
+                    <img
+                        class = icon
+                        src="assets/images/icons/github-white.svg"
+                        alt=""
+                        width="24"
+                        draggable="false"
+                    >
+                </a><br>
+
+                <a
+                    href="https://join.slack.com/share/enQtMzE3MTc4MjY3NzM2MS1mZDdmNzQyYTQwNTljZjc0NWY1Y2M4NTRmNThlODA0YmVlMGIwMDUxZmVmYzAzNjFkOTUwMWI2NzMwNzAzY2Q4"
+                    title="{{ page.next_page.title | e }}"
+                    class="md-button md-button--primary">
+                    Join us on Streaming Runtime Slack
+                    <img
+                            class = icon
+                            src="assets/images/logos/slack.png"
+                            alt=""
+                            width="22"
+                            draggable="false"
+                    >
+                </a>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 2nd Section -->
+<!-- WHAT IS SR? -->
+<section class="tx-container-2">
+    <div class="md-grid md-typeset">
+        <div class="tx-hero__image-2" style="margin-top: 50px">
+            <img
+                    src="assets/images/pipelines.png"
+                    alt=""
+                    width="800"
+                    draggable="false"
+                    align="left"
+            >
+        </div>
+        <div class="tx-hero">
+            <!-- Hero content -->
+            <div class="tx-hero__content-2">
+                <h1 id="what-is-sr">What is a Streaming Runtime?</h1><br>
+
+                <p>
+                    The Streaming Runtime will provide another leg of our app-aware platform, supporting a set of
+                    workloads which don’t align with the current components of CNR (Knative Serving and Knative Eventing).
+
+                    Our focus is on creating reusable, high quality Cloud Infrastructure code, through our core components.
+
+                </p><br>
+
+                <a
+                        href="https://TODO"
+                        title="{{ page.next_page.title | e }}"
+                        class="md-button md-button"
+                >
+                    Product Features
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 3rd Section -->
+<!-- WHY SR? -->
+<section class="tx-container-3">
+    <div class="md-grid md-typeset">
+        <div class="tx-hero">
+
+            <!-- Hero image -->
+            <div class="tx-hero__image-3">
+                <img
+                        src="assets/images/working.png"
+                        alt=""
+                        width="2800"
+                        draggable="false"
+                >
+            </div>
+
+            <!-- Hero content -->
+            <div class="tx-hero__content_small">
+                <br>
+                <h1 id="why-sr">Why Streaming Runtime?</h1><br>
+
+                <p>
+                    Our Streaming Runtime aims to standardize and streamline the development and management of polyglot
+                    streaming applications by leveraging Kubernetes custom resource definitions to define application architecture.
+
+                    End-users will realize the following benefits:
+
+                    <br>
+                    <strong>
+                            - A standardized container runtime contract which moves much of the stream management (reading, joins, offset management and checkpointing) to runtime managed components
+                    </strong><br>
+                    <strong>
+                            - Resource autoscaling to react to changes in event of throughput requirements.
+                    </strong><br>
+                    <strong>
+                        - Declarative (gitops-friendly) management tooling for application management, including rollout and multi-cluster deployment
+                    </strong><br>
+                    <strong>
+                        - Use of OCI images enables integration with existing supply-chain tooling. Use of function frameworks to build individual streaming processors mitigates some of the impedance mismatch between thinking in terms of stream transformations and interfacing with the streaming runtime
+                    </strong><br>
+                </p><br>
+
+                <a
+                        href="https://TO-DO/"
+                        title="{{ page.next_page.title | e }}"
+                        class="md-button"
+                >
+                    Find out more 'Whys'
+                </a>
+
+                <a
+                        href="https://TO-DO/"
+                        title="{{ lang.t('source.link.title') }}"
+                        class="md-button md-button--primary">
+                    Streaming Runtime vs Competition
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 4th Section -->
+<!-- TECH STACK  -->
+<section class="tx-container-2">
+    <div class="md-grid md-typeset">
+        <div class="tx-hero__image-2">
+            <img
+                    src="assets/images/stack.png"
+                    alt=""
+                    width="800"
+                    draggable="false"
+                    align="left"
+            >
+        </div>
+        <div class="tx-hero">
+            <!-- Hero content -->
+            <div class="tx-hero__content-2">
+                <h1 id="tech-stack">Our tech stack</h1>
+
+                <p>
+                <strong>Streaming-Lite:</strong> Applications which rely on time-ordered delivery of events for a single key, but which do not perform any cross-key operations like joins or repartitioning. These applications include windowing in some cases but not others. Typically, streaming-lite applications run as pipelined workloads in an existing scheduler framework such as TAS or Kubernetes. Examples include ETL applications and time-series analysis. An example competitor here is AWS Kinesis used with AWS Lambda.
+                    <br>
+                    <strong>Streaming-Fluent:</strong> Applications which perform cross-stream analysis using joins and/or repartitioning, but which use a well-defined set of constructs provided by underlying primitives. Typically, streaming-fluent applications run as standard workloads within an existing scheduler framework such as TAS or Kubernetes. Examples include Spring Cloud Data Flow and Kafka Streams.
+                    <br>
+                        <strong>Streaming-Expert:</strong> Applications which may perform novel or dynamic stream operations (for example, windowing based on data conditions rather than time or rows), driven by application code rather than well-defined constructs. These applications typically using a pool of “worker nodes”, where the code and data is distributed to nodes using a framework-specific technique. Examples include Apache Spark, Beam, and Flink.
+                    <br>
+                </p>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 5th Section  -->
+<!-- WORK WITH US -->
+<!--<section class="tx-container-4">-->
+<!--    <div class="md-grid md-typeset">-->
+<!--        <div class="tx-hero">-->
+
+<!--            &lt;!&ndash; Hero image &ndash;&gt;-->
+<!--            <div class="tx-hero__image-3">-->
+<!--                <img-->
+<!--                        src="assets/images/hero6"-->
+<!--                        alt=""-->
+<!--                        width="1200"-->
+<!--                        draggable="false"-->
+<!--                >-->
+<!--            </div>-->
+
+            <!-- Hero content -->
+<!--            <div class="tx-hero__content_small">-->
+<!--                <h1 id="work-with-us">Work with us</h1>-->
+<!--                <p>-->
+<!--                    <i>Get to know how we work at Binbash Leverage™ 🚀✨☁</i><br>-->
+<!--                     <strong>-->
+<!--                    <a href="https://leverage.binbash.com.ar/work-with-us/">Collaboration Methodology</a>-->
+<!--                        </strong> <br>-->
+<!--                     <strong>-->
+<!--                    <a href="https://leverage.binbash.com.ar/work-with-us/support/">Support</a>-->
+<!--                        </strong> <br>-->
+<!--                     <strong>-->
+<!--                    <a href="https://leverage.binbash.com.ar/work-with-us/contribute/">Contribute</a>-->
+<!--                        </strong> <br>-->
+<!--                     <strong>-->
+<!--                    <a href="https://leverage.binbash.com.ar/work-with-us/careers/">Careers</a>-->
+<!--                        </strong> <br>-->
+<!--                     <strong>-->
+<!--                    <a href="https://leverage.binbash.com.ar/work-with-us/faqs/">FAQs</a>-->
+<!--                </strong> <br>-->
+
+<!--&lt;!&ndash;                    <a-->
+<!--                            href="https://drive.google.com/file/d/1bwjSdnVqc-fh2RqfO0s1VMt-Tv7Ushyi/view?usp=sharing"-->
+<!--                            title="{{ page.next_page.title | e }}"-->
+<!--                            class="md-button md-button&#45;&#45;primary"-->
+<!--                    >-->
+<!--                        Action Plan-->
+<!--                    </a>&ndash;&gt;-->
+
+<!--                    <a-->
+<!--                            href="https://www.binbash.com.ar/team"-->
+<!--                            title="{{ page.next_page.title | e }}"-->
+<!--                            class="md-button md-button&#45;&#45;primary">-->
+<!--                        Our Team-->
+<!--                    </a><br>-->
+
+<!--                </p>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</section>-->
+
+<!--  6th Section  -->
+<!--  TESTIMONIALS -->
+<!--<section class="tx-container-testimonial">
+
+    <div>
+        &lt;!&ndash; Titulo &ndash;&gt;
+        <h1 class=testimonial-header id="testimonials" style="text-align: center">
+            Trusted by our customers
+        </h1>
+    </div>
+
+    <div class="container-testimonial">
+        <div class="testimonial-card">
+            <div class="text">
+                "We utilized Binbash to help get our DevOps infrastructure launched and manage all aspects of our AWS-based setup.
+                Their security and compliance focus turned out to be a great fit for our HIPAA regulation needs.<br>
+                We’ve been very pleased with their responsiveness and thoroughness with regards to our technology needs
+                and would be happy to work with them again in the future."
+            </div>
+
+            <div class="footer">
+                <div class="image" style=" background:no-repeat center/cover url(assets/images/testimonials/yury.yakubchyk.circle.png);">
+                </div>
+                <h3 class='person'>
+                    <a href="https://www.linkedin.com/in/yuryyak/">Yury Yakubchyk</a>
+                    </h3>
+
+                <h5 class='person-title' style="text-align:center;">Founder & CEO<br>
+                    <a href="https://www.joinsprouttherapy.com/" style="color: aquamarine">joinsprouttherapy.com</a><br>
+                    <a href="https://www.lifehousehotels.com/" style="color: aquamarine">lifehousehotels.com</a><br>
+                    (Multiple US Industries)
+                </h5>
+            </div>
+        </div>
+
+        <div class="testimonial-card">
+            <div class="text">
+                "I've worked with Binbash for almost 3 years and my experience was absolutely positive.<br>
+                I found them to be very knowledgeable and reliable as well as open minded and willing to try new
+                technologies (but always considering trade-offs).<br>
+                Communication is excellent (even if things go wrong).<br>
+                Great Team of professionals!"
+            </div>
+
+            <div class="footer">
+                <div class="image" style="background:no-repeat center/cover url(assets/images/testimonials/max.ivanov.circle.png);">
+                </div>
+                <h3 class='person'> <a href="https://www.toptal.com/resume/max-ivanov">Max Ivanov</a>
+                </h3>
+                <h5 class='person-title' style="text-align:center;"> Software Architect <br> (Media Streaming Industry)</h5>
+            </div>
+        </div>
+
+        <div class="testimonial-card">
+            <div class="text">
+                "Binbash has a focused and highly productive professional team.<br>
+                They have exceptional tech skills and effectively transmit and implement their solutions, such as Leverage.
+                Thanks to their collaboration we managed to have a superlative product hosted in AWS.
+                It is undoubtedly a company with which I would like to work in any challenge that lies ahead"
+            </div>
+
+            <div class="footer">
+                <div class="image" style="background:no-repeat center/cover url(assets/images/testimonials/martin.vago.circle.png);">
+                </div>
+                <h3 class='person'> <a href="https://www.linkedin.com/in/mvago/">Martín Vago</a>
+                </h3>
+                <h5 class='person-title' style="text-align:center;">IT & CloudOps Manager <br>
+                    <a href="https://www.tunubi.com" style="color: aquamarine">tunubi.com</a><br>
+                    (Fintech Industry)
+                </h5>
+            </div>
+        </div>
+
+    </div><br>
+
+    <div class="tx-hero">
+        &lt;!&ndash; Hero content &ndash;&gt;
+        <div class="tx-hero__content-2" style="float: left">
+            <a
+                    href="../../work-with-us/testimonials/"
+                    title="{{ page.next_page.title | e }}"
+                    class="md-button md-typeset"
+                    style="
+                        font-family: Roboto;
+                        font-weight: 700;
+                        background: #172A45;
+                        padding-top: 1rem;
+                        padding-bottom: 1rem;
+                        padding-right: 2rem;
+                        padding-left: 2rem;
+                        border: 0.1rem solid;
+                        border-radius: .1rem;
+                          "
+            >
+                More testimonials
+            </a>
+        </div>
+    </div><br>
+
+</section>-->
+
+<!--     7th Section    -->
+<!-- SUBSCRIPTION PLANS -->
+<!--<section>
+    &lt;!&ndash; Contenedor &ndash;&gt;
+    <div class="pricing-wrapper clearfix">
+        &lt;!&ndash; Titulo &ndash;&gt;
+        <h1 class="pricing-table-title" id="leverage-subscription" style="text-align: left">
+            Subscription Plans
+        </h1>
+
+        <div class="pricing-table">
+            <h3 class="pricing-title">Community (Free)</h3>
+            <div class="price">$0<sup>/ month</sup></div>
+            &lt;!&ndash; Contratar / Contact Us &ndash;&gt;
+            <div class="table-buy">
+                <p><sup> Open Source ❤️</sup></p>
+                <a href="https://github.com/binbashar"
+                   class="pricing-action">Free</a>
+            </div>
+        </div>
+
+        <div class="pricing-table">
+            <h3 class="pricing-title">Basic</h3>
+            <div class="price">$3400<sup>/ month</sup></div>
+            &lt;!&ndash; Contratar / Contact Us &ndash;&gt;
+            <div class="table-buy">
+                <p>$3400<sup>/ month (40hs)</sup></p>
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLScgYmguLk5lDgrDa7HEt8hZFsRKncCf0XMezbDRsXt4mixg4Q/viewform?usp=sf_link"
+                   class="pricing-action">Contact Us</a>
+            </div>
+        </div>
+
+        <div class="pricing-table recommended">
+            <h3 class="pricing-title">Premium</h3>
+            <div class="price">$6400<sup>/ month</sup></div>
+            &lt;!&ndash; Contratar / Contact Us &ndash;&gt;
+            <div class="table-buy">
+                <p>$6400<sup>/ month (80hs)</sup></p>
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLScgYmguLk5lDgrDa7HEt8hZFsRKncCf0XMezbDRsXt4mixg4Q/viewform?usp=sf_link"
+                   class="pricing-action">Contact Us</a>
+            </div>
+        </div>
+
+        <div class="pricing-table">
+            <h3 class="pricing-title">Business</h3>
+            <div class="price">$90<sup>/ hour</sup></div>
+            &lt;!&ndash; Contratar / Contact Us &ndash;&gt;
+            <div class="table-buy">
+                <p>$10800<sup>/ month (120hs)</sup></p>
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLScgYmguLk5lDgrDa7HEt8hZFsRKncCf0XMezbDRsXt4mixg4Q/viewform?usp=sf_link"
+                   class="pricing-action">Contact Us</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="tx-hero">
+        &lt;!&ndash; Hero content &ndash;&gt;
+        <div class="tx-hero__content-2" style="float: left">
+            <a
+                    href="../../work-with-us/subscription-plans"
+                    title="{{ page.next_page.title | e }}"
+                    class="md-button md-typeset"
+                    style="
+                        font-family: Roboto;
+                        font-weight: 700;
+                        background: #172A45;
+                        padding-top: 1rem;
+                        padding-bottom: 1rem;
+                        padding-right: 2rem;
+                        padding-left: 2rem;
+                        border: 0.1rem solid;
+                        border-radius: .1rem;
+                          "
+            >
+                Subscription Plans Details
+            </a>
+        </div>
+    </div>
+
+</section>-->
+
+<!-- Footer Section -->
+<section class="tx-footer">
+    <div class="md-grid md-typeset">
+        <div class="tx-hero">
+            <!-- Hero content -->
+            <div class="tx-hero__content-footer">
+                <p style="text-align:center;">
+                    © 2022
+                    <strong>
+                        <a href="https://tanzu.vmware.com/">VMware, Inc</a>
+                    </strong>. All rights reserved
+
+                    || Contact us 📧
+                    <strong>
+                        <a href="https://mail.google.com/mail/?view=cm&fs=1&to=info@binbash.com.ar&su=Leverage Contact
+                                &body=Dear Leverage Team,">info@binbash.com.ar</a>
+                    </strong>.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

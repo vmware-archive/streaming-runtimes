@@ -1,0 +1,19 @@
+# Overview
+
+Kubernetes' execution environment, designed to simplify the development and the operation of streaming data processing applications.
+It enables complex data processing scenarios including Time Windowing Aggregation, streaming joins as well as user-defined functions to process the streamed data.
+
+For full documentation visit [mkdocs.org](https://www.mkdocs.org).
+
+## Documentation
+
+The [Streaming Runtime Samples](./samples) offers a good starting point to start learning how to build streaming pipeline and what are the components involved.
+
+## Contributing
+
+The streaming-runtimes project team welcomes contributions from the community. Before you start working with streaming-runtimes, please
+read our [Developer Certificate of Origin](https://cla.vmware.com/dco). All contributions to this repository must be
+signed as described on that page. Your signature certifies that you wrote the patch or have the right to pass it on
+as an open-source patch. For more detailed information, refer to [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## License
