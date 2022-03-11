@@ -55,93 +55,93 @@ class MessageService(MessageService_pb2_grpc.MessagingServiceServicer):
 The [top-k-songs.yaml](streaming-pipeline.yaml) implements the above pipeline using the Streaming-Runtime custom resources: `ClusterStream`, `Stream` and `Processor`.
 
 
-![pipeline](top-k-songs.jpg)
+![pipeline](top-k-songs-arch.svg)
 
-(The use case is inspired by the https://github.com/confluentinc/examples/tree/6.0.4-post/music)
+The use case is inspired by the [music](https://github.com/confluentinc/examples/tree/6.0.4-post/music) Kafka sample.
 
+## Quick start
 
-# Quick start
-
-
-* Install the streaming-runtime operator:
-```shell
-kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-operator/install.yaml' -n streaming-runtime
-```
+* Follow the [Streaming Runtime Install](../../install.md) instructions to instal the operator.
 
 * Deploy the Top-K pipeline.
-```shell
-kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-samples/top-k-songs/streaming-pipeline.yaml' -n streaming-runtime
-```
-  * alternatively you can use the inline-SQL Stream data schema representation:
-  ```shell
-  kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-sample/top-k-songs/streaming-pipeline-inline-sql-schema.yaml' -n streaming-runtime
-  ```
-  and inline-avro data schema representations:
-  ```shell
-  kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-sample/top-k-songs/streaming-pipeline-inline-avro-schema.yaml' -n streaming-runtime
-  ```
 
+    Three alternative deployment configurations are provided to demonstrate different approaches to define the payload schemas.
+
+    === "streaming-pipeline.yaml"
+
+        ```shell
+        kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-samples/top-k-songs/streaming-pipeline.yaml' -n streaming-runtime
+        ```
+
+    === "with SQL schema"  
+ 
+        ```shell
+        kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-sample/top-k-songs/streaming-pipeline-inline-sql-schema.yaml' -n streaming-runtime
+        ``` 
+
+    === "with Avro schema"
+
+        ```shell
+        kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-sample/top-k-songs/streaming-pipeline-inline-avro-schema.yaml' -n streaming-runtime
+        ```
 
 * Start the Songs and PlayEvents message generator. Messages are encoded in Avro, using the same schemas defined
   by the `kafka-stream-songs` and `kafka-stream-playevents` Streams and send to the topics defined in those streams.
-```shell
-kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-sample/top-k-songs/data-generator.yaml' -n default
-```
 
-(or the legacy generator:)
-```shell
-kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-sample/top-k-songs/songs-generator.yaml' -n default
-```
-
-* Delete the Top-k songs pipeline and the demo song generator:
-```shell
-kubectl delete srs,srcs,srp --all -n streaming-runtime 
-kubectl delete deployments -l app=top-k-songs-data-generator
-
-#to stop the legacy generator
-kubectl delete deployments -l app=songs-generator
-```
+    ```shell
+    kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-sample/top-k-songs/data-generator.yaml' -n default
+    ```
 
 * Check the topics
 
-Use the `kubectl get all` to find the Kafka broker pod name and then
-```shell
-kubectl exec -it pod/<your-kafka-pod> -- /bin/bash`
-```
-to SSH to kafka broker container.
+    Use the `kubectl get all` to find the Kafka broker pod name and then
+    ```shell
+    kubectl exec -it pod/<your-kafka-pod> -- /bin/bash`
+    ```
+    to SSH to kafka broker container.
 
-From within the kafka-broker container use the bin utils to list the topics or check their content:
+    From within the kafka-broker container use the bin utils to list the topics or check their content:
 
-```shell
-/opt/kafka/bin/kafka-topics.sh --list --bootstrap-server localhost:9092
-```
-```shell
-/opt/kafka/bin/kafka-console-consumer.sh --topic kafka-stream-songs --from-beginning --bootstrap-server localhost:9092
-/opt/kafka/bin/kafka-console-consumer.sh --topic kafka-stream-playevents --from-beginning --bootstrap-server localhost:9092
-/opt/kafka/bin/kafka-console-consumer.sh --topic kafka-stream-songplays --from-beginning --bootstrap-server localhost:9092
-```
+    ```shell
+    /opt/kafka/bin/kafka-topics.sh --list --bootstrap-server localhost:9092
+    ```
+    ```shell
+    /opt/kafka/bin/kafka-console-consumer.sh --topic kafka-stream-songs --from-beginning --bootstrap-server localhost:9092
+    /opt/kafka/bin/kafka-console-consumer.sh --topic kafka-stream-playevents --from-beginning --bootstrap-server localhost:9092
+    /opt/kafka/bin/kafka-console-consumer.sh --topic kafka-stream-songplays --from-beginning --bootstrap-server localhost:9092
+    ```
 
-```shell
-kubectl port-forward svc/rabbitmq 15672:15672
-```
+    ```shell
+    kubectl port-forward svc/rabbitmq 15672:15672
+    ```
 
-1. Open http://localhost:15672/#/exchanges and you should see the `dataOut` amongst the list.
-2. Open the `Queues` tab and create new queue called `pipelineOut` (use the default configuration).
-3. Open the `Exchang` tab, select the `dataOut` exchange and bind it to the `pipelineOut` queue.
-   Use the `#` as a `Routing key`.
-4. From the `Queue` tab select the `pipelineOut` queue and click the `Get Messages` button.
+    1. Open http://localhost:15672/#/exchanges and you should see the `dataOut` amongst the list.
+    2. Open the `Queues` tab and create new queue called `pipelineOut` (use the default configuration).
+    3. Open the `Exchang` tab, select the `dataOut` exchange and bind it to the `pipelineOut` queue.
+      Use the `#` as a `Routing key`.
+    4. From the `Queue` tab select the `pipelineOut` queue and click the `Get Messages` button.
 
-In addition, you can check the `streaming-runtime-processor` pod for logs like:
-```shell
-+----+---------------+------------+---------+------------------+---------+------------+
-| op |  window_start | window_end | song_id |             name |   genre | play_count |
-+----+---------------+------------+---------+------------------+---------+------------+
-| +I | 2022-01-19 .. |    ...     |       2 |           Animal |    Punk |         21 |
-| +I | 2022-01-19 .. |    ...     |       1 | Chemical Warfare |    Punk |         19 |
-| +I | 2022-01-19 .. |    ...     |       5 |   Punks Not Dead |    Punk |         16 |
-| +I | 2022-01-19 .. |    ...     |      11 |             Fack | Hip Hop |         18 |
-| +I | 2022-01-19 .. |    ...     |      10 |    911 Is A Joke | Hip Hop |         15 |
-| +I | 2022-01-19 .. |    ...     |      12 |      The Calling | Hip Hop |         15 |
-...
-```
-(Note: this logs are result of the processor's debug.query: `SELECT * FROM TopKSongsPerGenre`).
+    In addition, you can check the `streaming-runtime-processor` pod for logs like:
+    ```shell
+    +----+---------------+------------+---------+------------------+---------+------------+
+    | op |  window_start | window_end | song_id |             name |   genre | play_count |
+    +----+---------------+------------+---------+------------------+---------+------------+
+    | +I | 2022-01-19 .. |    ...     |       2 |           Animal |    Punk |         21 |
+    | +I | 2022-01-19 .. |    ...     |       1 | Chemical Warfare |    Punk |         19 |
+    | +I | 2022-01-19 .. |    ...     |       5 |   Punks Not Dead |    Punk |         16 |
+    | +I | 2022-01-19 .. |    ...     |      11 |             Fack | Hip Hop |         18 |
+    | +I | 2022-01-19 .. |    ...     |      10 |    911 Is A Joke | Hip Hop |         15 |
+    | +I | 2022-01-19 .. |    ...     |      12 |      The Calling | Hip Hop |         15 |
+    ...
+    ```
+    (Note: this logs are result of the processor's debug.query: `SELECT * FROM TopKSongsPerGenre`).
+
+* Delete the Top-k songs pipeline and the demo song generator:
+
+    ```shell
+    kubectl delete srs,srcs,srp --all -n streaming-runtime 
+    kubectl delete deployments -l app=top-k-songs-data-generator
+
+    #to stop the legacy generator
+    kubectl delete deployments -l app=songs-generator
+    ```
