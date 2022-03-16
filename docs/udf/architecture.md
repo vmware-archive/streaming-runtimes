@@ -23,9 +23,9 @@ service MessagingService {
 
 The [MessageService.proto](https://github.com/vmware-tanzu/streaming-runtimes/blob/main/user-defined-functions/MessageService.proto) allows you to generate required stubs to support true polyglot nature of gRPC while interacting with functions hosted by `Streaming Runtime`.
 
-The Multibiner forwards the incoming messages over the `MessagingService` to the pre-configured UDF function.
-The UDF response in turn is sent to the Multibiner's output stream.
-If the `Time Windowing Aggregation` is enabled, the Multibiner will collect all messages part of the window and pass them at once to the UDF to compute aggregated state.
+The Multibinder forwards the incoming messages over the `MessagingService` to the pre-configured UDF function.
+The UDF response in turn is sent to the Multibinder's output stream.
+If the `Time Windowing Aggregation` is enabled, the multibinder will collect all messages part of the window and pass them at once to the UDF to compute aggregated state.
 
 ## Interaction RPC Modes
 

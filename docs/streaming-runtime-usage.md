@@ -1,4 +1,5 @@
 # Streaming pipeline deployment
+
 With this you are set to deploy your streaming pipelines.
 
 For example, you can deploy the [anomaly-detection](../samples/anomaly-detection/anomaly-detection/) sample:
@@ -20,8 +21,8 @@ In general the streaming data pipeline implementation would like this:
 Your streaming data pipeline is implementing by defining `Stream` and `Processor` custom resources along with custom user defined functions (UDF) implemented in you language of choice.
 
 The `Stream` input and output resources are used to model the access to your messaging infrastructure (aka Kafka, Pulsar or RabbitMQ), the messaging streams (like topics or exchanges) as well as the schema of the data that flows through those Streams.
-The `Processor` CRD defines how the input should be processed in order ot produce the output streams.
-You can (optionally) provide Streaming (SQL) Queries that can aggregate, join , re-arrange or just cleanse the input streams before later are passed to the multibiner and your UDF implementations.
+The `Processor` CRD defines how the input should be processed in order to produce the output streams.
+You can (optionally) provide Streaming (SQL) Queries that can aggregate, join , re-arrange or just cleanse the input streams before later are passed to the multibinder and your UDF implementations.
 
 If you decide not to use streaming query then the entire architecture might look like this:
 ![Streaming Runtime No SQL Flow](streaming-runtime-python-udf-pipeline.jpg)

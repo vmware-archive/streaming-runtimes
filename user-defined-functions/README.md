@@ -24,9 +24,9 @@ service MessagingService {
 
 The [MessageService.proto](./MessageService.proto) allows you to generate required stubs to support true polyglot nature of gRPC while interacting with functions hosted by `Streaming Runtime`.
 
-The Multibiner forwards the incoming messages over the `MessagingService` to the pre-configured UDF function.
-The UDF response in turn is sent to the Multibiner's output stream.
-If the `Time Windowing Aggregation` is enabled, the Multibiner will collect all messages part of the window and pass them at once to the UDF to compute aggregated state.
+The Multibinder forwards the incoming messages over the `MessagingService` to the pre-configured UDF function.
+The UDF response in turn is sent to the Multibinder's output stream.
+If the `Time Windowing Aggregation` is enabled, the Multibinder will collect all messages part of the window and pass them at once to the UDF to compute aggregated state.
 
 The [udf-uppercase-java](./udf-uppercase-java), [udf-uppercase-go](./udf-uppercase-go) and [udf-uppercase-python](./udf-uppercase-python) sample projects
 show how to build simple UDFs in `Java`, `Python` or `Go` using the `Reques/Repply` RPC mode.
