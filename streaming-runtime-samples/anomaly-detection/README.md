@@ -1,6 +1,7 @@
 # Credit Card Anomaly Detection
 
 ## Overview
+
 Imagine a stream of credit card authorization attempts, representing ,for example, people swiping their chip cards into a reader or typing their number into a website. Such stream may look something like this:
 
 ```json
@@ -31,6 +32,7 @@ We can express such validation using the following streaming SQL query:
 14.    HAVING
 15.      COUNT (*) > 5
 ```
+
 Here we group the incoming authorization attempts by the card numbers ( lines: `12-13`) and look only at those authorizations 
 that have the same card number occurring suspiciously often (`14-15`). 
 Then we put the suspicious card numbers into a new stream (`1`).
@@ -51,7 +53,8 @@ Next we can register a custom function (UDF) to the new, possible-fraud stream t
 The UDF function can be implemented in any programming language as long as they adhere to the Streaming-Runtime `gRPC` protocol.
 
 Following diagram illustrates the implementation flow and involved resources:
-![Anomaly Detection Flow](anomaly-detection-flow.jpg)
+
+![Anomaly Detection Flow](anomaly-detection.svg)
 
 ## Quick start
 

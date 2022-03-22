@@ -54,34 +54,31 @@ Then we can define a streaming query that continuously analyses the two input st
 The first line (`1`) creates a new VIP Actions stream and a new Kafka topic. 
 The query is going to run and never stop until we kill it.
 The new stream is created as an ordinary SQL select (`2`) from a stream called `Clicks` (`5`) joined to a stream called `Users` (`6-7`).
-Since the `Clicks` and `Uers` streams have both a `user_id` we can join them to get a new stream that's the clickstream data enriched with the user data.
+Since the `Clicks` and `Users` streams have both a `user_id` we can join them to get a new stream that's the clickstream data enriched with the user data.
 
 We are only interested in platinum-level users. This the user-level information is not available in the Clicks stream, but as we were able to join to the Users stream now we can filter based on the Users data (`8-9`).
 
 Following diagram illustrates the implementation flow and involved resources:
-![Clickstreams Flow](clickstreams-flow.jpg)
+![Click Streams Flow](clickstream.svg)
 
 
 
 ## Quick start
 
-- Install the streaming-runtime operator:
-```shell
-kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-operator/install.yaml' -n streaming-runtime
-```
+- Follow the [Streaming Runtime Install](../../install.md) instructions to instal the operator.
 
-- Install the anomaly detection streaming application:
+- Install the Clickstream pipeline:
 ```shell
 kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-samples/clickstream/streaming-pipeline.yaml' -n streaming-runtime
 ```
 
-- Install the authorization attempts random data stream:
+- Install the click-stream random data stream:
 
 ```shell
 kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-samples/clickstream/data-generator.yaml' -n default
 ```
 
-- Follow the [explore Kafka](../#explore-kafka-topics) and [explore Rabbit](../#explore-kafka-topics) to see what data is generated and how it is processed though the pipeline.
+- Follow the [explore Kafka](../../instructions/#kafka-topics) and [explore Rabbit](../../instructions/#rabbit-queues) to see what data is generated and how it is processed though the pipeline. 
 
 - Delete the Top-k songs pipeline and the demo song generator:
 ```shell

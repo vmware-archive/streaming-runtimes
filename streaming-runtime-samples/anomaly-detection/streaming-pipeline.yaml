@@ -1,4 +1,4 @@
-apiVersion: streaming.tanzu.vmware.com/v1alpha1
+4apiVersion: streaming.tanzu.vmware.com/v1alpha1
 kind: Stream
 metadata:
   name: card-authorizations-stream

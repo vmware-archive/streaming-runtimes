@@ -66,26 +66,24 @@ The UDF function can be implemented in any programming language as long as they 
 Our UDFs for example, can look for the root causes of the frequently occurring error or send alerting notifications to 3rd party systems.
 
 Following diagram illustrates the implementation flow and involved resources:
-![Anomaly Detection Flow](iot-monitoring-flow.jpg)
+![Anomaly Detection Flow](iot-monitoring.svg)
 
 ## Quick start
 
-- Install the streaming-runtime operator:
-```shell
-kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-operator/install.yaml' -n streaming-runtime
-```
+- Follow the [Streaming Runtime Install](../../install.md) instructions to instal the operator.```
 
-- Install the anomaly detection streaming application:
+- Install the IoT monitoring streaming application:
 ```shell
 kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-samples/iot-monitoring/streaming-pipeline.yaml' -n streaming-runtime
 ```
 
-- Install the authorization attempts random data stream:
+- Install the IoT monitoring random data stream:
 ```shell
 kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-samples/iot-monitoring/data-generator.yaml' -n default
 ```
 
-- Follow the [explore Kafka](../#explore-kafka-topics) and [explore Rabbit](../#explore-kafka-topics) to see what data is generated and how it is processed though the pipeline.
+- Follow the [explore Kafka](../../instructions/#kafka-topics) and [explore Rabbit](../../instructions/#rabbit-queues) to see what data is generated and how it is processed though the pipeline. 
+
 
 - Delete the Top-k songs pipeline and the demo song generator:
 ```shell
