@@ -14,7 +14,6 @@ spec:
       name: clickstream-data-generator
       targetPort: 8080
       protocol: TCP
-
   selector:
     app: clickstream-data-generator
     component: clickstream-data-generator
@@ -41,24 +40,38 @@ spec:
       terminationGracePeriodSeconds: 15
       containers:
         - name: clickstream-data-generator
-          image: ghcr.io/vmware-tanzu/streaming-runtimes/stream-data-generator:latest
+          image: ghcr.io/logaritex/stream-data-generator:latest
+          volumeMounts:
+            - name: config
+              mountPath: /config
           ports:
             - containerPort: 8080
-          env:
-            - name: MY_NAMESPACE
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.namespace
-            - name: STREAM_DATA_GENERATOR_KAFKASERVER
-              value: kafka.$(MY_NAMESPACE).svc.cluster.local:9092
-            - name: STREAM_DATA_GENERATOR_SCHEMAREGISTRYSERVER
-              value: http://s-registry.$(MY_NAMESPACE).svc.cluster.local:8081
-            - name: STREAM_DATA_GENERATOR_TERMINATEAFTER
-              value: '200h'
-            - name: STREAM_DATA_GENERATOR_STREAMS_0_STREAMNAME
-              value: 'kafka-stream-user'
-            - name: STREAM_DATA_GENERATOR_STREAMS_0_AVROSCHEMA
-              value: |-
+      volumes:
+      - configMap:
+          items:
+          - key: application.yaml
+            path: application.yaml
+          name: data-generator-configmap
+        name: config
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: data-generator-configmap
+data:
+  application.yaml: |-
+    stream:
+      data:
+        generator:
+          terminateAfter: 200h
+
+          streams:
+            - streamName: kafka-stream-user
+              destination:
+                type: STREAM
+                name: kafka-stream-user
+              valueFormat: AVRO
+              avroSchema: |-
                 {
                   "namespace": "com.tanzu.streaming.runtime.clickstream.etl",
                   "type": "record",
@@ -82,18 +95,18 @@ spec:
                     }
                   ]
                 }
-            - name: STREAM_DATA_GENERATOR_STREAMS_0_VALUEFORMAT
-              value: 'AVRO'
-            - name: STREAM_DATA_GENERATOR_STREAMS_0_BATCH_SIZE
-              value: '100'
-            - name: STREAM_DATA_GENERATOR_STREAMS_0_BATCH_INITIALDELAY
-              value: '10ms'
-            - name: STREAM_DATA_GENERATOR_STREAMS_0_BATCH_MESSAGEDELAY
-              value: '100ms'
-            - name: STREAM_DATA_GENERATOR_STREAMS_1_STREAMNAME
-              value: 'kafka-stream-click'
-            - name: STREAM_DATA_GENERATOR_STREAMS_1_AVROSCHEMA
-              value: |-
+
+              batch:
+                size: 100
+                initialDelay: 100ms
+                messageDelay: 100ms
+
+            - streamName: kafka-stream-click
+              destination:
+                type: STREAM
+                name: kafka-stream-click
+              valueFormat: AVRO
+              avroSchema: |-
                 namespace: com.tanzu.streaming.runtime.clickstream.etl
                 type: record
                 name: Click
@@ -113,13 +126,50 @@ spec:
                   - name: agent
                     type: string
                     doc: "#{internet.userAgentAny}"
-            - name: STREAM_DATA_GENERATOR_STREAMS_1_VALUEFORMAT
-              value: 'AVRO'
-            - name: STREAM_DATA_GENERATOR_STREAMS_1_BATCH_SIZE
-              value: '1'
-            - name: STREAM_DATA_GENERATOR_STREAMS_1_BATCH_INITIALDELAY
-              value: '100ms'
-            - name: STREAM_DATA_GENERATOR_STREAMS_1_BATCH_DELAY
-              value: '500ms'
-            - name: STREAM_DATA_GENERATOR_STREAMS_1_BATCH_MESSAGEDELAY
-              value: '100ms'
+
+              batch:
+                size: 1
+                initialDelay: 100ms
+                delay: 500ms
+                messageDelay: 100ms
+
+    server:
+      shutdown: graceful
+
+    spring:  
+      lifecycle:
+        timeout-per-shutdown-phase: "100m"
+
+      cloud:  
+        stream:           
+          default-binder: kafka
+          bindings:
+            kafka-stream-user:
+              binder: kafka1
+              destination: kafka-stream-user
+              contentType: application/*+avro
+              producer:
+                useNativeEncoding: true
+            
+            kafka-stream-click:
+              binder: kafka1
+              destination: kafka-stream-click
+              contentType: application/*+avro
+              producer:
+                useNativeEncoding: true
+            
+          binders:
+            kafka1:
+              type: kafka
+              environment:
+                spring:
+                  cloud:
+                    stream:            
+                      kafka:
+                        binder:
+                          brokers: 'kafka.default.svc.cluster.local:9092'                                        
+                          producerProperties:
+                            schema.registry.url: 'http://s-registry.default.svc.cluster.local:8081'
+                            value.serializer: 'io.confluent.kafka.streams.serdes.avro.GenericAvroSerializer'
+                            # value.serializer: 'io.confluent.kafka.serializers.KafkaAvroSerializer'
+                            

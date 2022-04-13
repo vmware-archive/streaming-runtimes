@@ -41,67 +41,116 @@ spec:
       terminationGracePeriodSeconds: 15
       containers:
         - name: top-k-songs-data-generator
-          image: ghcr.io/vmware-tanzu/streaming-runtimes/stream-data-generator:latest
+          image: ghcr.io/logaritex/stream-data-generator:latest
+          volumeMounts:
+            - name: config
+              mountPath: /config
           ports:
             - containerPort: 8080
-          env:
-            - name: MY_NAMESPACE
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.namespace
-            - name: STREAM_DATA_GENERATOR_KAFKASERVER
-              value: kafka.$(MY_NAMESPACE).svc.cluster.local:9092
-            - name: STREAM_DATA_GENERATOR_SCHEMAREGISTRYSERVER
-              value: http://s-registry.$(MY_NAMESPACE).svc.cluster.local:8081
-            - name: STREAM_DATA_GENERATOR_TERMINATEAFTER
-              value: '200h'
+      volumes:
+      - configMap:
+          items:
+          - key: application.yaml
+            path: application.yaml
+          name: data-generator-configmap
+        name: config
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: data-generator-configmap
+data:
+  application.yaml: |-
+    stream:
+      data:
+        generator:
+          terminateAfter: 60s
 
-            - name: STREAM_DATA_GENERATOR_STREAMS_0_STREAMNAME
-              value: 'kafka-stream-songs'
-            - name: STREAM_DATA_GENERATOR_STREAMS_0_AVROSCHEMA
-              value: |-
-                {
-                 "namespace": "com.tanzu.streaming.runtime.playsongs.avro",
-                 "type": "record",
-                 "name": "Song",
-                 "doc": "unique_on=song_id;to_share=song_id",
-                 "fields": [
-                     {"name": "song_id", "type": "long",   "doc" : "#{number.number_between '1','1000'}"},
-                     {"name": "album",   "type": "string", "doc" : "#{ancient.hero} #{ancient.god}"},
-                     {"name": "artist",  "type": "string", "doc" : "#{artist.names}"},
-                     {"name": "name",    "type": "string", "doc" : "#{rock_band.name}"},
-                     {"name": "genre",   "type": "string", "doc" : "#{music.genres}"}
-                 ]
-                }
-            - name: STREAM_DATA_GENERATOR_STREAMS_0_VALUEFORMAT
-              value: 'AVRO_SCHEMA_REGISTRY'
-            - name: STREAM_DATA_GENERATOR_STREAMS_0_BATCH_SIZE
-              value: '100'
-            - name: STREAM_DATA_GENERATOR_STREAMS_0_BATCH_INITIALDELAY
-              value: '1ms'
-            - name: STREAM_DATA_GENERATOR_STREAMS_0_BATCH_MESSAGEDELAY
-              value: '10ms'
+          streams:
 
-            - name: STREAM_DATA_GENERATOR_STREAMS_1_STREAMNAME
-              value: 'kafka-stream-playevents'
-            - name: STREAM_DATA_GENERATOR_STREAMS_1_AVROSCHEMA
-              value: |-
+            - streamName: stream-songs
+              destination:
+                type: STREAM
+                name: kafka-stream-songs
+              valueFormat: AVRO
+              avroSchema: |-
                 {
-                 "namespace": "com.tanzu.streaming.runtime.playsongs.avro",
-                 "type": "record",
-                 "name": "PlayEvent",
-                 "fields": [
-                   {"name": "song_id",  "type": "long", "doc":"[[#shared.field('song.song_id')?:9999]]" },
-                   {"name": "duration", "type": "long", "doc":"#{number.number_between '30000','1000000'}" }
-                 ]
+                "namespace": "com.tanzu.streaming.runtime.playsongs.avro",
+                "type": "record",
+                "name": "Song",
+                "doc": "unique_on=song_id;to_share=song_id",
+                "fields": [
+                    {"name": "song_id", "type": "long",   "doc" : "#{number.number_between '1','1000'}"},
+                    {"name": "album",   "type": "string", "doc" : "#{ancient.hero} #{ancient.god}"},
+                    {"name": "artist",  "type": "string", "doc" : "#{artist.names}"},
+                    {"name": "name",    "type": "string", "doc" : "#{rock_band.name}"},
+                    {"name": "genre",   "type": "string", "doc" : "#{music.genres}"}
+                ]
+                }                      
+              batch:
+                size: 100
+                initialDelay: 1ms
+                messageDelay: 10ms
+                # The batch delay is not set defaulting to never rescheduling record batches for this topic. E.g. run once and stop.
+
+            - streamName: stream-playevents
+              destination:
+                type: STREAM
+                name: kafka-stream-playevents
+              valueFormat: AVRO
+              avroSchema: |-
+                {
+                "namespace": "com.tanzu.streaming.runtime.playsongs.avro",
+                "type": "record",
+                "name": "PlayEvent",
+                "fields": [
+                  {"name": "song_id",  "type": "long", "doc":"[[#shared.field('song.song_id')?:666]]" },
+                  {"name": "duration", "type": "long", "doc":"#{number.number_between '30000','1000000'}" }
+                ]
                 }
-            - name: STREAM_DATA_GENERATOR_STREAMS_1_VALUEFORMAT
-              value: 'AVRO_SCHEMA_REGISTRY'
-            - name: STREAM_DATA_GENERATOR_STREAMS_1_BATCH_SIZE
-              value: '1'
-            - name: STREAM_DATA_GENERATOR_STREAMS_1_BATCH_INITIALDELAY
-              value: '10ms'
-            - name: STREAM_DATA_GENERATOR_STREAMS_1_BATCH_DELAY
-              value: '100ms'
-            - name: STREAM_DATA_GENERATOR_STREAMS_1_BATCH_MESSAGEDELAY
-              value: '100ms'
+              batch:
+                size: 1
+                initialDelay: 10ms
+                delay: 100ms
+                messageDelay: 100ms
+
+    server:
+      shutdown: graceful
+
+    spring:  
+      lifecycle:
+        timeout-per-shutdown-phase: "10s"
+
+      cloud:  
+        stream:           
+          default-binder: kafka
+          bindings:
+            kafka-stream-songs:
+              binder: kafka1
+              destination: kafka-stream-songs
+              contentType: application/*+avro
+              producer:
+                useNativeEncoding: true
+            
+            kafka-stream-playevents:
+              binder: kafka1
+              contentType: application/*+avro
+              destination: kafka-stream-playevents
+              producer:
+                useNativeEncoding: true
+
+          binders:
+            kafka1:
+              type: kafka
+              environment:
+                spring:
+                  cloud:
+                    stream:            
+                      kafka:
+                        binder:
+                          brokers: 'kafka.default.svc.cluster.local:9092'                                        
+                          producerProperties:
+                            schema.registry.url: 'http://s-registry.default.svc.cluster.local:8081'
+                            value.serializer: 'io.confluent.kafka.streams.serdes.avro.GenericAvroSerializer'
+                            # value.serializer: 'io.confluent.kafka.serializers.KafkaAvroSerializer'
+                            

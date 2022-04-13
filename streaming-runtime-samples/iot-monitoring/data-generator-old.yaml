@@ -14,6 +14,7 @@ spec:
       name: iot-monitoring-data-generator
       targetPort: 8080
       protocol: TCP
+
   selector:
     app: iot-monitoring-data-generator
     component: iot-monitoring-data-generator
@@ -40,38 +41,29 @@ spec:
       terminationGracePeriodSeconds: 15
       containers:
         - name: iot-monitoring-data-generator
-          image: ghcr.io/logaritex/stream-data-generator:latest
-          volumeMounts:
-            - name: config
-              mountPath: /config
+          image: ghcr.io/vmware-tanzu/streaming-runtimes/stream-data-generator:latest
           ports:
             - containerPort: 8080
-      volumes:
-      - configMap:
-          items:
-          - key: application.yaml
-            path: application.yaml
-          name: data-generator-configmap
-        name: config
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: data-generator-configmap
-data:
-  application.yaml: |-
-    stream:
-      data:
-        generator:
-          terminateAfter: 200h
+          env:
+            - name: MY_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: STREAM_DATA_GENERATOR_KAFKASERVER
+              value: kafka.$(MY_NAMESPACE).svc.cluster.local:9092
+            - name: STREAM_DATA_GENERATOR_SCHEMAREGISTRYSERVER
+              value: http://s-registry.$(MY_NAMESPACE).svc.cluster.local:8081
+            - name: STREAM_DATA_GENERATOR_TERMINATEAFTER
+              value: '1h'
 
-          streams:
-            - streamName: iot-monitoring-stream
-              destination:
-                type: STREAM
-                name: iot-monitoring-stream
-              valueFormat: AVRO
-              avroSchema: |-
+            - name: STREAM_DATA_GENERATOR_STREAMS_0_STREAMNAME
+              value: 'iot-monitoring-stream'
+            - name: STREAM_DATA_GENERATOR_STREAMS_0_VALUEFORMAT
+              value: 'AVRO'
+            - name: STREAM_DATA_GENERATOR_STREAMS_0_SKIPSENDING
+              value: 'false'
+            - name: STREAM_DATA_GENERATOR_STREAMS_0_AVROSCHEMA
+              value: |-
                 namespace: com.tanzu.streaming.runtime.iot.log
                 type: record
                 name: MonitoringStream
@@ -96,43 +88,11 @@ data:
                   - name: description
                     type: string
                     doc: "#{chuck_norris.fact}"
-
-              batch:
-                size: 100
-                initialDelay: 10ms
-                messageDelay: 10ms
-                delay: 3s
-
-    server:
-      shutdown: graceful
-
-    spring:  
-      lifecycle:
-        timeout-per-shutdown-phase: "100m"
-
-      cloud:  
-        stream:           
-          default-binder: kafka
-          bindings:
-            iot-monitoring-stream:
-              binder: kafka1
-              destination: iot-monitoring-stream
-              contentType: application/*+avro
-              producer:
-                useNativeEncoding: true
-
-          binders:
-            kafka1:
-              type: kafka
-              environment:
-                spring:
-                  cloud:
-                    stream:            
-                      kafka:
-                        binder:
-                          brokers: 'kafka.default.svc.cluster.local:9092'                                        
-                          producerProperties:
-                            schema.registry.url: 'http://s-registry.default.svc.cluster.local:8081'
-                            value.serializer: 'io.confluent.kafka.streams.serdes.avro.GenericAvroSerializer'
-                            # value.serializer: 'io.confluent.kafka.serializers.KafkaAvroSerializer'
-                            
+            - name: STREAM_DATA_GENERATOR_STREAMS_0_BATCH_SIZE
+              value: '100'
+            - name: STREAM_DATA_GENERATOR_STREAMS_0_BATCH_MESSAGEDELAY
+              value: '10ms'
+            - name: STREAM_DATA_GENERATOR_STREAMS_0_BATCH_INITIALDELAY
+              value: '10ms'
+            - name: STREAM_DATA_GENERATOR_STREAMS_0_BATCH_DELAY
+              value: '3s'

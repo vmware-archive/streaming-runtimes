@@ -41,30 +41,38 @@ spec:
       terminationGracePeriodSeconds: 15
       containers:
         - name: authorization-attempts-data-generator
-          image: ghcr.io/vmware-tanzu/streaming-runtimes/stream-data-generator:latest
+          image: ghcr.io/logaritex/stream-data-generator:latest
+          volumeMounts:
+            - name: config
+              mountPath: /config
           ports:
             - containerPort: 8080
-          env:
-            - name: MY_NAMESPACE
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.namespace
-            - name: STREAM_DATA_GENERATOR_KAFKASERVER
-              value: kafka.$(MY_NAMESPACE).svc.cluster.local:9092
-            - name: STREAM_DATA_GENERATOR_SCHEMAREGISTRYSERVER
-              value: http://s-registry.$(MY_NAMESPACE).svc.cluster.local:8081
-            - name: STREAM_DATA_GENERATOR_TERMINATEAFTER
-              value: '1h'
+      volumes:
+      - configMap:
+          items:
+          - key: application.yaml
+            path: application.yaml
+          name: data-generator-configmap
+        name: config
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: data-generator-configmap
+data:
+  application.yaml: |-
+    stream:
+      data:
+        generator:
+          terminateAfter: 60s
 
-            - name: STREAM_DATA_GENERATOR_STREAMS_0_STREAMNAME
-              value: 'card-authorizations-stream'
-            - name: STREAM_DATA_GENERATOR_STREAMS_0_VALUEFORMAT
-              value: 'AVRO'
-            - name: STREAM_DATA_GENERATOR_STREAMS_0_SKIPSENDING
-              value: 'false'
-            - name: STREAM_DATA_GENERATOR_STREAMS_0_AVROSCHEMA
-              value: |-
-                ---
+          streams:
+            - streamName: card-authorizations-stream
+              destination:
+                type: STREAM
+                name: card-authorizations-stream
+              valueFormat: AVRO
+              avroSchema: |-
                 namespace: com.tanzu.streaming.runtime.anomaly.detection
                 type: record
                 name: AuthorizationAttempts
@@ -80,23 +88,20 @@ spec:
                     doc: "#{business.credit_card_expiry_dates}"
                   - name: name
                     type: string
-                    doc: "#{name.fullName}"
+                    doc: "#{name.fullName}"                      
 
-            - name: STREAM_DATA_GENERATOR_STREAMS_0_BATCH_SIZE
-              value: '100'
-            - name: STREAM_DATA_GENERATOR_STREAMS_0_BATCH_MESSAGEDELAY
-              value: '1s'
-            - name: STREAM_DATA_GENERATOR_STREAMS_0_BATCH_INITIALDELAY
-              value: '1s'
-            - name: STREAM_DATA_GENERATOR_STREAMS_0_BATCH_DELAY
-              value: '1s'
+              batch:
+                size: 100
+                initialDelay: 1s
+                messageDelay: 1s
+                delay: 1s
 
-            - name: STREAM_DATA_GENERATOR_STREAMS_1_STREAMNAME
-              value: 'card-authorizations-stream'
-            - name: STREAM_DATA_GENERATOR_STREAMS_1_VALUEFORMAT
-              value: 'AVRO'
-            - name: STREAM_DATA_GENERATOR_STREAMS_1_AVROSCHEMA
-              value: |-
+            - streamName: card-authorizations-stream
+              destination:
+                type: STREAM
+                name: card-authorizations-stream
+              valueFormat: AVRO
+              avroSchema: |-
                 namespace: com.tanzu.streaming.runtime.anomaly.detection
                 type: record
                 name: AuthorizationAttempts
@@ -114,11 +119,43 @@ spec:
                 - name: name
                   type: string
                   doc: "#{name.fullName}"
-            - name: STREAM_DATA_GENERATOR_STREAMS_1_BATCH_SIZE
-              value: '50'
-            - name: STREAM_DATA_GENERATOR_STREAMS_1_BATCH_MESSAGEDELAY
-              value: '100ms'
-            - name: STREAM_DATA_GENERATOR_STREAMS_1_BATCH_INITIALDELAY
-              value: '1s'
-            - name: STREAM_DATA_GENERATOR_STREAMS_1_BATCH_DELAY
-              value: '25s'
+
+              batch:
+                size: 50
+                initialDelay: 1s
+                delay: 25s
+                messageDelay: 100ms
+
+    server:
+      shutdown: graceful
+
+    spring:  
+      lifecycle:
+        timeout-per-shutdown-phase: "100m"
+
+      cloud:  
+        stream:           
+          default-binder: kafka
+          bindings:
+            card-authorizations-stream:
+              binder: kafka1
+              destination: card-authorizations-stream
+              contentType: application/*+avro
+              producer:
+                useNativeEncoding: true
+            
+          binders:
+            kafka1:
+              type: kafka
+              environment:
+                spring:
+                  cloud:
+                    stream:            
+                      kafka:
+                        binder:
+                          brokers: 'kafka.default.svc.cluster.local:9092'                                        
+                          producerProperties:
+                            schema.registry.url: 'http://s-registry.default.svc.cluster.local:8081'
+                            value.serializer: 'io.confluent.kafka.streams.serdes.avro.GenericAvroSerializer'
+                            # value.serializer: 'io.confluent.kafka.serializers.KafkaAvroSerializer'
+                            
