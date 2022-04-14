@@ -74,10 +74,7 @@ The [Streaming Runtime Samples](./streaming-runtime-samples) offers a good start
 
 ## Contributing
 
-The streaming-runtimes project team welcomes contributions from the community. Before you start working with streaming-runtimes, please
-read our [Developer Certificate of Origin](https://cla.vmware.com/dco). All contributions to this repository must be
-signed as described on that page. Your signature certifies that you wrote the patch or have the right to pass it on
-as an open-source patch. For more detailed information, refer to [CONTRIBUTING.md](CONTRIBUTING.md).
-
-## License
+The streaming-runtimes project team welcomes contributions from the community. All contributors to this project must have a signed Contributor License Agreement (“CLA”) on file with us. The CLA grants us the permissions we need to use and redistribute your contributions as part of the project; you or your employer retain the copyright to your contribution. Before a PR can pass all required checks, our CLA action will prompt you to accept the agreement. Head over to https://cla.vmware.com/ to see your current agreement(s) on file or to sign a new one.
+ 
+For more detailed information, refer to [CONTRIBUTING.md](CONTRIBUTING.md).
 
