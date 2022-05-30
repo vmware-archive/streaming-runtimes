@@ -1,3 +1,18 @@
+/*
+ * Copyright 2022-2022 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.vmware.tanzu.streaming.runtime;
 
 import java.time.Duration;
@@ -7,7 +22,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vmware.tanzu.streaming.apis.StreamingTanzuVmwareComV1alpha1Api;
@@ -15,7 +29,7 @@ import com.vmware.tanzu.streaming.models.V1alpha1ClusterStream;
 import com.vmware.tanzu.streaming.models.V1alpha1ClusterStreamList;
 import com.vmware.tanzu.streaming.models.V1alpha1ClusterStreamSpec;
 import com.vmware.tanzu.streaming.models.V1alpha1ClusterStreamSpecStorage;
-import com.vmware.tanzu.streaming.models.V1alpha1ClusterStreamSpecStorageServers;
+import com.vmware.tanzu.streaming.models.V1alpha1ClusterStreamSpecStorageServer;
 import com.vmware.tanzu.streaming.models.V1alpha1ClusterStreamStatusConditions;
 import com.vmware.tanzu.streaming.models.V1alpha1Stream;
 import com.vmware.tanzu.streaming.runtime.config.StreamConfiguration;
@@ -79,49 +93,50 @@ public class StreamReconciler implements Reconciler {
 
 			if (toDelete) {
 				removeFinalizer(stream);
-			}
-			else {
+			} else {
 
 				V1alpha1ClusterStream clusterStream = findClusterStream(clusterStreamName);
 
 				if (clusterStream == null) {
 					if (this.autoProvisionClusterStream) {
-						autoProvisionCusterStream(clusterStreamName, stream.getSpec().getProtocol(), "url",
-								stream.getSpec().getStreamMode(), stream.getSpec().getKeys());
-						setStreamStatus(stream, "false", "AutoProvisionClusterStream", null);
-						throw new ApiException(String.format("Auto-provision ClusterStream: %s for Stream: %s", clusterStreamName, streamName));
-					}
-					else {
-						setStreamStatus(stream, "false", "NoClusterStreamFound", null);
-						throw new ApiException(String.format("No ClusterStream: %s found for Stream: %s", clusterStreamName, streamName));
+						this.autoProvisionCusterStream(clusterStreamName, streamNamespace, stream);
+						this.setStreamStatus(stream, "false", "AutoProvisionClusterStream", null);
+						throw new ApiException(String.format("Auto-provision ClusterStream: %s for Stream: %s",
+								clusterStreamName, streamName));
+					} else {
+						this.setStreamStatus(stream, "false", "NoClusterStreamFound", null);
+						throw new ApiException(String.format("No ClusterStream: %s found for Stream: %s",
+								clusterStreamName, streamName));
 					}
 				}
 
 				if (clusterStream.getStatus() == null
 						|| clusterStream.getStatus().getConditions() == null
 						|| !clusterStream.getStatus().getConditions().stream()
-						.map(V1alpha1ClusterStreamStatusConditions::getStatus)
-						.allMatch("true"::equalsIgnoreCase)) {
+								.map(V1alpha1ClusterStreamStatusConditions::getStatus)
+								.allMatch("true"::equalsIgnoreCase)) {
 
-					setStreamStatus(stream, "false", "ClusterStreamNotReady", null);
-					throw new ApiException(String.format("Not Ready ClusterStream: %s for Stream: %s", clusterStreamName, streamName));
+					this.setStreamStatus(stream, "false", "ClusterStreamNotReady", null);
+					throw new ApiException(
+							String.format("Not Ready ClusterStream: %s for Stream: %s", clusterStreamName, streamName));
 				}
 
 				// Validate that the Stream and ClusterStream protocols match!
 				if (clusterStream.getStatus().getStorageAddress() == null
-						|| clusterStream.getStatus().getStorageAddress().getServers() == null
-						|| !clusterStream.getStatus().getStorageAddress().getServers().values().stream()
-						.allMatch(s -> s.getProtocol() != null ? s.getProtocol()
-								.equalsIgnoreCase(stream.getSpec().getProtocol()) : false)) {
+						|| clusterStream.getStatus().getStorageAddress().getServer() == null
+						|| !clusterStream.getStatus().getStorageAddress().getServer().values().stream()
+								.allMatch(s -> s.getProtocol() != null ? s.getProtocol()
+										.equalsIgnoreCase(stream.getSpec().getProtocol()) : false)) {
 					setStreamStatus(stream, "false", "ProtocolMismatch", null);
-					throw new ApiException(String.format("Stream (%s) protocol (%s) doesn't match the ClusterStream: %s",
-							streamName, stream.getSpec().getProtocol(), clusterStreamName));
+					throw new ApiException(
+							String.format("Stream (%s) protocol (%s) doesn't match the ClusterStream: %s",
+									streamName, stream.getSpec().getProtocol(), clusterStreamName));
 				}
 
 				addFinalizerIfNotFound(stream);
 
-				String storageAddress =
-						new ObjectMapper().writeValueAsString(clusterStream.getStatus().getStorageAddress());
+				String storageAddress = new ObjectMapper()
+						.writeValueAsString(clusterStream.getStatus().getStorageAddress());
 				boolean isStatusReady = StringUtils.hasText(storageAddress);
 				String readyStatus = isStatusReady ? "true" : "false";
 
@@ -133,8 +148,7 @@ public class StreamReconciler implements Reconciler {
 					return new Result(REQUEUE, Duration.of(30, ChronoUnit.SECONDS));
 				}
 			}
-		}
-		catch (ApiException e) {
+		} catch (ApiException e) {
 			if (e.getCode() == 409) {
 				LOG.info("Required subresource is already present, skip creation.");
 				return new Result(!REQUEUE);
@@ -142,8 +156,7 @@ public class StreamReconciler implements Reconciler {
 			logFailureEvent(stream, e.getMessage(), e.getCode() + " - " + e.getResponseBody(), e);
 
 			return new Result(REQUEUE, Duration.of(15, ChronoUnit.SECONDS));
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			logFailureEvent(stream, e.getMessage(), "", e);
 			return new Result(REQUEUE, Duration.of(15, ChronoUnit.SECONDS));
 		}
@@ -193,18 +206,17 @@ public class StreamReconciler implements Reconciler {
 
 		if (StringUtils.hasText(storageAddress)) {
 			storageAddress = "," + storageAddress;
-		}
-		else {
+		} else {
 			storageAddress = "";
 		}
 
 		String patch = String.format("" +
-						"{\"status\": " +
-						"  {\"conditions\": " +
-						"      [{ \"type\": \"%s\", \"status\": \"%s\", \"lastTransitionTime\": \"%s\", \"reason\": \"%s\"}]" +
-						"     %s" +
-						"  }" +
-						"}",
+				"{\"status\": " +
+				"  {\"conditions\": " +
+				"      [{ \"type\": \"%s\", \"status\": \"%s\", \"lastTransitionTime\": \"%s\", \"reason\": \"%s\"}]" +
+				"     %s" +
+				"  }" +
+				"}",
 				"Ready", status, ZonedDateTime.now(ZoneOffset.UTC), reason, storageAddress);
 		try {
 			PatchUtils.patch(
@@ -217,9 +229,9 @@ public class StreamReconciler implements Reconciler {
 					V1Patch.PATCH_FORMAT_JSON_MERGE_PATCH,
 					api.getApiClient());
 
-		}
-		catch (ApiException e) {
-			LOG.error("Status API call failed: {}: {}, {}, with patch {}", e.getCode(), e.getMessage(), e.getResponseBody(), patch);
+		} catch (ApiException e) {
+			LOG.error("Status API call failed: {}: {}, {}, with patch {}", e.getCode(), e.getMessage(),
+					e.getResponseBody(), patch);
 		}
 	}
 
@@ -235,21 +247,23 @@ public class StreamReconciler implements Reconciler {
 	}
 
 	private V1alpha1Stream removeFinalizer(V1alpha1Stream stream) throws ApiException {
-		// Currently, we don't have other finalizers so for now we just recklessly remove all finalizers.
+		// Currently, we don't have other finalizers so for now we just recklessly
+		// remove all finalizers.
 		LOG.info("Try to remove Finalizers for stream: " + stream.getMetadata().getName());
 		try {
 			return streamPatch(stream, "[{\"op\": \"remove\", \"path\": \"/metadata/finalizers\"}]",
 					V1Patch.PATCH_FORMAT_JSON_PATCH);
-		}
-		catch (ApiException e) {
+		} catch (ApiException e) {
 			LOG.error("Finalizer removal problem", e);
 			throw e;
 		}
 	}
 
-	// NOTE: The api.patchNamespacedStreamCall(...) won't patch Stream's status! For this use the
+	// NOTE: The api.patchNamespacedStreamCall(...) won't patch Stream's status! For
+	// this use the
 	// api.patchNamespacedStreamStatusCall(...) install
-	private V1alpha1Stream streamPatch(V1alpha1Stream stream, String jsonPatch, String patchFormat) throws ApiException {
+	private V1alpha1Stream streamPatch(V1alpha1Stream stream, String jsonPatch, String patchFormat)
+			throws ApiException {
 		return PatchUtils.patch(
 				V1alpha1Stream.class,
 				() -> api.patchNamespacedStreamCall(
@@ -261,8 +275,8 @@ public class StreamReconciler implements Reconciler {
 				api.getApiClient());
 	}
 
-	private void autoProvisionCusterStream(String clusterStreamName, String protocol, String url,
-			List<String> streamMode, List<String> keys) throws ApiException {
+	private void autoProvisionCusterStream(String clusterStreamName, String streamNamespace, V1alpha1Stream stream)
+			throws ApiException {
 
 		if (findClusterStream(clusterStreamName) != null) {
 			return;
@@ -277,22 +291,34 @@ public class StreamReconciler implements Reconciler {
 		cs.getMetadata().setLabels(new HashMap<>());
 		cs.getMetadata().getLabels().put("name", clusterStreamName);
 		cs.setSpec(new V1alpha1ClusterStreamSpec());
-		if (!CollectionUtils.isEmpty(keys)) {
-			cs.getSpec().setKeys(keys);
-		}
-		else {
+		cs.getSpec().setName(stream.getSpec().getName());
+		if (!CollectionUtils.isEmpty(stream.getSpec().getKeys())) {
+			cs.getSpec().setKeys(stream.getSpec().getKeys());
+		} else {
 			cs.getSpec().setKeys(new ArrayList<>());
 		}
 
-		cs.getSpec().setStreamModes((CollectionUtils.isEmpty(streamMode) ? List.of("read") : streamMode));
+		cs.getSpec().setStreamModes((CollectionUtils.isEmpty(stream.getSpec().getStreamMode()) ? List.of("read")
+				: stream.getSpec().getStreamMode()));
 
 		cs.getSpec().setStorage(new V1alpha1ClusterStreamSpecStorage());
+		cs.getSpec().getStorage().setAttributes(new HashMap<>());
+		cs.getSpec().getStorage().getAttributes().put("namespace", streamNamespace);
+
+		String protocolAdapterName = CollectionUtils.isEmpty(stream.getSpec().getAttributes()) ? ""
+				: stream.getSpec().getAttributes().get("protocolAdapterName");
+		if (StringUtils.hasText(protocolAdapterName)) {
+			cs.getSpec().getStorage().getAttributes().put("protocolAdapterName", protocolAdapterName);
+		}
 		cs.getSpec().getStorage().setReclaimPolicy("Retain");
-		cs.getSpec().getStorage().setServers(new ArrayList<>());
-		V1alpha1ClusterStreamSpecStorageServers server = new V1alpha1ClusterStreamSpecStorageServers();
-		server.setProtocol(protocol);
-		server.setUrl(url);
-		cs.getSpec().getStorage().getServers().add(server);
+
+		V1alpha1ClusterStreamSpecStorageServer server = new V1alpha1ClusterStreamSpecStorageServer();
+		server.setProtocol(stream.getSpec().getProtocol());
+		server.setUrl("empty");
+		if (StringUtils.hasText(stream.getSpec().getBinding())) {
+			server.setBinding(stream.getSpec().getBinding());
+		}
+		cs.getSpec().getStorage().setServer(server);
 
 		api.createClusterStream(cs, null, null, null);
 	}

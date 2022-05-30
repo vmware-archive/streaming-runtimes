@@ -25,16 +25,16 @@ import io.swagger.annotations.ApiModelProperty;
 import java.io.IOException;
 
 /**
- * V1alpha1ProcessorSpecInputsSources
+ * V1alpha1ClusterStreamStatusBinding
  */
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2022-02-19T17:19:50.021Z[Etc/UTC]")
-public class V1alpha1ProcessorSpecInputsSources {
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2022-05-27T12:06:58.846Z[Etc/UTC]")
+public class V1alpha1ClusterStreamStatusBinding {
   public static final String SERIALIZED_NAME_NAME = "name";
   @SerializedName(SERIALIZED_NAME_NAME)
   private String name;
 
 
-  public V1alpha1ProcessorSpecInputsSources name(String name) {
+  public V1alpha1ClusterStreamStatusBinding name(String name) {
     
     this.name = name;
     return this;
@@ -65,8 +65,8 @@ public class V1alpha1ProcessorSpecInputsSources {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    V1alpha1ProcessorSpecInputsSources v1alpha1ProcessorSpecInputsSources = (V1alpha1ProcessorSpecInputsSources) o;
-    return Objects.equals(this.name, v1alpha1ProcessorSpecInputsSources.name);
+    V1alpha1ClusterStreamStatusBinding v1alpha1ClusterStreamStatusBinding = (V1alpha1ClusterStreamStatusBinding) o;
+    return Objects.equals(this.name, v1alpha1ClusterStreamStatusBinding.name);
   }
 
   @Override
@@ -78,7 +78,7 @@ public class V1alpha1ProcessorSpecInputsSources {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class V1alpha1ProcessorSpecInputsSources {\n");
+    sb.append("class V1alpha1ClusterStreamStatusBinding {\n");
     sb.append("    name: ").append(toIndentedString(name)).append("\n");
     sb.append("}");
     return sb.toString();

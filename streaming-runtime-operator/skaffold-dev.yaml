@@ -9,8 +9,7 @@ build:
     - image: ghcr.io/vmware-tanzu/streaming-runtimes/streaming-runtime
       custom:
         buildCommand: |
-          ./mvnw clean install -Dnative -DskipTests spring-boot:build-image && \
-          docker push ghcr.io/vmware-tanzu/streaming-runtimes/streaming-runtime
+          ./mvnw clean install -P devtools -DskipTests spring-boot:build-image 
 deploy:
   kubectl:
     manifests:

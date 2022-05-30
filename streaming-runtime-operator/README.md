@@ -75,7 +75,35 @@ The `./scripts/all.sh` combines above two steps.
 ##### Build the operator code and image
 
 ```shell
-./mvnw clean install -Pnative -DskipTests spring-boot:build-image
+./mvnw clean install -Dnative -DskipTests spring-boot:build-image
 docker push ghcr.io/vmware-tanzu/streaming-runtimes/streaming-runtime:0.0.3-SNAPSHOT
 ```
-(For no-native build remove the `-Pnative`).
+(For no-native build remove the `-Dnative`).
+
+
+##### Remote (minikube) Debugging
+
+```
+minikube start --memory=8196 --cpus 8
+```
+
+```
+skaffold debug --auto-sync  --port-forward -f skaffold-dev.yaml
+```
+
+```
+kubectl get all -n streaming-runtime
+kubectl port-forward streaming-runtime-XXX 5005:5005 -n streaming-runtime
+```
+
+Attache to `localhost:5005`
+
+##### Close Loop (minikube)
+
+```
+minikube start --memory=8196 --cpus 8
+```
+
+```
+skaffold dev --port-forward -f skaffold-dev.yaml
+```

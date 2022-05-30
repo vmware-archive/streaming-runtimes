@@ -70,8 +70,12 @@ spec:
   keys: [ "card_id" ]
   streamMode: [ "write" ]
   protocol: "rabbitmq"
+  # Binding refs a Secret with same name. The stream controller uses this binding to configure ClusterStream's auto-creation
+  binding: "udf-output-possible-fraud-default-user"
   storage:
     clusterStream: "udf-output-possible-fraud-cluster-stream"
+  attributes:
+    protocolAdapterName: "rabbitmq-operator"
 ---
 apiVersion: streaming.tanzu.vmware.com/v1alpha1
 kind: Processor
@@ -97,4 +101,26 @@ spec:
       containers:
         - name: possible-fraud-analysis-udf
           image: ghcr.io/vmware-tanzu/streaming-runtimes/udf-uppercase-go:0.1
-
+---
+apiVersion: servicebinding.io/v1beta1
+kind: ServiceBinding
+metadata:
+  name: streaming-runtime-rabbitmq
+spec:
+  service:
+    apiVersion: v1
+    kind: Secret
+    name: udf-output-possible-fraud-cluster-stream-default-user
+  workload:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: streaming-runtime-processor-possible-fraud-processor
+  env:
+  - name: SPRING_RABBITMQ_PASSWORD
+    key: password
+  - name: SPRING_RABBITMQ_USERNAME
+    key: username
+  - name: RABBITMQ_HOST
+    key: host
+  - name: RABBITMQ_PORT
+    key: port

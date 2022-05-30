@@ -3,6 +3,7 @@ kind: Stream
 metadata:
   name: kafka-stream-songs
 spec:
+  name: songs
   protocol: "kafka"
   storage:
     clusterStream: "cluster-stream-kafka-songs"
@@ -22,6 +23,7 @@ kind: Stream
 metadata:
   name: kafka-stream-playevents
 spec:
+  name: playevents
   protocol: kafka
   storage:
     clusterStream: "cluster-stream-kafka-playevents"
@@ -48,6 +50,7 @@ kind: Stream
 metadata:
   name: kafka-stream-songplays
 spec:
+  name: songplays
   protocol: "kafka"
   storage:
     clusterStream: "cluster-stream-kafka-songplays"
@@ -101,6 +104,7 @@ kind: Stream
 metadata:
   name: kafka-stream-topk-songs-per-genre
 spec:
+  name: topk-songs-per-genre
   protocol: kafka
   storage:
     clusterStream: cluster-stream-kafka-topk-songs-per-genre
@@ -151,6 +155,7 @@ kind: Stream
 metadata:
   name: rabbitmq-stream-1
 spec:
+  name: rabbitmq-stream-1
   keys: [ "truckclass", "truckid" ]
   streamMode: [ "write" ]
   protocol: "rabbitmq"

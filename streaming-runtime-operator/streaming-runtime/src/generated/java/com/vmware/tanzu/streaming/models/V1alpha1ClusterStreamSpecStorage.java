@@ -20,11 +20,10 @@ import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import com.vmware.tanzu.streaming.models.V1alpha1ClusterStreamSpecStorageServers;
+import com.vmware.tanzu.streaming.models.V1alpha1ClusterStreamSpecStorageServer;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +31,7 @@ import java.util.Map;
 /**
  * V1alpha1ClusterStreamSpecStorage
  */
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2022-02-19T17:19:50.021Z[Etc/UTC]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2022-05-27T12:06:58.846Z[Etc/UTC]")
 public class V1alpha1ClusterStreamSpecStorage {
   public static final String SERIALIZED_NAME_ATTRIBUTES = "attributes";
   @SerializedName(SERIALIZED_NAME_ATTRIBUTES)
@@ -42,9 +41,9 @@ public class V1alpha1ClusterStreamSpecStorage {
   @SerializedName(SERIALIZED_NAME_RECLAIM_POLICY)
   private String reclaimPolicy;
 
-  public static final String SERIALIZED_NAME_SERVERS = "servers";
-  @SerializedName(SERIALIZED_NAME_SERVERS)
-  private List<V1alpha1ClusterStreamSpecStorageServers> servers = null;
+  public static final String SERIALIZED_NAME_SERVER = "server";
+  @SerializedName(SERIALIZED_NAME_SERVER)
+  private V1alpha1ClusterStreamSpecStorageServer server;
 
 
   public V1alpha1ClusterStreamSpecStorage attributes(Map<String, String> attributes) {
@@ -101,34 +100,26 @@ public class V1alpha1ClusterStreamSpecStorage {
   }
 
 
-  public V1alpha1ClusterStreamSpecStorage servers(List<V1alpha1ClusterStreamSpecStorageServers> servers) {
+  public V1alpha1ClusterStreamSpecStorage server(V1alpha1ClusterStreamSpecStorageServer server) {
     
-    this.servers = servers;
-    return this;
-  }
-
-  public V1alpha1ClusterStreamSpecStorage addServersItem(V1alpha1ClusterStreamSpecStorageServers serversItem) {
-    if (this.servers == null) {
-      this.servers = new ArrayList<>();
-    }
-    this.servers.add(serversItem);
+    this.server = server;
     return this;
   }
 
    /**
-   * Get servers
-   * @return servers
+   * Get server
+   * @return server
   **/
   @javax.annotation.Nullable
   @ApiModelProperty(value = "")
 
-  public List<V1alpha1ClusterStreamSpecStorageServers> getServers() {
-    return servers;
+  public V1alpha1ClusterStreamSpecStorageServer getServer() {
+    return server;
   }
 
 
-  public void setServers(List<V1alpha1ClusterStreamSpecStorageServers> servers) {
-    this.servers = servers;
+  public void setServer(V1alpha1ClusterStreamSpecStorageServer server) {
+    this.server = server;
   }
 
 
@@ -143,12 +134,12 @@ public class V1alpha1ClusterStreamSpecStorage {
     V1alpha1ClusterStreamSpecStorage v1alpha1ClusterStreamSpecStorage = (V1alpha1ClusterStreamSpecStorage) o;
     return Objects.equals(this.attributes, v1alpha1ClusterStreamSpecStorage.attributes) &&
         Objects.equals(this.reclaimPolicy, v1alpha1ClusterStreamSpecStorage.reclaimPolicy) &&
-        Objects.equals(this.servers, v1alpha1ClusterStreamSpecStorage.servers);
+        Objects.equals(this.server, v1alpha1ClusterStreamSpecStorage.server);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(attributes, reclaimPolicy, servers);
+    return Objects.hash(attributes, reclaimPolicy, server);
   }
 
 
@@ -158,7 +149,7 @@ public class V1alpha1ClusterStreamSpecStorage {
     sb.append("class V1alpha1ClusterStreamSpecStorage {\n");
     sb.append("    attributes: ").append(toIndentedString(attributes)).append("\n");
     sb.append("    reclaimPolicy: ").append(toIndentedString(reclaimPolicy)).append("\n");
-    sb.append("    servers: ").append(toIndentedString(servers)).append("\n");
+    sb.append("    server: ").append(toIndentedString(server)).append("\n");
     sb.append("}");
     return sb.toString();
   }

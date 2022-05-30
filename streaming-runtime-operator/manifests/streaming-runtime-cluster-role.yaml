@@ -38,6 +38,7 @@ rules:
       - services
       - pods
       - configmaps
+      - secrets
     verbs:
       - get
       - list
@@ -54,3 +55,16 @@ rules:
       - create
       - patch
       - watch
+  - apiGroups:
+      - rabbitmq.com
+    resources:
+      - rabbitmqclusters
+      - queues
+      - exchanges
+      - bindings
+    verbs:
+      - get
+      - list
+      - watch
+      - patch
+      - create

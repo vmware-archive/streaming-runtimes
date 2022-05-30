@@ -1,14 +1,16 @@
 apiVersion: streaming.tanzu.vmware.com/v1alpha1
 kind: ClusterStream
 metadata:
-  name: my-kafka-cluster-stream
+  name: test-rabbitmq-op-clusterstream
 spec:
+  uri: rabbitmq://localhost:8080/<exchange-name>
   keys: ["truckclass", "truckid"]
   streamModes: ["read", "write"]
   storage:
     server:
       url: "http://localhost:8080"
-      protocol: "kafka"
+      protocol: "rabbitmq"
     attributes:
-      key1: "value1"
+      protocolAdapterName: "rabbitmq-operator"
+      namespace: "streaming-runtime"
     reclaimPolicy: "Retain"

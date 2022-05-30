@@ -3,6 +3,7 @@ kind: Stream
 metadata:
   name: iot-monitoring-stream
 spec:
+  name: iot-monitoring
   protocol: "kafka"
   storage:
     clusterStream: "iot-monitoring-cluster-stream"
@@ -34,6 +35,7 @@ kind: Stream
 metadata:
   name: error-count-stream
 spec:
+  name: error-count
   protocol: "kafka"
   storage:
     clusterStream: "error-count-cluster-stream"
@@ -63,6 +65,7 @@ kind: Stream
 metadata:
   name: udf-output-error-count-stream
 spec:
+  name: udf-output-error-count
   keys: [ "error_code" ]
   streamMode: [ "write" ]
   protocol: "rabbitmq"
@@ -72,7 +75,7 @@ spec:
 apiVersion: streaming.tanzu.vmware.com/v1alpha1
 kind: Processor
 metadata:
-  name: possible-fraud-processor
+  name: iot-monitoring-processor
 spec:
   inputs:
     query:

@@ -20,7 +20,6 @@ import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import com.vmware.tanzu.streaming.models.V1alpha1ClusterStreamStatusBinding;
 import com.vmware.tanzu.streaming.models.V1alpha1ClusterStreamStatusConditions;
 import com.vmware.tanzu.streaming.models.V1alpha1ClusterStreamStatusStorageAddress;
 import io.swagger.annotations.ApiModel;
@@ -30,14 +29,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * V1alpha1ClusterStreamStatus
+ * V1alpha1StreamStatus
  */
 @javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2022-05-27T12:06:58.846Z[Etc/UTC]")
-public class V1alpha1ClusterStreamStatus {
-  public static final String SERIALIZED_NAME_BINDING = "binding";
-  @SerializedName(SERIALIZED_NAME_BINDING)
-  private V1alpha1ClusterStreamStatusBinding binding;
-
+public class V1alpha1StreamStatus {
   public static final String SERIALIZED_NAME_CONDITIONS = "conditions";
   @SerializedName(SERIALIZED_NAME_CONDITIONS)
   private List<V1alpha1ClusterStreamStatusConditions> conditions = null;
@@ -47,36 +42,13 @@ public class V1alpha1ClusterStreamStatus {
   private V1alpha1ClusterStreamStatusStorageAddress storageAddress;
 
 
-  public V1alpha1ClusterStreamStatus binding(V1alpha1ClusterStreamStatusBinding binding) {
-    
-    this.binding = binding;
-    return this;
-  }
-
-   /**
-   * Get binding
-   * @return binding
-  **/
-  @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
-
-  public V1alpha1ClusterStreamStatusBinding getBinding() {
-    return binding;
-  }
-
-
-  public void setBinding(V1alpha1ClusterStreamStatusBinding binding) {
-    this.binding = binding;
-  }
-
-
-  public V1alpha1ClusterStreamStatus conditions(List<V1alpha1ClusterStreamStatusConditions> conditions) {
+  public V1alpha1StreamStatus conditions(List<V1alpha1ClusterStreamStatusConditions> conditions) {
     
     this.conditions = conditions;
     return this;
   }
 
-  public V1alpha1ClusterStreamStatus addConditionsItem(V1alpha1ClusterStreamStatusConditions conditionsItem) {
+  public V1alpha1StreamStatus addConditionsItem(V1alpha1ClusterStreamStatusConditions conditionsItem) {
     if (this.conditions == null) {
       this.conditions = new ArrayList<>();
     }
@@ -101,7 +73,7 @@ public class V1alpha1ClusterStreamStatus {
   }
 
 
-  public V1alpha1ClusterStreamStatus storageAddress(V1alpha1ClusterStreamStatusStorageAddress storageAddress) {
+  public V1alpha1StreamStatus storageAddress(V1alpha1ClusterStreamStatusStorageAddress storageAddress) {
     
     this.storageAddress = storageAddress;
     return this;
@@ -132,23 +104,21 @@ public class V1alpha1ClusterStreamStatus {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    V1alpha1ClusterStreamStatus v1alpha1ClusterStreamStatus = (V1alpha1ClusterStreamStatus) o;
-    return Objects.equals(this.binding, v1alpha1ClusterStreamStatus.binding) &&
-        Objects.equals(this.conditions, v1alpha1ClusterStreamStatus.conditions) &&
-        Objects.equals(this.storageAddress, v1alpha1ClusterStreamStatus.storageAddress);
+    V1alpha1StreamStatus v1alpha1StreamStatus = (V1alpha1StreamStatus) o;
+    return Objects.equals(this.conditions, v1alpha1StreamStatus.conditions) &&
+        Objects.equals(this.storageAddress, v1alpha1StreamStatus.storageAddress);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(binding, conditions, storageAddress);
+    return Objects.hash(conditions, storageAddress);
   }
 
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class V1alpha1ClusterStreamStatus {\n");
-    sb.append("    binding: ").append(toIndentedString(binding)).append("\n");
+    sb.append("class V1alpha1StreamStatus {\n");
     sb.append("    conditions: ").append(toIndentedString(conditions)).append("\n");
     sb.append("    storageAddress: ").append(toIndentedString(storageAddress)).append("\n");
     sb.append("}");
