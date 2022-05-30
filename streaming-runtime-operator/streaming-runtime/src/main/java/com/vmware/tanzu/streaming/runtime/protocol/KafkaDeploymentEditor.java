@@ -1,3 +1,18 @@
+/*
+ * Copyright 2022-2022 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.vmware.tanzu.streaming.runtime.protocol;
 
 import java.io.IOException;
@@ -5,6 +20,7 @@ import java.util.Collections;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.vmware.tanzu.streaming.models.V1alpha1ClusterStream;
 import io.kubernetes.client.openapi.ApiException;
 import io.kubernetes.client.openapi.apis.AppsV1Api;
 import io.kubernetes.client.openapi.apis.CoreV1Api;
@@ -48,7 +64,7 @@ public class KafkaDeploymentEditor implements ProtocolDeploymentEditor {
 	}
 
 	@Override
-	public void createIfNotFound(V1OwnerReference ownerReference, String namespace) throws ApiException {
+	public void createIfNotFound(V1OwnerReference ownerReference, String namespace, V1alpha1ClusterStream clusterStream) throws ApiException {
 
 		if (CollectionUtils.isEmpty(findServices(namespace, null, "app=kafka"))) {
 			this.createService(ownerReference, zkService, namespace);
@@ -83,7 +99,7 @@ public class KafkaDeploymentEditor implements ProtocolDeploymentEditor {
 	}
 
 	@Override
-	public String getStorageAddress(V1OwnerReference ownerReference, String namespace) {
+	public String getStorageAddress(V1OwnerReference ownerReference, String namespace, boolean isServiceBindingEnabled) {
 
 		return "" +
 				"     \"production\": {" +

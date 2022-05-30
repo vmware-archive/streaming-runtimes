@@ -20,7 +20,7 @@ import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import com.vmware.tanzu.streaming.models.V1alpha1ClusterStreamStatusStorageAddressServers;
+import com.vmware.tanzu.streaming.models.V1alpha1ClusterStreamStatusStorageAddressServer;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.IOException;
@@ -31,41 +31,41 @@ import java.util.Map;
 /**
  * V1alpha1ClusterStreamStatusStorageAddress
  */
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2022-02-19T17:19:50.021Z[Etc/UTC]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2022-06-02T16:21:29.113Z[Etc/UTC]")
 public class V1alpha1ClusterStreamStatusStorageAddress {
-  public static final String SERIALIZED_NAME_SERVERS = "servers";
-  @SerializedName(SERIALIZED_NAME_SERVERS)
-  private Map<String, V1alpha1ClusterStreamStatusStorageAddressServers> servers = null;
+  public static final String SERIALIZED_NAME_SERVER = "server";
+  @SerializedName(SERIALIZED_NAME_SERVER)
+  private Map<String, V1alpha1ClusterStreamStatusStorageAddressServer> server = null;
 
 
-  public V1alpha1ClusterStreamStatusStorageAddress servers(Map<String, V1alpha1ClusterStreamStatusStorageAddressServers> servers) {
+  public V1alpha1ClusterStreamStatusStorageAddress server(Map<String, V1alpha1ClusterStreamStatusStorageAddressServer> server) {
     
-    this.servers = servers;
+    this.server = server;
     return this;
   }
 
-  public V1alpha1ClusterStreamStatusStorageAddress putServersItem(String key, V1alpha1ClusterStreamStatusStorageAddressServers serversItem) {
-    if (this.servers == null) {
-      this.servers = new HashMap<>();
+  public V1alpha1ClusterStreamStatusStorageAddress putServerItem(String key, V1alpha1ClusterStreamStatusStorageAddressServer serverItem) {
+    if (this.server == null) {
+      this.server = new HashMap<>();
     }
-    this.servers.put(key, serversItem);
+    this.server.put(key, serverItem);
     return this;
   }
 
    /**
-   * Get servers
-   * @return servers
+   * Get server
+   * @return server
   **/
   @javax.annotation.Nullable
   @ApiModelProperty(value = "")
 
-  public Map<String, V1alpha1ClusterStreamStatusStorageAddressServers> getServers() {
-    return servers;
+  public Map<String, V1alpha1ClusterStreamStatusStorageAddressServer> getServer() {
+    return server;
   }
 
 
-  public void setServers(Map<String, V1alpha1ClusterStreamStatusStorageAddressServers> servers) {
-    this.servers = servers;
+  public void setServer(Map<String, V1alpha1ClusterStreamStatusStorageAddressServer> server) {
+    this.server = server;
   }
 
 
@@ -78,12 +78,12 @@ public class V1alpha1ClusterStreamStatusStorageAddress {
       return false;
     }
     V1alpha1ClusterStreamStatusStorageAddress v1alpha1ClusterStreamStatusStorageAddress = (V1alpha1ClusterStreamStatusStorageAddress) o;
-    return Objects.equals(this.servers, v1alpha1ClusterStreamStatusStorageAddress.servers);
+    return Objects.equals(this.server, v1alpha1ClusterStreamStatusStorageAddress.server);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(servers);
+    return Objects.hash(server);
   }
 
 
@@ -91,7 +91,7 @@ public class V1alpha1ClusterStreamStatusStorageAddress {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class V1alpha1ClusterStreamStatusStorageAddress {\n");
-    sb.append("    servers: ").append(toIndentedString(servers)).append("\n");
+    sb.append("    server: ").append(toIndentedString(server)).append("\n");
     sb.append("}");
     return sb.toString();
   }

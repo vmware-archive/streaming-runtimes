@@ -1,3 +1,18 @@
+/*
+ * Copyright 2022-2022 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.vmware.tanzu.streaming.runtime.config;
 
 import com.vmware.tanzu.streaming.models.V1alpha1Processor;
@@ -56,21 +71,21 @@ public class ProcessorConfiguration {
 
 	private DefaultControllerWatch<V1alpha1Processor> createProcessorControllerWatch(WorkQueue<Request> workQueue) {
 		return ControllerBuilder.controllerWatchBuilder(V1alpha1Processor.class, workQueue)
-				.withOnAddFilter(stream -> {
+				.withOnAddFilter(processor -> {
 					LOG.info(String.format("[%s] Event: Add Processor '%s'",
-							PROCESSOR_CONTROLLER_NAME, stream.getMetadata().getName()));
+							PROCESSOR_CONTROLLER_NAME, processor.getMetadata().getName()));
 					return true;
 				})
-				.withOnUpdateFilter((oldStream, newStream) -> {
+				.withOnUpdateFilter((oldProcessor, newProcessor) -> {
 					LOG.info(String.format(
 							"[%s] Event: Update Processor '%s' to '%s'",
-							PROCESSOR_CONTROLLER_NAME, oldStream.getMetadata().getName(),
-							newStream.getMetadata().getName()));
+							PROCESSOR_CONTROLLER_NAME, oldProcessor.getMetadata().getName(),
+							newProcessor.getMetadata().getName()));
 					return true;
 				})
-				.withOnDeleteFilter((deletedStream, deletedFinalStateUnknown) -> {
+				.withOnDeleteFilter((deletedProcessor, deletedFinalStateUnknown) -> {
 					LOG.info(String.format("[%s] Event: Delete Processor '%s'",
-							PROCESSOR_CONTROLLER_NAME, deletedStream.getMetadata().getName()));
+							PROCESSOR_CONTROLLER_NAME, deletedProcessor.getMetadata().getName()));
 					return false;
 				})
 				.build();

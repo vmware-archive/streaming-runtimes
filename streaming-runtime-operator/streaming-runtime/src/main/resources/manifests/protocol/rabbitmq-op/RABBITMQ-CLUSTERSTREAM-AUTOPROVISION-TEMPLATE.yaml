@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: @@namespace@@
+---
+apiVersion: rabbitmq.com/v1beta1
+kind: RabbitmqCluster
+metadata:
+  name: @@cluster-name@@
+  namespace: @@namespace@@
+---
+apiVersion: rabbitmq.com/v1beta1
+kind: Queue
+metadata:
+  name: @@queue-name@@
+  namespace: @@namespace@@
+spec:
+  name: @@queue-name@@ # name of the queue
+  rabbitmqClusterReference:
+    name: @@cluster-name@@
+    namespace: @@namespace@@
+---
+apiVersion: rabbitmq.com/v1beta1
+kind: Exchange
+metadata:
+  name: @@exchange-name@@
+  namespace: @@namespace@@
+spec:
+  name: @@exchange-name@@ # name of the exchange
+  type: fanout # default to 'direct' if not provided; can be set to 'direct', 'fanout', 'headers', and 'topic'
+  autoDelete: false
+  durable: true
+  rabbitmqClusterReference:
+    name: @@cluster-name@@
+    namespace: @@namespace@@
+---
+apiVersion: rabbitmq.com/v1beta1
+kind: Binding
+metadata:
+  name: binding-@@exchange-name@@-@@queue-name@@
+  namespace: @@namespace@@
+spec:
+  source: @@exchange-name@@ # an existing exchange
+  destination: @@queue-name@@ # an existing queue
+  destinationType: queue # can be 'queue' or 'exchange'
+  rabbitmqClusterReference:
+    name: @@cluster-name@@
+    namespace: @@namespace@@

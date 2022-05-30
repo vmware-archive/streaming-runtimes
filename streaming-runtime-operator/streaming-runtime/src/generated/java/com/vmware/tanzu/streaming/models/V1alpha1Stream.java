@@ -20,8 +20,8 @@ import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import com.vmware.tanzu.streaming.models.V1alpha1ClusterStreamStatus;
 import com.vmware.tanzu.streaming.models.V1alpha1StreamSpec;
+import com.vmware.tanzu.streaming.models.V1alpha1StreamStatus;
 import io.kubernetes.client.openapi.models.V1ObjectMeta;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -30,7 +30,7 @@ import java.io.IOException;
 /**
  * V1alpha1Stream
  */
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2022-02-19T17:19:50.021Z[Etc/UTC]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2022-06-02T16:21:29.113Z[Etc/UTC]")
 public class V1alpha1Stream implements io.kubernetes.client.common.KubernetesObject {
   public static final String SERIALIZED_NAME_API_VERSION = "apiVersion";
   @SerializedName(SERIALIZED_NAME_API_VERSION)
@@ -50,7 +50,7 @@ public class V1alpha1Stream implements io.kubernetes.client.common.KubernetesObj
 
   public static final String SERIALIZED_NAME_STATUS = "status";
   @SerializedName(SERIALIZED_NAME_STATUS)
-  private V1alpha1ClusterStreamStatus status;
+  private V1alpha1StreamStatus status;
 
 
   public V1alpha1Stream apiVersion(String apiVersion) {
@@ -145,7 +145,7 @@ public class V1alpha1Stream implements io.kubernetes.client.common.KubernetesObj
   }
 
 
-  public V1alpha1Stream status(V1alpha1ClusterStreamStatus status) {
+  public V1alpha1Stream status(V1alpha1StreamStatus status) {
     
     this.status = status;
     return this;
@@ -158,12 +158,12 @@ public class V1alpha1Stream implements io.kubernetes.client.common.KubernetesObj
   @javax.annotation.Nullable
   @ApiModelProperty(value = "")
 
-  public V1alpha1ClusterStreamStatus getStatus() {
+  public V1alpha1StreamStatus getStatus() {
     return status;
   }
 
 
-  public void setStatus(V1alpha1ClusterStreamStatus status) {
+  public void setStatus(V1alpha1StreamStatus status) {
     this.status = status;
   }
 

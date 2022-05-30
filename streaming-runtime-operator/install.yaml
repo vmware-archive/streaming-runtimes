@@ -29,6 +29,8 @@ spec:
             spec:
               type: object
               properties:
+                name:
+                  type: string
                 keys:
                   type: array
                   items:
@@ -40,24 +42,30 @@ spec:
                 storage:
                   type: object
                   properties:
-                    servers:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          url:
-                            type: string
-                          protocol:
-                            type: string
+                    server:
+                      type: object
+                      properties:
+                        url:
+                          type: string
+                        protocol:
+                          type: string
+                        binding:
+                          type: string
                     attributes:
                       type: object
                       additionalProperties:
                         type: string
                     reclaimPolicy:
                       type: string
+              required: [ "name" ]              
             status:
               type: object
               properties:
+                binding:
+                  type: object
+                  properties:
+                    name:
+                      type: string
                 conditions:
                   type: array
                   items:
@@ -79,7 +87,7 @@ spec:
                 storageAddress:
                   type: object
                   properties:
-                    servers:
+                    server:
                       type: object
                       additionalProperties:
                         type: object
@@ -131,6 +139,8 @@ spec:
             spec:
               type: object
               properties:
+                name:
+                  type: string
                 keys:
                   type: array
                   items:
@@ -150,6 +160,8 @@ spec:
                   type: object
                   additionalProperties:
                     type: string
+                binding:
+                  type: string
                 dataSchemaContext:
                   type: object
                   properties:
@@ -240,6 +252,7 @@ spec:
                       required: [ "inline" ]
                     - properties:
                       required: [ "schema" ]
+              required: [ "name", "protocol" ]
             status:
               type: object
               properties:
@@ -264,7 +277,7 @@ spec:
                 storageAddress:
                   type: object
                   properties:
-                    servers:
+                    server:
                       type: object
                       additionalProperties:
                         type: object
@@ -445,6 +458,7 @@ rules:
       - services
       - pods
       - configmaps
+      - secrets
     verbs:
       - get
       - list
@@ -461,7 +475,19 @@ rules:
       - create
       - patch
       - watch
-
+  - apiGroups:
+      - rabbitmq.com
+    resources:
+      - rabbitmqclusters
+      - queues
+      - exchanges
+      - bindings
+    verbs:
+      - get
+      - list
+      - watch
+      - patch
+      - create
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding

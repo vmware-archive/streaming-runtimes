@@ -28,10 +28,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * V1alpha1ClusterStreamStatusStorageAddressServers
+ * V1alpha1ClusterStreamStatusStorageAddressServer
  */
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2022-02-19T17:19:50.021Z[Etc/UTC]")
-public class V1alpha1ClusterStreamStatusStorageAddressServers {
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2022-06-02T16:21:29.113Z[Etc/UTC]")
+public class V1alpha1ClusterStreamStatusStorageAddressServer {
   public static final String SERIALIZED_NAME_DESCRIPTION = "description";
   @SerializedName(SERIALIZED_NAME_DESCRIPTION)
   private String description;
@@ -53,7 +53,7 @@ public class V1alpha1ClusterStreamStatusStorageAddressServers {
   private Map<String, String> variables = null;
 
 
-  public V1alpha1ClusterStreamStatusStorageAddressServers description(String description) {
+  public V1alpha1ClusterStreamStatusStorageAddressServer description(String description) {
     
     this.description = description;
     return this;
@@ -76,7 +76,7 @@ public class V1alpha1ClusterStreamStatusStorageAddressServers {
   }
 
 
-  public V1alpha1ClusterStreamStatusStorageAddressServers protocol(String protocol) {
+  public V1alpha1ClusterStreamStatusStorageAddressServer protocol(String protocol) {
     
     this.protocol = protocol;
     return this;
@@ -99,7 +99,7 @@ public class V1alpha1ClusterStreamStatusStorageAddressServers {
   }
 
 
-  public V1alpha1ClusterStreamStatusStorageAddressServers protocolVersion(String protocolVersion) {
+  public V1alpha1ClusterStreamStatusStorageAddressServer protocolVersion(String protocolVersion) {
     
     this.protocolVersion = protocolVersion;
     return this;
@@ -122,7 +122,7 @@ public class V1alpha1ClusterStreamStatusStorageAddressServers {
   }
 
 
-  public V1alpha1ClusterStreamStatusStorageAddressServers url(String url) {
+  public V1alpha1ClusterStreamStatusStorageAddressServer url(String url) {
     
     this.url = url;
     return this;
@@ -145,13 +145,13 @@ public class V1alpha1ClusterStreamStatusStorageAddressServers {
   }
 
 
-  public V1alpha1ClusterStreamStatusStorageAddressServers variables(Map<String, String> variables) {
+  public V1alpha1ClusterStreamStatusStorageAddressServer variables(Map<String, String> variables) {
     
     this.variables = variables;
     return this;
   }
 
-  public V1alpha1ClusterStreamStatusStorageAddressServers putVariablesItem(String key, String variablesItem) {
+  public V1alpha1ClusterStreamStatusStorageAddressServer putVariablesItem(String key, String variablesItem) {
     if (this.variables == null) {
       this.variables = new HashMap<>();
     }
@@ -184,12 +184,12 @@ public class V1alpha1ClusterStreamStatusStorageAddressServers {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    V1alpha1ClusterStreamStatusStorageAddressServers v1alpha1ClusterStreamStatusStorageAddressServers = (V1alpha1ClusterStreamStatusStorageAddressServers) o;
-    return Objects.equals(this.description, v1alpha1ClusterStreamStatusStorageAddressServers.description) &&
-        Objects.equals(this.protocol, v1alpha1ClusterStreamStatusStorageAddressServers.protocol) &&
-        Objects.equals(this.protocolVersion, v1alpha1ClusterStreamStatusStorageAddressServers.protocolVersion) &&
-        Objects.equals(this.url, v1alpha1ClusterStreamStatusStorageAddressServers.url) &&
-        Objects.equals(this.variables, v1alpha1ClusterStreamStatusStorageAddressServers.variables);
+    V1alpha1ClusterStreamStatusStorageAddressServer v1alpha1ClusterStreamStatusStorageAddressServer = (V1alpha1ClusterStreamStatusStorageAddressServer) o;
+    return Objects.equals(this.description, v1alpha1ClusterStreamStatusStorageAddressServer.description) &&
+        Objects.equals(this.protocol, v1alpha1ClusterStreamStatusStorageAddressServer.protocol) &&
+        Objects.equals(this.protocolVersion, v1alpha1ClusterStreamStatusStorageAddressServer.protocolVersion) &&
+        Objects.equals(this.url, v1alpha1ClusterStreamStatusStorageAddressServer.url) &&
+        Objects.equals(this.variables, v1alpha1ClusterStreamStatusStorageAddressServer.variables);
   }
 
   @Override
@@ -201,7 +201,7 @@ public class V1alpha1ClusterStreamStatusStorageAddressServers {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class V1alpha1ClusterStreamStatusStorageAddressServers {\n");
+    sb.append("class V1alpha1ClusterStreamStatusStorageAddressServer {\n");
     sb.append("    description: ").append(toIndentedString(description)).append("\n");
     sb.append("    protocol: ").append(toIndentedString(protocol)).append("\n");
     sb.append("    protocolVersion: ").append(toIndentedString(protocolVersion)).append("\n");

@@ -24,6 +24,8 @@ spec:
             spec:
               type: object
               properties:
+                name:
+                  type: string
                 keys:
                   type: array
                   items:
@@ -43,6 +45,8 @@ spec:
                   type: object
                   additionalProperties:
                     type: string
+                binding:
+                  type: string
                 dataSchemaContext:
                   type: object
                   properties:
@@ -133,6 +137,7 @@ spec:
                       required: [ "inline" ]
                     - properties:
                       required: [ "schema" ]
+              required: [ "name", "protocol" ]
             status:
               type: object
               properties:
@@ -157,7 +162,7 @@ spec:
                 storageAddress:
                   type: object
                   properties:
-                    servers:
+                    server:
                       type: object
                       additionalProperties:
                         type: object

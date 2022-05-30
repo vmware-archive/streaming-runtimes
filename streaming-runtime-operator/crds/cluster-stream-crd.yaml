@@ -24,6 +24,8 @@ spec:
             spec:
               type: object
               properties:
+                name:
+                  type: string
                 keys:
                   type: array
                   items:
@@ -35,24 +37,30 @@ spec:
                 storage:
                   type: object
                   properties:
-                    servers:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          url:
-                            type: string
-                          protocol:
-                            type: string
+                    server:
+                      type: object
+                      properties:
+                        url:
+                          type: string
+                        protocol:
+                          type: string
+                        binding:
+                          type: string
                     attributes:
                       type: object
                       additionalProperties:
                         type: string
                     reclaimPolicy:
                       type: string
+              required: [ "name" ]              
             status:
               type: object
               properties:
+                binding:
+                  type: object
+                  properties:
+                    name:
+                      type: string
                 conditions:
                   type: array
                   items:
@@ -74,7 +82,7 @@ spec:
                 storageAddress:
                   type: object
                   properties:
-                    servers:
+                    server:
                       type: object
                       additionalProperties:
                         type: object

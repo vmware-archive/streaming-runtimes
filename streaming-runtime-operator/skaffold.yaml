@@ -4,18 +4,13 @@ kind: Config
 build:
   tagPolicy:
     customTemplate:
-      template: "0.0.1-SNAPSHOT"
+      template: "0.0.3-SNAPSHOT"
   artifacts:
-#    - image: ghcr.io/vmware-tanzu/streaming-runtimes/streaming-runtime
-#      buildpacks:
-#        builder: paketobuildpacks/builder:tiny
-#        env:
-#          - BP_NATIVE_IMAGE=true
     - image: ghcr.io/vmware-tanzu/streaming-runtimes/streaming-runtime
       custom:
         buildCommand: |
-          ./mvnw clean install -Pnative -DskipTests spring-boot:build-image && \
-          docker push ghcr.io/vmware-tanzu/streaming-runtimes/streaming-runtime:0.0.3-SNAPSHOT
+          ./mvnw clean install -Dnative -DskipTests spring-boot:build-image && \
+          docker push ghcr.io/vmware-tanzu/streaming-runtimes/streaming-runtime
 deploy:
   kubectl:
     manifests:

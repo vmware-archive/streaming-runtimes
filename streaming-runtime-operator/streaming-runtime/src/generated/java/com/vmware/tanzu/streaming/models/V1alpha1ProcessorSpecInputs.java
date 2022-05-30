@@ -20,8 +20,8 @@ import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
+import com.vmware.tanzu.streaming.models.V1alpha1ClusterStreamStatusBinding;
 import com.vmware.tanzu.streaming.models.V1alpha1ProcessorSpecInputsDebug;
-import com.vmware.tanzu.streaming.models.V1alpha1ProcessorSpecInputsSources;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.IOException;
@@ -31,7 +31,7 @@ import java.util.List;
 /**
  * V1alpha1ProcessorSpecInputs
  */
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2022-02-19T17:19:50.021Z[Etc/UTC]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2022-06-02T16:21:29.113Z[Etc/UTC]")
 public class V1alpha1ProcessorSpecInputs {
   public static final String SERIALIZED_NAME_DEBUG = "debug";
   @SerializedName(SERIALIZED_NAME_DEBUG)
@@ -43,7 +43,7 @@ public class V1alpha1ProcessorSpecInputs {
 
   public static final String SERIALIZED_NAME_SOURCES = "sources";
   @SerializedName(SERIALIZED_NAME_SOURCES)
-  private List<V1alpha1ProcessorSpecInputsSources> sources = null;
+  private List<V1alpha1ClusterStreamStatusBinding> sources = null;
 
 
   public V1alpha1ProcessorSpecInputs debug(V1alpha1ProcessorSpecInputsDebug debug) {
@@ -100,13 +100,13 @@ public class V1alpha1ProcessorSpecInputs {
   }
 
 
-  public V1alpha1ProcessorSpecInputs sources(List<V1alpha1ProcessorSpecInputsSources> sources) {
+  public V1alpha1ProcessorSpecInputs sources(List<V1alpha1ClusterStreamStatusBinding> sources) {
     
     this.sources = sources;
     return this;
   }
 
-  public V1alpha1ProcessorSpecInputs addSourcesItem(V1alpha1ProcessorSpecInputsSources sourcesItem) {
+  public V1alpha1ProcessorSpecInputs addSourcesItem(V1alpha1ClusterStreamStatusBinding sourcesItem) {
     if (this.sources == null) {
       this.sources = new ArrayList<>();
     }
@@ -121,12 +121,12 @@ public class V1alpha1ProcessorSpecInputs {
   @javax.annotation.Nullable
   @ApiModelProperty(value = "")
 
-  public List<V1alpha1ProcessorSpecInputsSources> getSources() {
+  public List<V1alpha1ClusterStreamStatusBinding> getSources() {
     return sources;
   }
 
 
-  public void setSources(List<V1alpha1ProcessorSpecInputsSources> sources) {
+  public void setSources(List<V1alpha1ClusterStreamStatusBinding> sources) {
     this.sources = sources;
   }
 

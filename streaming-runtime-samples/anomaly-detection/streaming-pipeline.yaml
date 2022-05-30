@@ -3,6 +3,7 @@ kind: Stream
 metadata:
   name: card-authorizations-stream
 spec:
+  name: card-authorizations
   protocol: "kafka"
   storage:
     clusterStream: "card-authorizations-cluster-stream"
@@ -35,9 +36,10 @@ kind: Stream
 metadata:
   name: possible-fraud-stream
 spec:
+  name: possible-fraud
   protocol: "kafka"
   storage:
-    clusterStream: "possible-fraud-stream-cluster-stream"
+    clusterStream: "possible-fraud-cluster-stream"
   streamMode: [ "read", "write" ]
   keys: [ "card_number" ]
   dataSchemaContext:
@@ -64,6 +66,7 @@ kind: Stream
 metadata:
   name: udf-output-possible-fraud-stream
 spec:
+  name: udf-output-possible-fraud
   keys: [ "card_id" ]
   streamMode: [ "write" ]
   protocol: "rabbitmq"

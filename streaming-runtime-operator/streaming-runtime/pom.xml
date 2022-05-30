@@ -20,7 +20,7 @@
 		<spring-native.version>0.11.2</spring-native.version>
 		<spring.rabbit.version>2.4.1</spring.rabbit.version>
 		<reflections.version>0.10.2</reflections.version>
-		<!--		<reflections.version>0.9.11</reflections.version>-->
+		<!--	<reflections.version>0.9.11</reflections.version>-->
 		<apache.flink.version>1.14.3</apache.flink.version>
 	</properties>
 
@@ -132,22 +132,6 @@
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-				<configuration>
-					<excludeDevtools>false</excludeDevtools>
-					<classifier>${repackage.classifier}</classifier>
-					<image>
-						<builder>paketobuildpacks/builder:tiny</builder>
-						<env>
-							<BP_NATIVE_IMAGE>true</BP_NATIVE_IMAGE>
-<!--							<BP_NATIVE_IMAGE_BUILD_ARGUMENTS>&#45;&#45;trace-class-initialization=com.google.common.collect.RegularImmutableMap</BP_NATIVE_IMAGE_BUILD_ARGUMENTS>-->
-						</env>
-						<name>ghcr.io/vmware-tanzu/streaming-runtimes/${project.artifactId}:${project.version}</name>
-					</image>
-				</configuration>
-			</plugin>
-			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>build-helper-maven-plugin</artifactId>
 				<version>3.2.0</version>
@@ -198,7 +182,36 @@
 			</dependencies>
 		</profile>
 		<profile>
+			<id>notNative</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+				<property>
+					<name>!native</name>
+				</property>
+			</activation>			
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.springframework.boot</groupId>
+						<artifactId>spring-boot-maven-plugin</artifactId>
+						<configuration>
+							<excludeDevtools>false</excludeDevtools>
+							<classifier>${repackage.classifier}</classifier>
+							<image>
+								<name>ghcr.io/vmware-tanzu/streaming-runtimes/${project.artifactId}:${project.version}</name>
+							</image>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
 			<id>native</id>
+			<activation>
+				<property>
+					<name>native</name>
+				</property>
+			</activation>				
 			<properties>
 				<repackage.classifier>exec</repackage.classifier>
 				<native-buildtools.version>0.9.9</native-buildtools.version>
@@ -212,6 +225,23 @@
 			</dependencies>
 			<build>
 				<plugins>
+					<plugin>
+						<groupId>org.springframework.boot</groupId>
+						<artifactId>spring-boot-maven-plugin</artifactId>
+						<configuration>
+							<excludeDevtools>false</excludeDevtools>
+							<classifier>${repackage.classifier}</classifier>
+							<image>
+								<builder>paketobuildpacks/builder:tiny</builder>
+								<env>
+									<BP_NATIVE_IMAGE>true</BP_NATIVE_IMAGE>
+									<!-- <BP_NATIVE_IMAGE_BUILD_ARGUMENTS>&#45;&#45;trace-class-initialization=com.google.common.collect.RegularImmutableMap</BP_NATIVE_IMAGE_BUILD_ARGUMENTS>-->
+								</env>
+								<name>ghcr.io/vmware-tanzu/streaming-runtimes/${project.artifactId}:${project.version}</name>
+							</image>							
+						</configuration>
+					</plugin>
+
 					<plugin>
 						<groupId>org.graalvm.buildtools</groupId>
 						<artifactId>native-maven-plugin</artifactId>

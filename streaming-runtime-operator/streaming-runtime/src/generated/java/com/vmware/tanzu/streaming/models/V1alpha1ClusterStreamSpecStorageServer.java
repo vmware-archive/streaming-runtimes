@@ -25,10 +25,14 @@ import io.swagger.annotations.ApiModelProperty;
 import java.io.IOException;
 
 /**
- * V1alpha1ClusterStreamSpecStorageServers
+ * V1alpha1ClusterStreamSpecStorageServer
  */
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2022-02-19T17:19:50.021Z[Etc/UTC]")
-public class V1alpha1ClusterStreamSpecStorageServers {
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2022-06-02T16:21:29.113Z[Etc/UTC]")
+public class V1alpha1ClusterStreamSpecStorageServer {
+  public static final String SERIALIZED_NAME_BINDING = "binding";
+  @SerializedName(SERIALIZED_NAME_BINDING)
+  private String binding;
+
   public static final String SERIALIZED_NAME_PROTOCOL = "protocol";
   @SerializedName(SERIALIZED_NAME_PROTOCOL)
   private String protocol;
@@ -38,7 +42,30 @@ public class V1alpha1ClusterStreamSpecStorageServers {
   private String url;
 
 
-  public V1alpha1ClusterStreamSpecStorageServers protocol(String protocol) {
+  public V1alpha1ClusterStreamSpecStorageServer binding(String binding) {
+    
+    this.binding = binding;
+    return this;
+  }
+
+   /**
+   * Get binding
+   * @return binding
+  **/
+  @javax.annotation.Nullable
+  @ApiModelProperty(value = "")
+
+  public String getBinding() {
+    return binding;
+  }
+
+
+  public void setBinding(String binding) {
+    this.binding = binding;
+  }
+
+
+  public V1alpha1ClusterStreamSpecStorageServer protocol(String protocol) {
     
     this.protocol = protocol;
     return this;
@@ -61,7 +88,7 @@ public class V1alpha1ClusterStreamSpecStorageServers {
   }
 
 
-  public V1alpha1ClusterStreamSpecStorageServers url(String url) {
+  public V1alpha1ClusterStreamSpecStorageServer url(String url) {
     
     this.url = url;
     return this;
@@ -92,21 +119,23 @@ public class V1alpha1ClusterStreamSpecStorageServers {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    V1alpha1ClusterStreamSpecStorageServers v1alpha1ClusterStreamSpecStorageServers = (V1alpha1ClusterStreamSpecStorageServers) o;
-    return Objects.equals(this.protocol, v1alpha1ClusterStreamSpecStorageServers.protocol) &&
-        Objects.equals(this.url, v1alpha1ClusterStreamSpecStorageServers.url);
+    V1alpha1ClusterStreamSpecStorageServer v1alpha1ClusterStreamSpecStorageServer = (V1alpha1ClusterStreamSpecStorageServer) o;
+    return Objects.equals(this.binding, v1alpha1ClusterStreamSpecStorageServer.binding) &&
+        Objects.equals(this.protocol, v1alpha1ClusterStreamSpecStorageServer.protocol) &&
+        Objects.equals(this.url, v1alpha1ClusterStreamSpecStorageServer.url);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(protocol, url);
+    return Objects.hash(binding, protocol, url);
   }
 
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class V1alpha1ClusterStreamSpecStorageServers {\n");
+    sb.append("class V1alpha1ClusterStreamSpecStorageServer {\n");
+    sb.append("    binding: ").append(toIndentedString(binding)).append("\n");
     sb.append("    protocol: ").append(toIndentedString(protocol)).append("\n");
     sb.append("    url: ").append(toIndentedString(url)).append("\n");
     sb.append("}");

@@ -30,11 +30,15 @@ import java.util.List;
 /**
  * V1alpha1ClusterStreamSpec
  */
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2022-02-19T17:19:50.021Z[Etc/UTC]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2022-06-02T16:21:29.113Z[Etc/UTC]")
 public class V1alpha1ClusterStreamSpec {
   public static final String SERIALIZED_NAME_KEYS = "keys";
   @SerializedName(SERIALIZED_NAME_KEYS)
   private List<String> keys = null;
+
+  public static final String SERIALIZED_NAME_NAME = "name";
+  @SerializedName(SERIALIZED_NAME_NAME)
+  private String name;
 
   public static final String SERIALIZED_NAME_STORAGE = "storage";
   @SerializedName(SERIALIZED_NAME_STORAGE)
@@ -73,6 +77,28 @@ public class V1alpha1ClusterStreamSpec {
 
   public void setKeys(List<String> keys) {
     this.keys = keys;
+  }
+
+
+  public V1alpha1ClusterStreamSpec name(String name) {
+    
+    this.name = name;
+    return this;
+  }
+
+   /**
+   * Get name
+   * @return name
+  **/
+  @ApiModelProperty(required = true, value = "")
+
+  public String getName() {
+    return name;
+  }
+
+
+  public void setName(String name) {
+    this.name = name;
   }
 
 
@@ -140,13 +166,14 @@ public class V1alpha1ClusterStreamSpec {
     }
     V1alpha1ClusterStreamSpec v1alpha1ClusterStreamSpec = (V1alpha1ClusterStreamSpec) o;
     return Objects.equals(this.keys, v1alpha1ClusterStreamSpec.keys) &&
+        Objects.equals(this.name, v1alpha1ClusterStreamSpec.name) &&
         Objects.equals(this.storage, v1alpha1ClusterStreamSpec.storage) &&
         Objects.equals(this.streamModes, v1alpha1ClusterStreamSpec.streamModes);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(keys, storage, streamModes);
+    return Objects.hash(keys, name, storage, streamModes);
   }
 
 
@@ -155,6 +182,7 @@ public class V1alpha1ClusterStreamSpec {
     StringBuilder sb = new StringBuilder();
     sb.append("class V1alpha1ClusterStreamSpec {\n");
     sb.append("    keys: ").append(toIndentedString(keys)).append("\n");
+    sb.append("    name: ").append(toIndentedString(name)).append("\n");
     sb.append("    storage: ").append(toIndentedString(storage)).append("\n");
     sb.append("    streamModes: ").append(toIndentedString(streamModes)).append("\n");
     sb.append("}");

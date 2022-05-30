@@ -42,6 +42,11 @@ spec:
       containers:
         - name: authorization-attempts-data-generator
           image: ghcr.io/logaritex/stream-data-generator:latest
+          env:
+          - name: KAFKA_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
           volumeMounts:
             - name: config
               mountPath: /config
@@ -67,10 +72,10 @@ data:
           terminateAfter: 60s
 
           streams:
-            - streamName: card-authorizations-stream
+            - streamName: card-authorizations
               destination:
                 type: STREAM
-                name: card-authorizations-stream
+                name: card-authorizations
               valueFormat: AVRO
               avroSchema: |-
                 namespace: com.tanzu.streaming.runtime.anomaly.detection
@@ -96,10 +101,10 @@ data:
                 messageDelay: 1s
                 delay: 1s
 
-            - streamName: card-authorizations-stream
+            - streamName: card-authorizations
               destination:
                 type: STREAM
-                name: card-authorizations-stream
+                name: card-authorizations
               valueFormat: AVRO
               avroSchema: |-
                 namespace: com.tanzu.streaming.runtime.anomaly.detection
@@ -137,9 +142,9 @@ data:
         stream:           
           default-binder: kafka
           bindings:
-            card-authorizations-stream:
+            card-authorizations:
               binder: kafka1
-              destination: card-authorizations-stream
+              destination: card-authorizations
               contentType: application/*+avro
               producer:
                 useNativeEncoding: true
@@ -153,9 +158,9 @@ data:
                     stream:            
                       kafka:
                         binder:
-                          brokers: 'kafka.default.svc.cluster.local:9092'                                        
+                          brokers: 'kafka.${KAFKA_NAMESPACE}.svc.cluster.local:9092'                                        
                           producerProperties:
-                            schema.registry.url: 'http://s-registry.default.svc.cluster.local:8081'
+                            schema.registry.url: 'http://s-registry.${KAFKA_NAMESPACE}.svc.cluster.local:8081'
                             value.serializer: 'io.confluent.kafka.streams.serdes.avro.GenericAvroSerializer'
                             # value.serializer: 'io.confluent.kafka.serializers.KafkaAvroSerializer'
                             

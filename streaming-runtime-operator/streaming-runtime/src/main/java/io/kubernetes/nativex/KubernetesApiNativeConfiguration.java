@@ -1,3 +1,19 @@
+/*
+ * Copyright 2022-2022 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package io.kubernetes.nativex;
 
 import java.lang.annotation.Annotation;
@@ -17,15 +33,6 @@ import org.springframework.nativex.AotOptions;
 import org.springframework.nativex.hint.NativeHint;
 import org.springframework.nativex.hint.TypeHint;
 import org.springframework.nativex.type.NativeConfiguration;
-
-import static org.springframework.nativex.hint.TypeAccess.DECLARED_CLASSES;
-import static org.springframework.nativex.hint.TypeAccess.DECLARED_CONSTRUCTORS;
-import static org.springframework.nativex.hint.TypeAccess.DECLARED_FIELDS;
-import static org.springframework.nativex.hint.TypeAccess.DECLARED_METHODS;
-import static org.springframework.nativex.hint.TypeAccess.values;
-
-
-
 
 /**
  * These hints are inspired by <a href="https://github.com/scratches/spring-controller">
@@ -49,7 +56,11 @@ import static org.springframework.nativex.hint.TypeAccess.values;
 		options = {"-H:+AddAllCharsets", "--enable-all-security-services", "--enable-https", "--enable-http"},
 		types = { //
 				@TypeHint( //
-						access = {DECLARED_CLASSES, DECLARED_CONSTRUCTORS, DECLARED_FIELDS, DECLARED_METHODS}, //
+						access = {
+							org.springframework.nativex.hint.TypeAccess.DECLARED_CLASSES, 
+							org.springframework.nativex.hint.TypeAccess.DECLARED_CONSTRUCTORS, 
+							org.springframework.nativex.hint.TypeAccess.DECLARED_FIELDS, 
+							org.springframework.nativex.hint.TypeAccess.DECLARED_METHODS}, //
 						typeNames = { //
 								"io.kubernetes.client.informer.cache.ProcessorListener",
 								"io.kubernetes.client.extended.controller.Controller",
@@ -79,7 +90,10 @@ public class KubernetesApiNativeConfiguration implements NativeConfiguration {
 		all.addAll(jsonAdapters);
 		all.addAll(apiModels);
 		all.addAll(crdModels);
-		all.forEach(clzz -> registry.reflection().forType(clzz).withAccess(values()).build());
+		all.forEach(clzz -> registry.reflection()
+			.forType(clzz)
+			.withAccess(org.springframework.nativex.hint.TypeAccess.values())
+			.build());
 	}
 
 	private <R extends Annotation> Set<Class<?>> findJsonAdapters(Reflections reflections) {

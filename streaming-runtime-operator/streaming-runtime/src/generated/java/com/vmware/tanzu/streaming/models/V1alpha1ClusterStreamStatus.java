@@ -20,6 +20,7 @@ import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
+import com.vmware.tanzu.streaming.models.V1alpha1ClusterStreamStatusBinding;
 import com.vmware.tanzu.streaming.models.V1alpha1ClusterStreamStatusConditions;
 import com.vmware.tanzu.streaming.models.V1alpha1ClusterStreamStatusStorageAddress;
 import io.swagger.annotations.ApiModel;
@@ -31,8 +32,12 @@ import java.util.List;
 /**
  * V1alpha1ClusterStreamStatus
  */
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2022-02-19T17:19:50.021Z[Etc/UTC]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2022-06-02T16:21:29.113Z[Etc/UTC]")
 public class V1alpha1ClusterStreamStatus {
+  public static final String SERIALIZED_NAME_BINDING = "binding";
+  @SerializedName(SERIALIZED_NAME_BINDING)
+  private V1alpha1ClusterStreamStatusBinding binding;
+
   public static final String SERIALIZED_NAME_CONDITIONS = "conditions";
   @SerializedName(SERIALIZED_NAME_CONDITIONS)
   private List<V1alpha1ClusterStreamStatusConditions> conditions = null;
@@ -40,6 +45,29 @@ public class V1alpha1ClusterStreamStatus {
   public static final String SERIALIZED_NAME_STORAGE_ADDRESS = "storageAddress";
   @SerializedName(SERIALIZED_NAME_STORAGE_ADDRESS)
   private V1alpha1ClusterStreamStatusStorageAddress storageAddress;
+
+
+  public V1alpha1ClusterStreamStatus binding(V1alpha1ClusterStreamStatusBinding binding) {
+    
+    this.binding = binding;
+    return this;
+  }
+
+   /**
+   * Get binding
+   * @return binding
+  **/
+  @javax.annotation.Nullable
+  @ApiModelProperty(value = "")
+
+  public V1alpha1ClusterStreamStatusBinding getBinding() {
+    return binding;
+  }
+
+
+  public void setBinding(V1alpha1ClusterStreamStatusBinding binding) {
+    this.binding = binding;
+  }
 
 
   public V1alpha1ClusterStreamStatus conditions(List<V1alpha1ClusterStreamStatusConditions> conditions) {
@@ -105,13 +133,14 @@ public class V1alpha1ClusterStreamStatus {
       return false;
     }
     V1alpha1ClusterStreamStatus v1alpha1ClusterStreamStatus = (V1alpha1ClusterStreamStatus) o;
-    return Objects.equals(this.conditions, v1alpha1ClusterStreamStatus.conditions) &&
+    return Objects.equals(this.binding, v1alpha1ClusterStreamStatus.binding) &&
+        Objects.equals(this.conditions, v1alpha1ClusterStreamStatus.conditions) &&
         Objects.equals(this.storageAddress, v1alpha1ClusterStreamStatus.storageAddress);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(conditions, storageAddress);
+    return Objects.hash(binding, conditions, storageAddress);
   }
 
 
@@ -119,6 +148,7 @@ public class V1alpha1ClusterStreamStatus {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class V1alpha1ClusterStreamStatus {\n");
+    sb.append("    binding: ").append(toIndentedString(binding)).append("\n");
     sb.append("    conditions: ").append(toIndentedString(conditions)).append("\n");
     sb.append("    storageAddress: ").append(toIndentedString(storageAddress)).append("\n");
     sb.append("}");

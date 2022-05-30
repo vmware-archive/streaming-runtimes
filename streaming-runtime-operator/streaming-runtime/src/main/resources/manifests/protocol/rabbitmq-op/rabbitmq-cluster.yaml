@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: my-namespace
+---
+apiVersion: rabbitmq.com/v1beta1
+kind: RabbitmqCluster
+metadata:
+  name: my-rabbitmq-cluster
+  namespace: my-namespace
+---
+apiVersion: rabbitmq.com/v1beta1
+kind: Queue
+metadata:
+  name: test # name of this custom resource; does not have to the same as the actual queue name
+  namespace: my-namespace
+spec:
+  name: test-queue # name of the queue
+  rabbitmqClusterReference:
+    name: my-rabbitmq-cluster
+    namespace: my-namespace
+---
+apiVersion: rabbitmq.com/v1beta1
+kind: Exchange
+metadata:
+  name: fanout
+  namespace: my-namespace
+spec:
+  name: fanout-exchange # name of the exchange
+  type: fanout # default to 'direct' if not provided; can be set to 'direct', 'fanout', 'headers', and 'topic'
+  autoDelete: false
+  durable: true
+  rabbitmqClusterReference:
+    name: my-rabbitmq-cluster
+    namespace: my-namespace
+---
+apiVersion: rabbitmq.com/v1beta1
+kind: Binding
+metadata:
+  name: binding
+  namespace: my-namespace
+spec:
+  source: fanout-exchange # an existing exchange
+  destination: test-queue # an existing queue
+  destinationType: queue # can be 'queue' or 'exchange'
+  rabbitmqClusterReference:
+    name: my-rabbitmq-cluster
+    namespace: my-namespace

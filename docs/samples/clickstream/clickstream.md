@@ -75,7 +75,7 @@ kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runti
 - Install the click-stream random data stream:
 
 ```shell
-kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-samples/clickstream/data-generator.yaml' -n default
+kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-samples/clickstream/data-generator.yaml' -n streaming-runtime
 ```
 
 - Follow the [explore Kafka](../../instructions/#kafka-topics) and [explore Rabbit](../../instructions/#rabbit-queues) to see what data is generated and how it is processed though the pipeline. 
@@ -83,6 +83,6 @@ kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runti
 - Delete the Top-k songs pipeline and the demo song generator:
 ```shell
 kubectl delete srs,srcs,srp --all -n streaming-runtime 
-kubectl delete deployments -l app=clickstream-data-generator
+kubectl delete deployments -l app=clickstream-data-generator -n streaming-runtime 
 ```
 

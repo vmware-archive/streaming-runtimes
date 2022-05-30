@@ -3,11 +3,12 @@ kind: ClusterStream
 metadata:
   name: my-rabbitmq-cluster-stream
 spec:
+  name: "topicNme"
   keys: ["truckclass", "truckid"]
   streamModes: ["read", "write"]
   storage:
-    servers:
-    - url: "http://localhost:8080"
+    server:
+      url: "http://localhost:8080"
       protocol: "rabbitmq"
     attributes:
       key1: "value1"

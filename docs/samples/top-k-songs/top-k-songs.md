@@ -89,7 +89,7 @@ The use case is inspired by the [music](https://github.com/confluentinc/examples
   by the `kafka-stream-songs` and `kafka-stream-playevents` Streams and send to the topics defined in those streams.
 
     ```shell
-    kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-sample/top-k-songs/data-generator.yaml' -n default
+    kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-sample/top-k-songs/data-generator.yaml' -n streaming-runtime
     ```
 
 * Check the topics
@@ -140,8 +140,5 @@ The use case is inspired by the [music](https://github.com/confluentinc/examples
 
     ```shell
     kubectl delete srs,srcs,srp --all -n streaming-runtime 
-    kubectl delete deployments -l app=top-k-songs-data-generator
-
-    #to stop the legacy generator
-    kubectl delete deployments -l app=songs-generator
+    kubectl delete deployments -l app=top-k-songs-data-generator  -n streaming-runtime
     ```

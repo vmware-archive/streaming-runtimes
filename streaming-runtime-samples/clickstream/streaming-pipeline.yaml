@@ -1,8 +1,9 @@
 apiVersion: streaming.tanzu.vmware.com/v1alpha1
 kind: Stream
 metadata:
-  name: kafka-stream-user
+  name: kafka-stream-user-stream
 spec:
+  name: kafka-stream-user
   protocol: "kafka"
   storage:
     clusterStream: "cluster-stream-kafka-user"
@@ -30,8 +31,9 @@ spec:
 apiVersion: streaming.tanzu.vmware.com/v1alpha1
 kind: Stream
 metadata:
-  name: kafka-stream-click
+  name: kafka-stream-click-stream
 spec:
+  name: kafka-stream-click
   protocol: kafka
   storage:
     clusterStream: "cluster-stream-kafka-click"
@@ -64,8 +66,9 @@ spec:
 apiVersion: streaming.tanzu.vmware.com/v1alpha1
 kind: Stream
 metadata:
-  name: kafka-stream-vip-action
+  name: kafka-stream-vip-action-stream
 spec:
+  name: kafka-stream-vip-action
   protocol: "kafka"
   storage:
     clusterStream: "cluster-stream-kafka-vip-action"
@@ -96,8 +99,9 @@ spec:
 apiVersion: streaming.tanzu.vmware.com/v1alpha1
 kind: Stream
 metadata:
-  name: rabbitmq-stream-vip-action
+  name: rabbitmq-stream-vip-action-stream
 spec:
+  name: rabbitmq-stream-vip-action
   keys: [ "user_id" ]
   streamMode: [ "write" ]
   protocol: "rabbitmq"
@@ -111,18 +115,18 @@ metadata:
 spec:
   inputs:
     query:
-      - INSERT INTO [[STREAM:kafka-stream-vip-action]] 
+      - INSERT INTO [[STREAM:kafka-stream-vip-action-stream]] 
         SELECT Users.user_id, Users.name, Clicks.page, Clicks.action, Clicks.event_time 
-        FROM [[STREAM:kafka-stream-click]]  
-        INNER JOIN [[STREAM:kafka-stream-user]] ON Clicks.user_id = Users.user_id  
+        FROM [[STREAM:kafka-stream-click-stream]]  
+        INNER JOIN [[STREAM:kafka-stream-user-stream]] ON Clicks.user_id = Users.user_id  
         WHERE Users.level = 'PLATINUM'
     debug:
       query: "SELECT * FROM VipActions"
       explain: [ 3 ]
     sources:
-      - name: "kafka-stream-vip-action"
+      - name: "kafka-stream-vip-action-stream"
   outputs:
-    - name: "rabbitmq-stream-vip-action"
+    - name: "rabbitmq-stream-vip-action-stream"
   template:
     spec:
       containers:

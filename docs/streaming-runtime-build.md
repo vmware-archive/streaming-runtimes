@@ -25,10 +25,10 @@ The `./scripts/all.sh` combines above two steps.
 #### Build the operator code and image
 
 ```shell
-./mvnw clean install -Pnative -DskipTests spring-boot:build-image
+./mvnw clean install -Dnative -DskipTests spring-boot:build-image
 docker push ghcr.io/vmware-tanzu/streaming-runtimes/streaming-runtime:0.0.3-SNAPSHOT
 ```
-(For no-native build remove the `-Pnative`).
+(For no-native build remove the `-Dnative`).
 
 
 ## User Defined Functions - 

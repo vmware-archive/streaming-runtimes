@@ -1,0 +1,17 @@
+apiVersion: streaming.tanzu.vmware.com/v1alpha1
+kind: ClusterStream
+metadata:
+  name: test-rabbitmq-op-clusterstream
+spec:
+  name: my-exchange
+  keys: ["truckclass", "truckid"]
+  streamModes: ["read", "write"]
+  storage:
+    server:
+      url: "http://localhost:8080"
+      protocol: "rabbitmq"
+      binding: service-binding-ref
+    attributes:
+      protocolAdapterName: "rabbitmq-operator"
+      namespace: "streaming-runtime"
+    reclaimPolicy: "Retain"

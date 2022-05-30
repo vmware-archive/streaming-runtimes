@@ -1,0 +1,24 @@
+apiVersion: skaffold/v2beta21
+kind: Config
+
+build:
+  tagPolicy:
+    customTemplate:
+      template: "0.0.3-SNAPSHOT"
+  artifacts:
+    - image: ghcr.io/vmware-tanzu/streaming-runtimes/streaming-runtime
+      custom:
+        buildCommand: |
+          ./mvnw clean install -P devtools -DskipTests spring-boot:build-image 
+deploy:
+  kubectl:
+    manifests:
+      - ./crds/cluster-stream-crd.yaml
+      - ./crds/stream-crd.yaml
+      - ./crds/processor-crd.yaml
+    flags:
+      apply:
+        - --force
+  kustomize:
+    paths:
+      - manifests
