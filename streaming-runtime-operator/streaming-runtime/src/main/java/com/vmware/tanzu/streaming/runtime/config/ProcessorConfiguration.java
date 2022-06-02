@@ -71,21 +71,21 @@ public class ProcessorConfiguration {
 
 	private DefaultControllerWatch<V1alpha1Processor> createProcessorControllerWatch(WorkQueue<Request> workQueue) {
 		return ControllerBuilder.controllerWatchBuilder(V1alpha1Processor.class, workQueue)
-				.withOnAddFilter(stream -> {
+				.withOnAddFilter(processor -> {
 					LOG.info(String.format("[%s] Event: Add Processor '%s'",
-							PROCESSOR_CONTROLLER_NAME, stream.getMetadata().getName()));
+							PROCESSOR_CONTROLLER_NAME, processor.getMetadata().getName()));
 					return true;
 				})
-				.withOnUpdateFilter((oldStream, newStream) -> {
+				.withOnUpdateFilter((oldProcessor, newProcessor) -> {
 					LOG.info(String.format(
 							"[%s] Event: Update Processor '%s' to '%s'",
-							PROCESSOR_CONTROLLER_NAME, oldStream.getMetadata().getName(),
-							newStream.getMetadata().getName()));
+							PROCESSOR_CONTROLLER_NAME, oldProcessor.getMetadata().getName(),
+							newProcessor.getMetadata().getName()));
 					return true;
 				})
-				.withOnDeleteFilter((deletedStream, deletedFinalStateUnknown) -> {
+				.withOnDeleteFilter((deletedProcessor, deletedFinalStateUnknown) -> {
 					LOG.info(String.format("[%s] Event: Delete Processor '%s'",
-							PROCESSOR_CONTROLLER_NAME, deletedStream.getMetadata().getName()));
+							PROCESSOR_CONTROLLER_NAME, deletedProcessor.getMetadata().getName()));
 					return false;
 				})
 				.build();

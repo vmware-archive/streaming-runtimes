@@ -48,9 +48,10 @@ nav:
       - Usage: streaming-runtime-usage.md
       - Build: streaming-runtime-build.md
 #      - Javadoc: 'https://s01.oss.sonatype.org/service/local/repositories/releases/archive/net/datafaker/datafaker/1.1.0/datafaker-1.1.0-javadoc.jar/!/index.html'
-  - User Defined Functions:
-      - Architecture: udf/architecture.md
-      - Usage: udf/usage.md
+      - User Defined Functions:
+          - Architecture: udf/architecture.md
+          - Usage: udf/usage.md
+      - Service Binding: service-binding/service-binding.md
   - Sample Use Cases:
       - Overview: samples/overview.md
       - Instructions: samples/instructions.md

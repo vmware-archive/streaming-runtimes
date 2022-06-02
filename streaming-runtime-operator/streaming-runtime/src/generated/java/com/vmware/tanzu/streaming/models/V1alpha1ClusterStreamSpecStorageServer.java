@@ -27,7 +27,7 @@ import java.io.IOException;
 /**
  * V1alpha1ClusterStreamSpecStorageServer
  */
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2022-05-27T12:06:58.846Z[Etc/UTC]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2022-06-02T16:21:29.113Z[Etc/UTC]")
 public class V1alpha1ClusterStreamSpecStorageServer {
   public static final String SERIALIZED_NAME_BINDING = "binding";
   @SerializedName(SERIALIZED_NAME_BINDING)

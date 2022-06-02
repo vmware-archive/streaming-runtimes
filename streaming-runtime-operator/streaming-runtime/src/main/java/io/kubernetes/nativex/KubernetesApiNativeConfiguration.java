@@ -34,15 +34,6 @@ import org.springframework.nativex.hint.NativeHint;
 import org.springframework.nativex.hint.TypeHint;
 import org.springframework.nativex.type.NativeConfiguration;
 
-import static org.springframework.nativex.hint.TypeAccess.DECLARED_CLASSES;
-import static org.springframework.nativex.hint.TypeAccess.DECLARED_CONSTRUCTORS;
-import static org.springframework.nativex.hint.TypeAccess.DECLARED_FIELDS;
-import static org.springframework.nativex.hint.TypeAccess.DECLARED_METHODS;
-import static org.springframework.nativex.hint.TypeAccess.values;
-
-
-
-
 /**
  * These hints are inspired by <a href="https://github.com/scratches/spring-controller">
  * Dr. Dave Syer's sample Kubernetes controller</a> and the configuration therein.
@@ -65,7 +56,11 @@ import static org.springframework.nativex.hint.TypeAccess.values;
 		options = {"-H:+AddAllCharsets", "--enable-all-security-services", "--enable-https", "--enable-http"},
 		types = { //
 				@TypeHint( //
-						access = {DECLARED_CLASSES, DECLARED_CONSTRUCTORS, DECLARED_FIELDS, DECLARED_METHODS}, //
+						access = {
+							org.springframework.nativex.hint.TypeAccess.DECLARED_CLASSES, 
+							org.springframework.nativex.hint.TypeAccess.DECLARED_CONSTRUCTORS, 
+							org.springframework.nativex.hint.TypeAccess.DECLARED_FIELDS, 
+							org.springframework.nativex.hint.TypeAccess.DECLARED_METHODS}, //
 						typeNames = { //
 								"io.kubernetes.client.informer.cache.ProcessorListener",
 								"io.kubernetes.client.extended.controller.Controller",
@@ -95,7 +90,10 @@ public class KubernetesApiNativeConfiguration implements NativeConfiguration {
 		all.addAll(jsonAdapters);
 		all.addAll(apiModels);
 		all.addAll(crdModels);
-		all.forEach(clzz -> registry.reflection().forType(clzz).withAccess(values()).build());
+		all.forEach(clzz -> registry.reflection()
+			.forType(clzz)
+			.withAccess(org.springframework.nativex.hint.TypeAccess.values())
+			.build());
 	}
 
 	private <R extends Annotation> Set<Class<?>> findJsonAdapters(Reflections reflections) {
