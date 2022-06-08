@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka-kowl-ui
+  labels:
+    app: kafka-kowl-ui
+    component: kafka-kowl-ui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kafka-kowl-ui
+  template:
+    metadata:
+      labels:
+        app: kafka-kowl-ui
+        component: kafka-kowl-ui
+    spec:
+      terminationGracePeriodSeconds: 15
+      containers:
+        - name: kafka-kowl-ui
+          image: quay.io/cloudhut/kowl:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: MY_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: KAFKA_BROKERS
+              value: kafka.$(MY_NAMESPACE).svc.cluster.local:9092
+            - name: KAFKA_SCHEMAREGISTRY_ENABLED
+              value: "true"
+            - name: KAFKA_SCHEMAREGISTRY_URLS
+              value: http://s-registry.$(MY_NAMESPACE).svc.cluster.local:8081

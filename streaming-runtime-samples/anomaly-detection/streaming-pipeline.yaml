@@ -6,7 +6,7 @@ spec:
   name: card-authorizations
   protocol: "kafka"
   storage:
-    clusterStream: "card-authorizations-cluster-stream"
+    clusterStream: "cluster-stream-card-authorizations"
   streamMode: [ "read" ]
   keys: [ "card_number" ]
   dataSchemaContext:
@@ -39,7 +39,7 @@ spec:
   name: possible-fraud
   protocol: "kafka"
   storage:
-    clusterStream: "possible-fraud-cluster-stream"
+    clusterStream: "cluster-stream-possible-fraud"
   streamMode: [ "read", "write" ]
   keys: [ "card_number" ]
   dataSchemaContext:
@@ -64,34 +64,41 @@ spec:
 apiVersion: streaming.tanzu.vmware.com/v1alpha1
 kind: Stream
 metadata:
-  name: udf-output-possible-fraud-stream
+  name: fraud-alert-stream
 spec:
-  name: udf-output-possible-fraud
+  name: fraud-alert
   keys: [ "card_id" ]
   streamMode: [ "write" ]
   protocol: "rabbitmq"
   storage:
-    clusterStream: "udf-output-possible-fraud-cluster-stream"
+    clusterStream: "cluster-stream-fraud-alert-stream"
 ---
 apiVersion: streaming.tanzu.vmware.com/v1alpha1
 kind: Processor
 metadata:
-  name: possible-fraud-processor
+  name: possible-fraud-detection
 spec:
+  type: FSQL
+  inlineQuery:
+    - "INSERT INTO [[STREAM:possible-fraud-stream]]  
+        SELECT window_start, window_end, card_number, COUNT(*) AS authorization_attempts 
+        FROM TABLE(TUMBLE(TABLE [[STREAM:card-authorizations-stream]], DESCRIPTOR(event_time), INTERVAL '5' SECONDS)) 
+        GROUP BY window_start, window_end, card_number    
+        HAVING COUNT(*) > 5"
+  attributes:
+    debugQuery: "SELECT * FROM PossibleFraud"
+    debugExplain: "2"
+---
+apiVersion: streaming.tanzu.vmware.com/v1alpha1
+kind: Processor
+metadata:
+  name: fraud-alert
+spec:
+  type: TWA
   inputs:
-    query:
-      - "INSERT INTO [[STREAM:possible-fraud-stream]]  
-         SELECT window_start, window_end, card_number, COUNT(*) AS authorization_attempts 
-         FROM TABLE(TUMBLE(TABLE [[STREAM:card-authorizations-stream]], DESCRIPTOR(event_time), INTERVAL '5' SECONDS)) 
-         GROUP BY window_start, window_end, card_number    
-         HAVING COUNT(*) > 5"
-    debug:
-      query: "SELECT * FROM PossibleFraud"
-      explain: [ 2 ]
-    sources:
-      - name: "possible-fraud-stream"
+    - name: "possible-fraud-stream"
   outputs:
-    - name: "udf-output-possible-fraud-stream"
+    - name: "fraud-alert-stream"
   template:
     spec:
       containers:

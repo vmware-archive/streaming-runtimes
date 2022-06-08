@@ -6,8 +6,8 @@ theme:
 
   features:
     - navigation.tabs
-  logo: assets/icon-tanzu.svg
-  favicon: assets/icon-tanzu.svg
+  logo: assets/icon-tanzu2.svg
+  favicon: assets/icon-tanzu2.svg
   palette:
 #    primary: blue grey
 #    accent: cyan
@@ -28,6 +28,7 @@ repo_url: https://github.com/vmware-tanzu/streaming-runtimes
 #  - stylesheets/extra.css
 
 markdown_extensions:
+  - footnotes
   - tables
   - admonition
   - attr_list
@@ -46,13 +47,14 @@ nav:
   - Streaming Runtime:
       - Install: install.md
       - Usage: streaming-runtime-usage.md
+      - Architecture:
+        - User Defined Functions:
+            - Architecture: architecture/udf/architecture.md
+            - Usage: architecture/udf/usage.md
+        - Service Binding: architecture/service-binding/service-binding.md
+        - Stream Data Schema: architecture/streaming-data-schema.md
       - Build: streaming-runtime-build.md
-#      - Javadoc: 'https://s01.oss.sonatype.org/service/local/repositories/releases/archive/net/datafaker/datafaker/1.1.0/datafaker-1.1.0-javadoc.jar/!/index.html'
-      - User Defined Functions:
-          - Architecture: udf/architecture.md
-          - Usage: udf/usage.md
-      - Service Binding: service-binding/service-binding.md
-  - Sample Use Cases:
+  - Samples:
       - Overview: samples/overview.md
       - Instructions: samples/instructions.md
       - Use Cases:
@@ -60,6 +62,7 @@ nav:
         - Clickstream Analysis: samples/clickstream/clickstream.md
         - IoT Monitoring: samples/iot-monitoring/iot-monitoring.md
         - Music Chart: samples/top-k-songs/top-k-songs.md
+        - SCS TickTock: samples/spring-cloud-stream/tick-tock.md
 
 copyright: "Copyright © 2022 The Tanzu Streaming Runtime Authors"
 

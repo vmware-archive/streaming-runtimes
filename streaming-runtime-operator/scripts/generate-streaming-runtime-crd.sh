@@ -28,4 +28,4 @@ bash "$PROJECT_ROOT"/scripts/crds-generator.sh \
   -o "$PROJECT_ROOT"/streaming-runtime \
   -u "$PROJECT_ROOT"/crds/stream-crd.yaml \
   -u "$PROJECT_ROOT"/crds/cluster-stream-crd.yaml \
-  -u "$PROJECT_ROOT"/crds/processor-crd.yaml
+  -u "$PROJECT_ROOT"/crds/processor-crd.yaml 

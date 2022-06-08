@@ -51,6 +51,8 @@ public class KafkaDeploymentEditor implements ProtocolDeploymentEditor {
 	private static final Resource kafkaDeployment = toResource("classpath:manifests/protocol/kafka/kafka-deployment.yaml");
 	private static final Resource schemaRegistryDeployment = toResource("classpath:manifests/protocol/kafka/kafka-schema-registry-deployment.yaml");
 	private static final Resource schemaRegistryService = toResource("classpath:manifests/protocol/kafka/kafka-schema-registry-svc.yaml");
+	private static final Resource kafkaUiService = toResource("classpath:manifests/protocol/kafka/kafka-kowl-ui-svc.yaml");
+	private static final Resource kafkaUiDeployment = toResource("classpath:manifests/protocol/kafka/kafka-kowl-ui-deployment.yaml");
 
 	public KafkaDeploymentEditor(CoreV1Api coreV1Api, AppsV1Api appsV1Api, ObjectMapper yamlMapper) {
 		this.coreV1Api = coreV1Api;
@@ -70,6 +72,7 @@ public class KafkaDeploymentEditor implements ProtocolDeploymentEditor {
 			this.createService(ownerReference, zkService, namespace);
 			this.createService(ownerReference, kafkaService, namespace);
 			this.createService(ownerReference, schemaRegistryService, namespace);
+			this.createService(ownerReference, kafkaUiService, namespace);
 		}
 
 		if (CollectionUtils.isEmpty(findPods(namespace, null, "app=kafka-zk,component=kafka-zk"))) {
@@ -84,6 +87,9 @@ public class KafkaDeploymentEditor implements ProtocolDeploymentEditor {
 			this.createDeployment(ownerReference, schemaRegistryDeployment, namespace, "");
 		}
 
+		if (CollectionUtils.isEmpty(findPods(namespace, null, "app=kafka-kowl-ui,component=kafka-kowl-ui"))) {
+			this.createDeployment(ownerReference, kafkaUiDeployment, namespace, "");
+		}
 	}
 
 	@Override

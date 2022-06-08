@@ -6,6 +6,22 @@ kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.3
 kubectl apply -f https://github.com/rabbitmq/messaging-topology-operator/releases/latest/download/messaging-topology-operator-with-certmanager.yaml
 ```
 
+Use the `protocolAdapterName: "rabbitmq-operator"` attribute in the `ClusterStream` or `Stream` resources:
+
+```yaml
+apiVersion: streaming.tanzu.vmware.com/v1alpha1
+kind: ClusterStream
+metadata:
+  name: test-rabbitmq-op-clusterstream
+spec:
+  name: my-exchange
+  storage:
+    server:
+     ...
+     attributes:
+      protocolAdapterName: "rabbitmq-operator"
+      namespace: "streaming-runtime"
+```
 
 ## Install Kafka with Strimzi Operator
 

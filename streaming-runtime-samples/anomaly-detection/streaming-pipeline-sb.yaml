@@ -78,20 +78,27 @@ spec:
 apiVersion: streaming.tanzu.vmware.com/v1alpha1
 kind: Processor
 metadata:
+  name: possible-fraud-sql-aggregator
+spec:
+  type: FSQL
+  inlineQuery:
+    - "INSERT INTO [[STREAM:possible-fraud-stream]]  
+        SELECT window_start, window_end, card_number, COUNT(*) AS authorization_attempts 
+        FROM TABLE(TUMBLE(TABLE [[STREAM:card-authorizations-stream]], DESCRIPTOR(event_time), INTERVAL '5' SECONDS)) 
+        GROUP BY window_start, window_end, card_number    
+        HAVING COUNT(*) > 5"
+  attributes:
+    debugQuery: "SELECT * FROM PossibleFraud"
+    debugExplain: "2"
+---
+apiVersion: streaming.tanzu.vmware.com/v1alpha1
+kind: Processor
+metadata:
   name: possible-fraud-processor
 spec:
+  type: TWA
   inputs:
-    query:
-      - "INSERT INTO [[STREAM:possible-fraud-stream]]  
-         SELECT window_start, window_end, card_number, COUNT(*) AS authorization_attempts 
-         FROM TABLE(TUMBLE(TABLE [[STREAM:card-authorizations-stream]], DESCRIPTOR(event_time), INTERVAL '5' SECONDS)) 
-         GROUP BY window_start, window_end, card_number    
-         HAVING COUNT(*) > 5"
-    debug:
-      query: "SELECT * FROM PossibleFraud"
-      explain: [ 2 ]
-    sources:
-      - name: "possible-fraud-stream"
+    - name: "possible-fraud-stream"
   outputs:
     - name: "udf-output-possible-fraud-stream"
   template:
@@ -108,7 +115,7 @@ type: servicebinding.io/rabbitmq
 stringData:
   type: rabbitmq
   provider: rabbitmq
-  host: rabbitmq.default.svc.cluster.local
+  host: rabbitmq.streaming-runtime.svc.cluster.local
   port: "5672"
   # demo credentials
   username: guest
@@ -126,7 +133,7 @@ spec:
   workload:
     apiVersion: apps/v1
     kind: Deployment
-    name: streaming-runtime-processor-possible-fraud-processor
+    name: srp-possible-fraud-processor
   env:
   - name: SPRING_RABBITMQ_PASSWORD
     key: password

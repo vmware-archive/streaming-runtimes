@@ -1,0 +1,78 @@
+---
+apiVersion: streaming.tanzu.vmware.com/v1alpha1
+kind: Processor
+metadata:
+  # https://docs.spring.io/stream-applications/docs/2021.1.2/reference/html/#spring-cloud-stream-modules-time-source
+  name: time-source
+spec:
+  type: SCS
+  outputs:
+    - name: "timestamps-stream"
+  template:
+    spec:
+      containers:
+        - name: scdf-time-source-kafka
+          image: springcloudstream/time-source-kafka:3.2.0
+          env:
+            - name: SPRING_CLOUD_STREAM_POLLER_FIXED-DELAY
+              value: "2000"
+            - name: TIME_DATE-FORMAT
+              value: "dd/MM/yyyy HH:mm:ss"
+---
+apiVersion: streaming.tanzu.vmware.com/v1alpha1
+kind: Stream
+metadata:
+  name: timestamps-stream
+spec:
+  name: timestamps
+  protocol: "kafka"
+  storage:
+    clusterStream: "cs-timestamps"
+---
+apiVersion: streaming.tanzu.vmware.com/v1alpha1
+kind: Processor
+metadata:
+  #https://docs.spring.io/stream-applications/docs/2021.1.2/reference/html/#spring-cloud-stream-modules-transform-processor
+  name: transformer
+spec:
+  type: SCS
+  inputs:
+    - name: "timestamps-stream"
+  outputs:
+    - name: "uppercase-stream"  
+  template:
+    spec:
+      containers:
+        - name: scdf-transform-processor-kafka
+          image: springcloudstream/transform-processor-kafka:3.2.0
+          env:
+            - name: SPEL_FUNCTION_EXPRESSION
+              value: "payload.toUpperCase()"
+---
+apiVersion: streaming.tanzu.vmware.com/v1alpha1
+kind: Stream
+metadata:
+  name: uppercase-stream
+spec:
+  name: uppercase
+  protocol: "kafka"
+  storage:
+    clusterStream: "cs-uppercase"
+---
+apiVersion: streaming.tanzu.vmware.com/v1alpha1
+kind: Processor
+metadata:
+  #https://docs.spring.io/stream-applications/docs/2021.1.2/reference/html/#spring-cloud-stream-modules-log-sink
+  name: log-sink
+spec:
+  type: SCS
+  inputs:
+    - name: "uppercase-stream"
+  template:
+    spec:
+      containers:
+        - name: scdf-log-sink-kafka
+          image: springcloudstream/log-sink-kafka:3.2.0
+          env:
+            - name: LOG_EXPRESSION
+              value: "'My uppercase timestamp is: ' + payload"

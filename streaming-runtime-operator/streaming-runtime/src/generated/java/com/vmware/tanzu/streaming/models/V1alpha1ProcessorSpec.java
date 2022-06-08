@@ -21,35 +21,122 @@ import com.google.gson.annotations.SerializedName;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import com.vmware.tanzu.streaming.models.V1alpha1ClusterStreamStatusBinding;
-import com.vmware.tanzu.streaming.models.V1alpha1ProcessorSpecInputs;
 import com.vmware.tanzu.streaming.models.V1alpha1ProcessorSpecTemplate;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * V1alpha1ProcessorSpec
  */
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2022-06-02T16:21:29.113Z[Etc/UTC]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2022-06-13T09:15:52.676Z[Etc/UTC]")
 public class V1alpha1ProcessorSpec {
+  public static final String SERIALIZED_NAME_ATTRIBUTES = "attributes";
+  @SerializedName(SERIALIZED_NAME_ATTRIBUTES)
+  private Map<String, String> attributes = null;
+
+  public static final String SERIALIZED_NAME_INLINE_QUERY = "inlineQuery";
+  @SerializedName(SERIALIZED_NAME_INLINE_QUERY)
+  private List<String> inlineQuery = null;
+
   public static final String SERIALIZED_NAME_INPUTS = "inputs";
   @SerializedName(SERIALIZED_NAME_INPUTS)
-  private V1alpha1ProcessorSpecInputs inputs;
+  private List<V1alpha1ClusterStreamStatusBinding> inputs = null;
 
   public static final String SERIALIZED_NAME_OUTPUTS = "outputs";
   @SerializedName(SERIALIZED_NAME_OUTPUTS)
   private List<V1alpha1ClusterStreamStatusBinding> outputs = null;
 
+  public static final String SERIALIZED_NAME_REPLICAS = "replicas";
+  @SerializedName(SERIALIZED_NAME_REPLICAS)
+  private Integer replicas;
+
   public static final String SERIALIZED_NAME_TEMPLATE = "template";
   @SerializedName(SERIALIZED_NAME_TEMPLATE)
   private V1alpha1ProcessorSpecTemplate template;
 
+  public static final String SERIALIZED_NAME_TYPE = "type";
+  @SerializedName(SERIALIZED_NAME_TYPE)
+  private String type;
 
-  public V1alpha1ProcessorSpec inputs(V1alpha1ProcessorSpecInputs inputs) {
+
+  public V1alpha1ProcessorSpec attributes(Map<String, String> attributes) {
+    
+    this.attributes = attributes;
+    return this;
+  }
+
+  public V1alpha1ProcessorSpec putAttributesItem(String key, String attributesItem) {
+    if (this.attributes == null) {
+      this.attributes = new HashMap<>();
+    }
+    this.attributes.put(key, attributesItem);
+    return this;
+  }
+
+   /**
+   * Get attributes
+   * @return attributes
+  **/
+  @javax.annotation.Nullable
+  @ApiModelProperty(value = "")
+
+  public Map<String, String> getAttributes() {
+    return attributes;
+  }
+
+
+  public void setAttributes(Map<String, String> attributes) {
+    this.attributes = attributes;
+  }
+
+
+  public V1alpha1ProcessorSpec inlineQuery(List<String> inlineQuery) {
+    
+    this.inlineQuery = inlineQuery;
+    return this;
+  }
+
+  public V1alpha1ProcessorSpec addInlineQueryItem(String inlineQueryItem) {
+    if (this.inlineQuery == null) {
+      this.inlineQuery = new ArrayList<>();
+    }
+    this.inlineQuery.add(inlineQueryItem);
+    return this;
+  }
+
+   /**
+   * Get inlineQuery
+   * @return inlineQuery
+  **/
+  @javax.annotation.Nullable
+  @ApiModelProperty(value = "")
+
+  public List<String> getInlineQuery() {
+    return inlineQuery;
+  }
+
+
+  public void setInlineQuery(List<String> inlineQuery) {
+    this.inlineQuery = inlineQuery;
+  }
+
+
+  public V1alpha1ProcessorSpec inputs(List<V1alpha1ClusterStreamStatusBinding> inputs) {
     
     this.inputs = inputs;
+    return this;
+  }
+
+  public V1alpha1ProcessorSpec addInputsItem(V1alpha1ClusterStreamStatusBinding inputsItem) {
+    if (this.inputs == null) {
+      this.inputs = new ArrayList<>();
+    }
+    this.inputs.add(inputsItem);
     return this;
   }
 
@@ -60,12 +147,12 @@ public class V1alpha1ProcessorSpec {
   @javax.annotation.Nullable
   @ApiModelProperty(value = "")
 
-  public V1alpha1ProcessorSpecInputs getInputs() {
+  public List<V1alpha1ClusterStreamStatusBinding> getInputs() {
     return inputs;
   }
 
 
-  public void setInputs(V1alpha1ProcessorSpecInputs inputs) {
+  public void setInputs(List<V1alpha1ClusterStreamStatusBinding> inputs) {
     this.inputs = inputs;
   }
 
@@ -101,6 +188,29 @@ public class V1alpha1ProcessorSpec {
   }
 
 
+  public V1alpha1ProcessorSpec replicas(Integer replicas) {
+    
+    this.replicas = replicas;
+    return this;
+  }
+
+   /**
+   * Get replicas
+   * @return replicas
+  **/
+  @javax.annotation.Nullable
+  @ApiModelProperty(value = "")
+
+  public Integer getReplicas() {
+    return replicas;
+  }
+
+
+  public void setReplicas(Integer replicas) {
+    this.replicas = replicas;
+  }
+
+
   public V1alpha1ProcessorSpec template(V1alpha1ProcessorSpecTemplate template) {
     
     this.template = template;
@@ -124,6 +234,29 @@ public class V1alpha1ProcessorSpec {
   }
 
 
+  public V1alpha1ProcessorSpec type(String type) {
+    
+    this.type = type;
+    return this;
+  }
+
+   /**
+   * Get type
+   * @return type
+  **/
+  @javax.annotation.Nullable
+  @ApiModelProperty(value = "")
+
+  public String getType() {
+    return type;
+  }
+
+
+  public void setType(String type) {
+    this.type = type;
+  }
+
+
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -133,14 +266,18 @@ public class V1alpha1ProcessorSpec {
       return false;
     }
     V1alpha1ProcessorSpec v1alpha1ProcessorSpec = (V1alpha1ProcessorSpec) o;
-    return Objects.equals(this.inputs, v1alpha1ProcessorSpec.inputs) &&
+    return Objects.equals(this.attributes, v1alpha1ProcessorSpec.attributes) &&
+        Objects.equals(this.inlineQuery, v1alpha1ProcessorSpec.inlineQuery) &&
+        Objects.equals(this.inputs, v1alpha1ProcessorSpec.inputs) &&
         Objects.equals(this.outputs, v1alpha1ProcessorSpec.outputs) &&
-        Objects.equals(this.template, v1alpha1ProcessorSpec.template);
+        Objects.equals(this.replicas, v1alpha1ProcessorSpec.replicas) &&
+        Objects.equals(this.template, v1alpha1ProcessorSpec.template) &&
+        Objects.equals(this.type, v1alpha1ProcessorSpec.type);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(inputs, outputs, template);
+    return Objects.hash(attributes, inlineQuery, inputs, outputs, replicas, template, type);
   }
 
 
@@ -148,9 +285,13 @@ public class V1alpha1ProcessorSpec {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class V1alpha1ProcessorSpec {\n");
+    sb.append("    attributes: ").append(toIndentedString(attributes)).append("\n");
+    sb.append("    inlineQuery: ").append(toIndentedString(inlineQuery)).append("\n");
     sb.append("    inputs: ").append(toIndentedString(inputs)).append("\n");
     sb.append("    outputs: ").append(toIndentedString(outputs)).append("\n");
+    sb.append("    replicas: ").append(toIndentedString(replicas)).append("\n");
     sb.append("    template: ").append(toIndentedString(template)).append("\n");
+    sb.append("    type: ").append(toIndentedString(type)).append("\n");
     sb.append("}");
     return sb.toString();
   }

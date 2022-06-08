@@ -24,29 +24,23 @@ spec:
             spec:
               type: object
               properties:
-                inputs:
+                type:
+                  type: string
+                attributes:
                   type: object
-                  properties:
-                    query:
-                      type: array
-                      items:
+                  additionalProperties:
+                    type: string
+                inlineQuery: # The inline-query or template-container sections are mutually exclusive.
+                    type: array
+                    items:
+                      type: string
+                inputs:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      name:
                         type: string
-                    debug:
-                      type: object
-                      properties:
-                        query:
-                          type: string
-                        explain:
-                          type: array
-                          items:
-                            type: integer
-                    sources:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          name:
-                            type: string
                 outputs:
                   type: array
                   items:
@@ -54,6 +48,8 @@ spec:
                     properties:
                       name:
                         type: string
+                replicas:
+                  type: integer
                 template:
                   type: object
                   properties:

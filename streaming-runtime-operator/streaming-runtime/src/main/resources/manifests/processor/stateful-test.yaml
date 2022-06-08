@@ -1,0 +1,79 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: streaming-runtime
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: streaming-runtime-processor
+  labels:
+    app: streaming-runtime-processor
+spec:
+  ports:
+  - port: 8080
+    name: streaming-runtime-processor
+  clusterIP: None
+  selector:
+    app: streaming-runtime-processor
+---    
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: streaming-runtime-processor
+  labels:
+    app: streaming-runtime-processor
+    component: streaming-runtime-processor
+spec:
+  serviceName: "streaming-runtime-processor"
+  replicas: 2
+  selector:
+    matchLabels:
+      app: streaming-runtime-processor
+  template:
+    metadata:
+      labels:
+        app: streaming-runtime-processor
+        component: streaming-runtime-processor
+    spec:
+      initContainers:
+      - name: index-provider
+        image: busybox:1.35.0
+        command: ['sh', '-c', "echo INSTANCE_INDEX=\"$(expr $HOSTNAME | grep -o \"[[:digit:]]*$\")\" >> /config/application.properties && echo spring.cloud.stream.instance-index=\"$(expr $HOSTNAME | grep -o \"[[:digit:]]*$\")\" >> /config/application.properties"]
+        volumeMounts:
+        - name: config
+          mountPath: /config
+      containers:
+      - name: multibinder-grpc
+        image: ghcr.io/vmware-tanzu/streaming-runtimes/multibinder-grpc:latest
+        ports:
+          - containerPort: 8080
+        env:
+          - name: SPRING_CLOUD_FUNCTION_GRPC_PORT
+            value: "55554"
+          - name: SPRING_CLOUD_FUNCTION_GRPC_SERVER
+            value: "false"
+        livenessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 60
+        readinessProbe:
+          httpGet:
+            path: /actuator/info
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 10
+        volumeMounts:
+        - name: config
+          mountPath: /config
+  volumeClaimTemplates:
+  - metadata:
+      name: config
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: standard
+      resources:
+        requests:
+          storage: 0.1Gi          

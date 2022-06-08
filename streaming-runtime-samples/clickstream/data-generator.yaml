@@ -151,14 +151,14 @@ data:
           bindings:
             kafka-stream-user:
               binder: kafka1
-              destination: kafka-stream-user
+              destination: user
               contentType: application/*+avro
               producer:
                 useNativeEncoding: true
             
             kafka-stream-click:
               binder: kafka1
-              destination: kafka-stream-click
+              destination: click
               contentType: application/*+avro
               producer:
                 useNativeEncoding: true

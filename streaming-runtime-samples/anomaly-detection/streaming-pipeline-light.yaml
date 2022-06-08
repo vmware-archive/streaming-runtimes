@@ -42,17 +42,15 @@ spec:
   protocol: "rabbitmq"
   storage:
     clusterStream: "udf-output-possible-fraud"
-  attributes:
-    protocolAdapterName: "rabbitmq-operator"
 ---
 apiVersion: streaming.tanzu.vmware.com/v1alpha1
 kind: Processor
 metadata:
   name: possible-fraud-processor
 spec:
+  type: TWA
   inputs:
-    sources:
-      - name: "card-authorizations-stream"
+    - name: "card-authorizations-stream"
   outputs:
     - name: "udf-output-possible-fraud-stream"
   template:

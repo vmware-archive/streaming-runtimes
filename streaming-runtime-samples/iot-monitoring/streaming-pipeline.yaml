@@ -75,20 +75,27 @@ spec:
 apiVersion: streaming.tanzu.vmware.com/v1alpha1
 kind: Processor
 metadata:
-  name: iot-monitoring-processor
+  name: iot-monitoring-sql-aggregation
 spec:
+  type: FSQL
+  inlineQuery:
+    - "INSERT INTO [[STREAM:error-count-stream]] 
+        SELECT window_start, window_end, error_code, COUNT(*) AS error_count 
+        FROM TABLE(TUMBLE(TABLE [[STREAM:iot-monitoring-stream]], DESCRIPTOR(ts), INTERVAL '1' MINUTE)) 
+        WHERE type='ERROR' 
+        GROUP BY window_start, window_end, error_code"
+  attributes:
+    debugQuery: "SELECT * FROM ErrorCount"
+    debugExplain: "2"
+---
+apiVersion: streaming.tanzu.vmware.com/v1alpha1
+kind: Processor
+metadata:
+  name: iot-monitoring-udf
+spec:
+  type: TWA
   inputs:
-    query:
-      - "INSERT INTO [[STREAM:error-count-stream]] 
-         SELECT window_start, window_end, error_code, COUNT(*) AS error_count 
-         FROM TABLE(TUMBLE(TABLE [[STREAM:iot-monitoring-stream]], DESCRIPTOR(ts), INTERVAL '1' MINUTE)) 
-         WHERE type='ERROR' 
-         GROUP BY window_start, window_end, error_code"
-    debug:
-      query: "SELECT * FROM ErrorCount"
-      explain: [ 2 ]
-    sources:
-      - name: "error-count-stream"
+    - name: "error-count-stream"
   outputs:
     - name: "udf-output-error-count-stream"
   template:

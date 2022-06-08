@@ -3,6 +3,7 @@ kind: ClusterStream
 metadata:
   name: my-kafka-cluster-stream
 spec:
+  name: my-kafka-cluster-stream
   keys: ["truckclass", "truckid"]
   streamModes: ["read", "write"]
   storage:
@@ -10,5 +11,5 @@ spec:
       url: "http://localhost:8080"
       protocol: "kafka"
     attributes:
-      key1: "value1"
+      namespace: "streaming-runtime"      
     reclaimPolicy: "Retain"

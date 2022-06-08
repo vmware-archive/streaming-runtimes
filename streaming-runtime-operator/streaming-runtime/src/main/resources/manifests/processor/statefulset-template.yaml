@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: streaming-runtime-processor
+  labels:
+    app: streaming-runtime-processor
+    component: streaming-runtime-processor
+spec:
+  serviceName: "streaming-runtime-processor"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: streaming-runtime-processor
+  template:
+    metadata:
+      labels:
+        app: streaming-runtime-processor
+        component: streaming-runtime-processor
+  volumeClaimTemplates:
+  - metadata:
+      name: config
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: standard
+      resources:
+        requests:
+          storage: 0.1Gi          

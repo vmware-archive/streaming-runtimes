@@ -1,6 +1,4 @@
 
-## Use-case layout
-
 All use-cases are organized in folders named of after the use-case, each containing two files:
 
     streaming-runtime-samples/
@@ -8,16 +6,12 @@ All use-cases are organized in folders named of after the use-case, each contain
             streaming-pipeline.yaml 
             data-generator.yaml
 
-The`streaming-pipeline.yaml` is a Kubernetes manifest that uses the Streaming-Runtime Custom Resources, such as `ClusterStream`, `Stream` and `Processor`,  
-to define decoratively the data processing pipeline.
-It defines the input and output streams as well as the processing queries and the `UDF` functions to be applied.
+* `streaming-pipeline.yaml` is a manifest of Streaming-Runtime custom resources, such as `ClusterStream`, `Stream` and `Processor`, defining the use-case data processing pipeline.
+* `data-generator.yaml` manifest deploys the [Data Generator](https://www.logaritex.com/) that continuously generates realistic test data for this particular use case. 
 
-The `data-generator.yaml` is a Kubernetes deployment manifest that continuously generates realistic test date for this use case. 
-Depends on the Use Case one or more threads can be deployed to pump concurrently messages to the scenarios' input streams.
+## Run a Sample
 
-## Run
-
-Follow the Streaming Runtime [installation](../install.md) instructions to install the operator.
+Follow the Streaming Runtime [installation](../install.md) instructions to deploy the operator.
 
 Next from within the `streaming-runtime-samples` directory, deploy the use-case streaming pipeline:
 
@@ -36,9 +30,31 @@ kubectl apply -f '<use-case-folder>/data-generator.yaml' -n streaming-runtime
 
 ## Explore the Results
 
-As the use-case input and output streams are backed by messaging systems such as Apache Kafka or RabbitMQ we can explore the content of those messages that fly through the pipeline.  
+All input and output streams are backed by messaging systems such as Apache Kafka or RabbitMQ and we can explore the messages exchanged through the pipeline.  
 
-### Kafka Topics
+### Explore Apache Kafka Topics
+
+#### Using Kowl UI
+
+The auto-provisioned Apache Kafka clusters come pre-configured with the [Apache Kowl UI](https://cloudhut.dev/#features) visualization tool.
+To access it you need to forward the `80` port first:
+```shell
+kubectl port-forward svc/kafka-kowl-ui 8082:80 -n streaming-runtime
+```
+
+Then open [http://localhost:8082/topics](http://localhost:8082/topics) or [http://localhost:8082/schema-registry](http://localhost:8082/schema-registry)
+
+=== "Tpics"
+    ![kowl-topics](./kowl-topics.png)
+
+=== "Tpics Details"
+    ![kowl-topics-details](./kowl-topics-details.png)
+
+=== "Schema Registry"
+    ![kowl-schemas](./kowl-schemas.png)
+
+#### Using Command Line
+
 Use the `kubectl get all` to find the Kafka broker pod name and then
 ```shell
 kubectl exec -it pod/<your-kafka-pod> -- /bin/bash`
@@ -65,10 +81,12 @@ To delete a topic:
 
 To access the Rabbit management UI first forward the `15672` port:
 ```shell
-kubectl port-forward svc/rabbitmq 15672:15672
+kubectl port-forward svc/rabbitmq 15672:15672 -n streaming-runtime
 ```
 
 1. Then open [http://localhost:15672/#/exchanges](http://localhost:15672/#/exchanges) and find the exchange name related to your use-case.
 2. Open the `Queues` tab and create new queue called `myTempQueue` (use the default configuration).
 3. Go back to the `Exchang` tab, select the use-case exchange and bind it to the new `myTempQueue` queue, with `#` as a `Routing key`!
 4. From the `Queue` tab select the `myTempQueue` queue and click the `Get Messages` button.
+
+![rabbitmq-ui](./rabbitmq-ui.png)

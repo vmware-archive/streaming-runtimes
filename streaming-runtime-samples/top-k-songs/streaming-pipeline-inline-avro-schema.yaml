@@ -186,9 +186,9 @@ spec:
 apiVersion: streaming.tanzu.vmware.com/v1alpha1
 kind: Stream
 metadata:
-  name: rabbitmq-stream-1
+  name: rabbitmq-stream-out
 spec:
-  name: rabbitmq-stream-1
+  name: stream-out
   keys: [ "truckclass", "truckid" ]
   streamMode: [ "write" ]
   protocol: "rabbitmq"
@@ -198,37 +198,53 @@ spec:
 apiVersion: streaming.tanzu.vmware.com/v1alpha1
 kind: Processor
 metadata:
-  name: topk-songs-processor
+  name: topk-songs-join
 spec:
+  type: FSQL
+  inlineQuery:
+    - "INSERT INTO [[STREAM:kafka-stream-songplays]] 
+        SELECT Plays.song_id, Songs.album, Songs.artist, Songs.name, Songs.genre, Plays.duration, Plays.event_time   
+        FROM(SELECT * FROM [[STREAM:kafka-stream-playevents]] WHERE duration >= 30000) AS Plays 
+        INNER JOIN [[STREAM:kafka-stream-songs]] as Songs ON Plays.song_id = Songs.song_id"
+---
+apiVersion: streaming.tanzu.vmware.com/v1alpha1
+kind: Processor
+metadata:
+  name: topk-songs-aggregate
+spec:
+  type: FSQL
+  inlineQuery:
+    - "INSERT INTO [[STREAM:kafka-stream-topk-songs-per-genre]] 
+        SELECT window_start, window_end, song_id, name, genre, play_count 
+        FROM ( 
+          SELECT *, ROW_NUMBER() OVER (PARTITION BY window_start, window_end, genre ORDER BY play_count DESC) AS row_num 
+          FROM ( 
+              SELECT window_start, window_end, song_id, name, genre, COUNT(*) AS play_count 
+              FROM TABLE(TUMBLE(TABLE [[STREAM:kafka-stream-songplays]], DESCRIPTOR(event_time), INTERVAL '60' SECONDS)) 
+              GROUP BY window_start, window_end, song_id, name, genre 
+          ) 
+        ) WHERE row_num <= 3"
+  attributes:
+    debugQuery: "SELECT * FROM TopKSongsPerGenre"
+    debugExplain: "4,5"
+---
+apiVersion: streaming.tanzu.vmware.com/v1alpha1
+kind: Processor
+metadata:
+  name: topk-songs-udf
+spec:
+  type: TWA
   inputs:
-    query:
-      - "INSERT INTO [[STREAM:kafka-stream-songplays]] 
-         SELECT Plays.song_id, Songs.album, Songs.artist, Songs.name, Songs.genre, Plays.duration, Plays.event_time   
-         FROM(SELECT * FROM [[STREAM:kafka-stream-playevents]] WHERE duration >= 30000) AS Plays 
-         INNER JOIN [[STREAM:kafka-stream-songs]] as Songs ON Plays.song_id = Songs.song_id"
-
-      - "INSERT INTO [[STREAM:kafka-stream-topk-songs-per-genre]] 
-         SELECT window_start, window_end, song_id, name, genre, play_count 
-         FROM ( 
-            SELECT *, ROW_NUMBER() OVER (PARTITION BY window_start, window_end, genre ORDER BY play_count DESC) AS row_num 
-            FROM ( 
-                SELECT window_start, window_end, song_id, name, genre, COUNT(*) AS play_count 
-                FROM TABLE(TUMBLE(TABLE [[STREAM:kafka-stream-songplays]], DESCRIPTOR(event_time), INTERVAL '60' SECONDS)) 
-                GROUP BY window_start, window_end, song_id, name, genre 
-            ) 
-         ) WHERE row_num <= 3"
-    debug:
-      query: "SELECT * FROM TopKSongsPerGenre"
-      explain: [ 4, 5 ]
-    sources:
-      - name: "kafka-stream-topk-songs-per-genre"
+    - name: "kafka-stream-topk-songs-per-genre"
   outputs:
-    - name: "rabbitmq-stream-1"
+    - name: "rabbitmq-stream-out"
   template:
     spec:
       containers:
         - name: uppercase-grpc
           image: ghcr.io/vmware-tanzu/streaming-runtimes/udf-uppercase-java:latest
+#          image: ghcr.io/vmware-tanzu/streaming-runtimes/udf-uppercase-go:0.1
+#          image: ghcr.io/vmware-tanzu/streaming-runtimes/udf-uppercase-python:0.1
           env:
             - name: SPRING_CLOUD_FUNCTION_DEFINITION
               value: uppercase
@@ -236,5 +252,3 @@ spec:
               value: server
             - name: SPRING_CLOUD_FUNCTION_GRPC_PORT
               value: "55554"
-
-

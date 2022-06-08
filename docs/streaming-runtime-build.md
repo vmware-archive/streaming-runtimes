@@ -21,7 +21,6 @@ producing the `install.yaml`.
 
 The `./scripts/all.sh` combines above two steps.
 
-
 #### Build the operator code and image
 
 ```shell
@@ -30,9 +29,7 @@ docker push ghcr.io/vmware-tanzu/streaming-runtimes/streaming-runtime:0.0.3-SNAP
 ```
 (For no-native build remove the `-Dnative`).
 
+## User Defined Functions
 
-## User Defined Functions - 
-
-follow the [User Defined Function](./user-defined-functions) about information how implement and build your own UDF 
-and how to use it from within a Processor resource.
+Follow the [User Defined Function](./user-defined-functions) documentation to learn how to implement and build UDFs, and how to use them from within a Processor resource.
 

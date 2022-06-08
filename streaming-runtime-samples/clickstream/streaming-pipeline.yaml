@@ -1,12 +1,12 @@
 apiVersion: streaming.tanzu.vmware.com/v1alpha1
 kind: Stream
 metadata:
-  name: kafka-stream-user-stream
+  name: user-stream
 spec:
-  name: kafka-stream-user
+  name: user
   protocol: "kafka"
   storage:
-    clusterStream: "cluster-stream-kafka-user"
+    clusterStream: "cluster-stream-user"
   streamMode: [ "read" ]
   keys: [ "user_id" ]
   dataSchemaContext:
@@ -31,12 +31,12 @@ spec:
 apiVersion: streaming.tanzu.vmware.com/v1alpha1
 kind: Stream
 metadata:
-  name: kafka-stream-click-stream
+  name: click-stream
 spec:
-  name: kafka-stream-click
+  name: click
   protocol: kafka
   storage:
-    clusterStream: "cluster-stream-kafka-click"
+    clusterStream: "cluster-stream-click"
   streamMode: [ "read" ]
   keys: [ "user_id" ]
   dataSchemaContext:
@@ -66,12 +66,12 @@ spec:
 apiVersion: streaming.tanzu.vmware.com/v1alpha1
 kind: Stream
 metadata:
-  name: kafka-stream-vip-action-stream
+  name: vip-action-stream
 spec:
-  name: kafka-stream-vip-action
+  name: vip-action
   protocol: "kafka"
   storage:
-    clusterStream: "cluster-stream-kafka-vip-action"
+    clusterStream: "cluster-stream-vip-action"
   streamMode: [ "read", "write" ]
   keys: [ "user_id" ]
   dataSchemaContext:
@@ -99,37 +99,43 @@ spec:
 apiVersion: streaming.tanzu.vmware.com/v1alpha1
 kind: Stream
 metadata:
-  name: rabbitmq-stream-vip-action-stream
+  name: udf-output-stream
 spec:
-  name: rabbitmq-stream-vip-action
+  name: udf-output
   keys: [ "user_id" ]
   streamMode: [ "write" ]
   protocol: "rabbitmq"
   storage:
-    clusterStream: "cluster-stream-rabbitmq-vip-action"
+    clusterStream: "cluster-stream-udf-output"
 ---
 apiVersion: streaming.tanzu.vmware.com/v1alpha1
 kind: Processor
 metadata:
-  name: vi-actions-processor
+  name: vip-join-and-filter
 spec:
+  type: FSQL
+  inlineQuery:
+    - "INSERT INTO [[STREAM:vip-action-stream]] 
+       SELECT Users.user_id, Users.name, Clicks.page, Clicks.action, Clicks.event_time 
+       FROM [[STREAM:click-stream]]  
+       INNER JOIN [[STREAM:user-stream]] ON Clicks.user_id = Users.user_id  
+       WHERE Users.level = 'PLATINUM'"
+  attributes:
+    debugQuery: "SELECT * FROM VipActions"
+    debugExplain: "3"
+---
+apiVersion: streaming.tanzu.vmware.com/v1alpha1
+kind: Processor
+metadata:
+  name: vip-act-upon
+spec:
+  type: TWA
   inputs:
-    query:
-      - INSERT INTO [[STREAM:kafka-stream-vip-action-stream]] 
-        SELECT Users.user_id, Users.name, Clicks.page, Clicks.action, Clicks.event_time 
-        FROM [[STREAM:kafka-stream-click-stream]]  
-        INNER JOIN [[STREAM:kafka-stream-user-stream]] ON Clicks.user_id = Users.user_id  
-        WHERE Users.level = 'PLATINUM'
-    debug:
-      query: "SELECT * FROM VipActions"
-      explain: [ 3 ]
-    sources:
-      - name: "kafka-stream-vip-action-stream"
+    - name: "vip-action-stream"
   outputs:
-    - name: "rabbitmq-stream-vip-action-stream"
+    - name: "udf-output-stream"
   template:
     spec:
       containers:
         - name: uppercase-grpc
           image: ghcr.io/vmware-tanzu/streaming-runtimes/udf-uppercase-go:0.1
-

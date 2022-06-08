@@ -3,23 +3,24 @@
 Imagine a stream of credit card authorization attempts, representing, for example, people swiping their chip cards into a reader or typing their number into a website. Such stream may look something like this:
 
 ```json
-{ 
-  "card_number": "1212-1221-1121-1234", 
-  "card_type": "discover", 
-  "card_expiry": "2013-9-12", 
-  "name": "Mr. Chester Stracke"
-},
-{ 
-  "card_number": "1234-2121-1221-1211", 
-  "card_type": "dankort", 
-  "card_expiry": "2012-11-12", 
-  "name": "Preston Abbott"
-}
+{"card_number": "1212-1221-1121-1234", "card_type": "discover", "card_expiry": "2013-9-12", "name": "Mr. Chester Stracke" },
+{"card_number": "1234-2121-1221-1211", "card_type": "dankort", "card_expiry": "2012-11-12", "name": "Preston Abbott" }
 ...
 ```
 
-Then we would like to identify the suspicious transactions, in real time, and extract them for further investigations. 
-We can express such validation using the following streaming SQL query:
+We would like to identify the suspicious transactions, in real time, and extract them for further investigations. 
+For example we can count the incoming authorization attempts per card number and identify those authorizations that occurs suspiciously often.
+
+Lets use the `Streams` and `Processors` streaming-runtime resources to build such abnormal authorization detection application:
+
+![Anomaly Detection SR Pipeline](anomaly-detection-sr-pipeline.svg)
+
+The input stream, `card-authorization` , does not provide a time field for the time when the authorization attempt was performed. 
+Such field would have been preferred option for the time widowing grouping.
+The next best thing is to use the message timestamp assigned by the message broker to each message.
+The implementation details section below explain how this is done to provision an additional `event_time` field to the authorization attempts data schema.
+
+The `possible-fraud-detection` processor leverages streaming SQL to compute the possible fraud attempts:
 
 ```sql linenums="1"
  INSERT INTO [[STREAM:possible-fraud-stream]] 
@@ -49,16 +50,12 @@ Here we aggregate the stream in intervals of `5 seconds` assuming that `5` autho
 Swiping the card or submitting the form five times within five seconds is a little weird. 
 If we see that happening it is flagged as a possible fraud and inserted to the possible-fraud-stream (`1`).
 
-Note that the input stream does not provide a time field for the time when the authorization attempt was performed. 
-Such field would have been preferred option for the time widowing grouping.
-The next best thing is to use the message timestamp assigned by the message broker to each message.
-The implementation details section below explain how this is done to provision an additional `event_time` field to the authorization attempts data schema.
+The `possible-fraud-detection` processor emits new `possible-fraud` stream containing the fraudulent transactions.
 
-Next we can register a custom function (UDF) to the new, possible-fraud stream to investigate the suspicious transactions further or for example to send warning emails and downstream messages. 
-The UDF function can be implemented in any programming language as long as they adhere to the Streaming-Runtime `gRPC` protocol.
+Next with the help for the `fraud-alert` processor we can register a custom function [UDF](../../architecture/udf/architecture.md), that consumes the `possible-fraud` stream, investigates the suspicious transactions further for example to send alert emails. 
 
 Following diagram illustrates the implementation flow and involved resources:
-![Anomaly Detection Flow](anomaly-detection.svg)
+![Anomaly Detection Flow](anomaly-detection-deployed.svg)
 
 ## Quick start
 
@@ -74,7 +71,7 @@ kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runti
 kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-samples/anomaly-detection/data-generator.yaml' -n streaming-runtime
 ```
 
-- Follow the [explore Kafka](../../instructions/#kafka-topics) and [explore Rabbit](../../instructions/#rabbit-queues) to see what data is generated and how it is processed though the pipeline. 
+- Follow the [explore results](../../instructions/#explore-the-results) instructions to see what data is generated and how it is processed though the pipeline. 
 
 - To delete the data pipeline and the data generator:
 ```shell
@@ -84,9 +81,10 @@ kubectl delete deployments -l app=authorization-attempts-data-generator -n strea
 
 ## Implementation details
 
-One possible way of implementing the above scenario with the help of the `Streaming Runtime` is to define three Streams
-and one `Processor` custom resources and use the Processor's built-in query capabilities.
-(Note: for the purpose of the demo we will skip the explicit CusterStream definitions and instead will enable auth-provisioning for those).
+We can implement the anomaly detection scenario with the help of the `Streaming Runtime`. 
+We define three `Streams` and two `Processor` custom resources.
+
+_Note: for the purpose of the demo we will skip the explicit CusterStream definitions and instead will enable auth-provisioning for those._
 
 Given that the input authorization attempts stream uses an Avro data format like this:
 
@@ -110,9 +108,10 @@ kind: Stream
 metadata:
   name: card-authorizations-stream
 spec:
+  name: card-authorizations
   protocol: "kafka"
   storage:
-    clusterStream: "card-authorizations-cluster-stream"
+    clusterStream: "cluster-stream-card-authorizations"
   streamMode: [ "read" ]
   keys: [ "card_number" ]
   dataSchemaContext:
@@ -141,7 +140,27 @@ spec:
 The `event_time` field is auto-provisioned and assigned with Kafka message's timestamp.
 In addition, 3 seconds `watermark` is configured for the `event_time` field to tolerate out of order or late coming messages! 
 
-Then the new `possible-fraud-stream` populated from the fraud detection processor (using `JSON` format): 
+The `possible-fraud-detection` Processor uses streaming SQL to compute the possible frauds: 
+
+```yaml
+apiVersion: streaming.tanzu.vmware.com/v1alpha1
+kind: Processor
+metadata:
+  name: possible-fraud-detection
+spec:
+  type: FSQL
+  inlineQuery:
+    - "INSERT INTO [[STREAM:possible-fraud-stream]]  
+        SELECT window_start, window_end, card_number, COUNT(*) AS authorization_attempts 
+        FROM TABLE(TUMBLE(TABLE [[STREAM:card-authorizations-stream]], DESCRIPTOR(event_time), INTERVAL '5' SECONDS)) 
+        GROUP BY window_start, window_end, card_number    
+        HAVING COUNT(*) > 5"
+  attributes:
+    debugQuery: "SELECT * FROM PossibleFraud"
+    debugExplain: "2"   
+```
+
+Processor outputs a new `possible-fraud-stream` Stream: 
 
 ```yaml
 apiVersion: streaming.tanzu.vmware.com/v1alpha1
@@ -149,9 +168,10 @@ kind: Stream
 metadata:
   name: possible-fraud-stream
 spec:
+  name: possible-fraud
   protocol: "kafka"
   storage:
-    clusterStream: "possible-fraud-stream-cluster-stream"
+    clusterStream: "cluster-stream-possible-fraud"
   streamMode: [ "read", "write" ]
   keys: [ "card_number" ]
   dataSchemaContext:
@@ -174,49 +194,42 @@ spec:
       ddl.scan.startup.mode: earliest-offset
 ```
 
-The streaming `Processor` can be defined like this: 
+The `possible-fraud-stream` is given to `fraud-alert` processor configured with UDF to uppercase the payload content:
 
 ```yaml
 apiVersion: streaming.tanzu.vmware.com/v1alpha1
 kind: Processor
 metadata:
-  name: possible-fraud-processor
+  name: fraud-alert
 spec:
-  # the input and output streams references must use the [[STREAM:<stream-name>]] syntax.
-  query:
-    - "INSERT INTO [[STREAM:possible-fraud-stream]]  
-       SELECT window_start, window_end, card_number, COUNT(*) AS authorization_attempts 
-       FROM TABLE(TUMBLE(TABLE [[STREAM:card-authorizations-stream]], DESCRIPTOR(event_time), INTERVAL '5' SECONDS)) 
-       GROUP BY window_start, window_end, card_number    
-       HAVING COUNT(*) > 5" 
-  
-  # UDF configuration
-  inputs: # input streams for the UDF function
-    - name: "possible-fraud-stream"  # This is the output of the TWA query above.
-  outputs: # output streams for the UDF function
-    - name: "udf-output-possible-fraud-stream"        
+  type: TWA
+  inputs:
+    - name: "possible-fraud-stream"
+  outputs:
+    - name: "fraud-alert-stream"
   template:
     spec:
       containers:
         - name: possible-fraud-analysis-udf
-          image: ghcr.io/vmware-tanzu/streaming-runtimes/udf-go:0.1
+          image: ghcr.io/vmware-tanzu/streaming-runtimes/udf-uppercase-go:0.1
 ```
 
 Note that the UDF function can be implemented in any programming language.
 
-Finally, the output of the UDF function is send to the `udf-output-possible-fraud-stream` stream defined like this: 
+Finally, the output of the UDF function is send to the `fraud-alert-stream` stream defined like this: 
 
 ```yaml
 apiVersion: streaming.tanzu.vmware.com/v1alpha1
 kind: Stream
 metadata:
-  name: udf-output-possible-fraud-stream
+  name: fraud-alert-stream
 spec:
+  name: fraud-alert
   keys: [ "card_id" ]
   streamMode: [ "write" ]
   protocol: "rabbitmq"
   storage:
-    clusterStream: "udf-output-possible-fraud-cluster-stream"
+    clusterStream: "cluster-stream-fraud-alert-stream"
 ```
-It uses RabbitMQ message broker and doesn't define an explicit schema assuming the payload data is just a byte-array.
 
+It uses RabbitMQ message broker and doesn't define an explicit schema assuming the payload data is just a byte-array.

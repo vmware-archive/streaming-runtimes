@@ -45,24 +45,23 @@ public class ProcessorConfiguration {
 	@Bean
 	public SharedIndexInformer<V1alpha1Processor> processorsInformer(
 			ApiClient apiClient, SharedInformerFactory sharedInformerFactory) {
-		GenericKubernetesApi<V1alpha1Processor, V1alpha1ProcessorList> genericApi =
-				new GenericKubernetesApi<>(
-						V1alpha1Processor.class,
-						V1alpha1ProcessorList.class,
-						"streaming.tanzu.vmware.com",
-						"v1alpha1",
-						"processors",
-						apiClient);
+		GenericKubernetesApi<V1alpha1Processor, V1alpha1ProcessorList> genericApi = new GenericKubernetesApi<>(
+				V1alpha1Processor.class,
+				V1alpha1ProcessorList.class,
+				"streaming.tanzu.vmware.com",
+				"v1alpha1",
+				"processors",
+				apiClient);
 		return sharedInformerFactory.sharedIndexInformerFor(genericApi, V1alpha1Processor.class, 0);
 	}
 
 	@Bean
 	@Qualifier("processorController")
-	Controller processorController(SharedInformerFactory factory, ProcessorReconciler processorReconciler,
+	Controller processorController(SharedInformerFactory factory, ProcessorReconciler processorReconciler2,
 			SharedIndexInformer<V1alpha1Processor> processorsInformer) {
 		return ControllerBuilder.defaultBuilder(factory)
 				.watch(this::createProcessorControllerWatch)
-				.withReconciler(processorReconciler)
+				.withReconciler(processorReconciler2)
 				.withName(PROCESSOR_CONTROLLER_NAME)
 				.withWorkerCount(WORKER_COUNT)
 				.withReadyFunc(processorsInformer::hasSynced)
