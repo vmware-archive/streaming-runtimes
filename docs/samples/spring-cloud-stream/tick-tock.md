@@ -32,14 +32,23 @@ The [streaming-pipeline-tiktock.yaml](../../../streaming-runtime-samples/spring-
 - Follow the [Streaming Runtime Install](../../install.md) instructions to instal the operator.
 
 - Install the anomaly detection streaming application:
-```shell
-kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-samples/spring-cloud-stream/streaming-pipeline-tiktock.yaml' -n streaming-runtime
-```
+
+    === "ticktock"
+
+        ```shell
+        kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-samples/spring-cloud-stream/streaming-pipeline-ticktock.yaml' -n streaming-runtime
+        ```
+
+    === "ticktock - partitioned"  
+ 
+        ```shell
+        kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-samples/spring-cloud-stream/streaming-pipeline-ticktock-partitioned.yaml' -n streaming-runtime
+        ``` 
 
 - Follow the [explore results](../../instructions/#explore-the-results) instructions to see what data is generated and how it is processed though the pipeline. 
 
 - To delete the data pipeline and the data generator:
+
 ```shell
 kubectl delete srs,srcs,srp --all -n streaming-runtime 
 ```
-
