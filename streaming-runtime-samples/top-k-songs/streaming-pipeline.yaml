@@ -7,8 +7,6 @@ spec:
   protocol: "kafka"
   storage:
     clusterStream: "cluster-stream-songs"
-  streamMode: [ "read" ]
-  keys: [ "album", "genre" ]
   dataSchemaContext:
     schema:
       namespace: net.tzolov.poc.playsongs.avro
@@ -40,8 +38,6 @@ spec:
   protocol: kafka
   storage:
     clusterStream: "cluster-stream-playevents"
-  streamMode: [ "read" ]
-  keys: [ "song_id" ]
   dataSchemaContext:
     schema:
       namespace: net.tzolov.poc.playsongs.avro
@@ -70,8 +66,6 @@ spec:
   protocol: "kafka"
   storage:
     clusterStream: "cluster-stream-songplays"
-  streamMode: [ "read", "write" ]
-  keys: [ "name", "genre" ]
   dataSchemaContext:
     schema:
       namespace: net.tzolov.poc.playsongs.avro
@@ -111,8 +105,6 @@ spec:
   protocol: kafka
   storage:
     clusterStream: cluster-stream-topk-songs-per-genre
-  streamMode: [ "read" ]
-  keys: [ "song_id" ]
   dataSchemaContext:
     schema:
       namespace: net.tzolov.poc.playsongs.avro
@@ -143,8 +135,6 @@ metadata:
   name: udf-out-stream
 spec:
   name: udf-out
-  keys: [ "truckclass", "truckid" ]
-  streamMode: [ "write" ]
   protocol: "rabbitmq"
   storage:
     clusterStream: "cluster-stream-udf-out"
@@ -189,7 +179,7 @@ kind: Processor
 metadata:
   name: topk-songs-udf
 spec:
-  type: TWA
+  type: SCW
   inputs:
     - name: "topk-songs-per-genre-stream"
   outputs:

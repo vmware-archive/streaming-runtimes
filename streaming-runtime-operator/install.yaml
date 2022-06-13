@@ -140,11 +140,15 @@ spec:
               type: object
               properties:
                 name:
+                  type: string                  
+                keyExpression:
                   type: string
                 keys:
                   type: array
                   items:
                     type: string
+                partitionCount:
+                  type: integer
                 protocol:
                   type: string
                 streamMode:
@@ -165,6 +169,9 @@ spec:
                 dataSchemaContext:
                   type: object
                   properties:
+                    schemaless: 
+                      type: string
+                      # default: "application/octet-stream"
                     inline:
                       type: object
                       properties:
@@ -205,6 +212,8 @@ spec:
                                 required: [ "from" ]
                             required: [ "name", "type" ]
                       required: [ "name", "namespace", "fields" ]
+                    schemaRegistryUri:
+                      type: string
                     metadataFields:
                       type: array
                       items:
@@ -252,6 +261,8 @@ spec:
                       required: [ "inline" ]
                     - properties:
                       required: [ "schema" ]
+                    - properties:
+                      required: [ "schemaless" ]
               required: [ "name", "protocol" ]
             status:
               type: object
@@ -466,12 +477,14 @@ rules:
     resources:
       - deployments
       - statefulsets
+      - statefulsets/scale      
     verbs:
       - get
       - list
       - create
       - patch
       - watch
+      - update
   - apiGroups:
       - rabbitmq.com
     resources:
@@ -511,12 +524,16 @@ rules:
       - apps
     resources:
       - deployments
+      - statefulsets
+      - statefulsets/scale
     verbs:
       - get
       - list
       - create
       - patch
-
+      - watch
+      - update
+      - delete
   - apiGroups:
       - "" # "" indicates the core API group
     resources:
@@ -558,12 +575,14 @@ spec:
       serviceAccountName: streaming-runtime
       containers:
         - name: cluster-stream-operator
-          image: ghcr.io/vmware-tanzu/streaming-runtimes/streaming-runtime:0.0.3-SNAPSHOT
+          image: ghcr.io/vmware-tanzu/streaming-runtimes/streaming-runtime:0.0.4-SNAPSHOT
           env:
             - name: LOGGING_COM_VMWARE_TANZU_STREAMING_RUNTIME
               value: debug
-            - name: STREAMINGRUNTIME_AUTO_PROVISION_CLUSTER_STREAM
-              value: "false"
+            - name: STREAMING_RUNTIME_OPERATOR_AUTOPROVISIONCLUSTERSTREAM
+              value: "true"
+            - name: STREAMING_RUNTIME_OPERATOR_AUTOPROVISIONSTREAM
+              value: "true"
           resources:
             requests:
               memory: "256Mi"

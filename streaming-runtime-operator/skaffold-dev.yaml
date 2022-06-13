@@ -4,7 +4,7 @@ kind: Config
 build:
   tagPolicy:
     customTemplate:
-      template: "0.0.3-SNAPSHOT"
+      template: "0.0.4-SNAPSHOT"
   artifacts:
     - image: ghcr.io/vmware-tanzu/streaming-runtimes/streaming-runtime
       custom:

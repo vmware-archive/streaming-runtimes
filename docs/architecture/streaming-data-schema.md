@@ -26,14 +26,14 @@ Following snippets show the same data structure using the different schema repre
     name: PlayEvents
     fields:
     - name: duration
-    type: long
-    optional: true
+      type: long
+      optional: true
     - name: event_time
-    type: long_timestamp-millis
-    metadata:
-        from: timestamp
-        readonly: true
-    watermark: "`event_time`- INTERVAL '30' SECONDS"
+      type: long_timestamp-millis
+      metadata:
+          from: timestamp
+          readonly: true
+      watermark: "`event_time`- INTERVAL '30' SECONDS"
     ```
 === "Inline Apache Avro"
     ```json
@@ -41,16 +41,16 @@ Following snippets show the same data structure using the different schema repre
         "type" : "record",
         "name" : "PlayEvents",
         "namespace" : "test.ns",
-        "fields" : [ {
+        "fields" : [{
             "name" : "duration",
-            "type" : [ "null", "long" ]
+            "type" : ["null", "long"]
         }]
     }
     ```
 === "Inline SQL"
     ```sql
     CREATE TABLE PlayEvents (
-    `duration` BIGINT
+      `duration` BIGINT
     )
     ```
 

@@ -25,11 +25,15 @@ spec:
               type: object
               properties:
                 name:
+                  type: string                  
+                keyExpression:
                   type: string
                 keys:
                   type: array
                   items:
                     type: string
+                partitionCount:
+                  type: integer
                 protocol:
                   type: string
                 streamMode:
@@ -50,6 +54,9 @@ spec:
                 dataSchemaContext:
                   type: object
                   properties:
+                    schemaless: 
+                      type: string
+                      # default: "application/octet-stream"
                     inline:
                       type: object
                       properties:
@@ -90,6 +97,8 @@ spec:
                                 required: [ "from" ]
                             required: [ "name", "type" ]
                       required: [ "name", "namespace", "fields" ]
+                    schemaRegistryUri:
+                      type: string
                     metadataFields:
                       type: array
                       items:
@@ -137,6 +146,8 @@ spec:
                       required: [ "inline" ]
                     - properties:
                       required: [ "schema" ]
+                    - properties:
+                      required: [ "schemaless" ]
               required: [ "name", "protocol" ]
             status:
               type: object

@@ -7,8 +7,6 @@ spec:
   protocol: "kafka"
   storage:
     clusterStream: "iot-monitoring-cluster-stream"
-  streamMode: [ "read" ]
-  keys: [ "error_code" ]
   dataSchemaContext:
     schema:
       namespace: com.tanzu.streaming.runtime.iot.log
@@ -39,8 +37,6 @@ spec:
   protocol: "kafka"
   storage:
     clusterStream: "error-count-cluster-stream"
-  streamMode: [ "read", "write" ]
-  keys: [ "error_code" ]
   dataSchemaContext:
     schema:
       namespace: com.tanzu.streaming.runtime.iot.log
@@ -66,8 +62,6 @@ metadata:
   name: udf-output-error-count-stream
 spec:
   name: udf-output-error-count
-  keys: [ "error_code" ]
-  streamMode: [ "write" ]
   protocol: "rabbitmq"
   storage:
     clusterStream: "udf-output-error-count-cluster-stream"
@@ -93,7 +87,7 @@ kind: Processor
 metadata:
   name: iot-monitoring-udf
 spec:
-  type: TWA
+  type: SCW
   inputs:
     - name: "error-count-stream"
   outputs:

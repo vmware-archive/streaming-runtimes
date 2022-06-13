@@ -1,0 +1,69 @@
+---
+apiVersion: streaming.tanzu.vmware.com/v1alpha1
+kind: Processor
+metadata:
+  name: time-source
+spec:
+  type: SCS
+  outputs:
+    - name: "timestamps-stream"
+  template:
+    spec:
+      containers:
+        - name: scdf-time-source-kafka
+          image: springcloudstream/time-source-kafka:3.2.0
+          env:
+            - name: SPRING_CLOUD_STREAM_POLLER_FIXED-DELAY
+              value: "1000"
+            - name: TIME_DATE-FORMAT
+              value: "ss"
+              # value: "dd/MM/yyyy HH:mm:ss"
+---
+apiVersion: streaming.tanzu.vmware.com/v1alpha1
+kind: Processor
+metadata:
+  name: transformer
+spec:
+  type: SCS
+  inputs:
+    - name: "timestamps-stream"
+  outputs:
+    - name: "uppercase-stream"  
+  template:
+    spec:
+      containers:
+        - name: scdf-transform-processor-kafka
+          image: springcloudstream/transform-processor-kafka:3.2.0
+          env:
+            - name: SPEL_FUNCTION_EXPRESSION
+              value: "payload.toUpperCase()"
+---
+apiVersion: streaming.tanzu.vmware.com/v1alpha1
+kind: Stream
+metadata:
+  name: uppercase-stream
+spec:
+  name: uppercase
+  protocol: "kafka"
+  keyExpression: payload
+  partitionCount: 3
+---
+apiVersion: streaming.tanzu.vmware.com/v1alpha1
+kind: Processor
+metadata:
+  name: log-sink
+spec:
+  type: SCS
+  inputs:
+    - name: "uppercase-stream"
+  replicas: 3  
+  attributes:
+    partitionedInput: "true"
+  template:
+    spec:
+      containers:
+        - name: scdf-log-sink-kafka
+          image: springcloudstream/log-sink-kafka:3.2.0
+          env:
+            - name: LOG_EXPRESSION
+              value: "'My uppercase timestamp is: ' + payload"

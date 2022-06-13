@@ -7,8 +7,6 @@ spec:
   protocol: "kafka"
   storage:
     clusterStream: "card-authorizations-cluster-stream"
-  streamMode: [ "read" ]
-  keys: [ "card_number" ]
   dataSchemaContext:
     schema:
       namespace: com.tanzu.streaming.runtime.anomaly.detection
@@ -37,8 +35,6 @@ metadata:
   name: udf-output-possible-fraud-stream
 spec:
   name: udf-output-possible-fraud
-  keys: [ "card_id" ]
-  streamMode: [ "write" ]
   protocol: "rabbitmq"
   storage:
     clusterStream: "udf-output-possible-fraud"
@@ -48,7 +44,7 @@ kind: Processor
 metadata:
   name: possible-fraud-processor
 spec:
-  type: TWA
+  type: SCW
   inputs:
     - name: "card-authorizations-stream"
   outputs:

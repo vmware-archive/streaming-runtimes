@@ -1,0 +1,75 @@
+apiVersion: streaming.tanzu.vmware.com/v1alpha1
+kind: Stream
+metadata:
+  name: data-in-stream
+spec:
+  name: data-in
+  keys: ["user"]
+  dataSchemaContext:
+    schema:
+      namespace: net.tzolov.poc.test
+      name: Users
+      fields:
+        - name: payload
+          type: bytes
+    schemaRegistryUri: http://s-registry.streaming-runtime.svc.cluster.local:8081
+    timeAttributes:
+      - name: score_time
+        watermark: "`score_time` - INTERVAL '1' SECOND"
+  protocol: "kafka"
+  storage:
+    clusterStream: "data-in-cluster-stream"
+---
+apiVersion: streaming.tanzu.vmware.com/v1alpha1
+kind: Processor
+metadata:
+  name: twa2-test-processor
+spec:
+  type: SRP
+  replicas: 3
+  inputs:
+    - name: "data-in-stream"
+  outputs:
+    - name: "data-out-stream"
+  attributes:
+    # The scw.input.schemaRegistryUri attribute can override the input Stream.dataSchemaContext.schemaRegistryUri configuration.
+    # scw.input.schemaRegistryUri: "http://s-registry.streaming-runtime.svc.cluster.local:8081"
+    
+    # The scw.input.timestampExpression attribute can override the input Stream.dataSchemaContext.timeAttributes.name 
+    # or Stream.dataSchemaContext.timeAttributes.watermark configuration.
+    # scw.input.timestampExpression: "score_time"
+        
+    # Can override the out-orderness values extracted from the input Stream.dataSchemaContext.timeAttributes.watermark expression.
+    #scw.maxOutOfOrderness: 500ms
+
+    #scw.allowedLateness: 0s
+
+    # Setting the scw.window activates the Tumbling Time-Window Aggregation! Not setting it disables the aggregation.
+    # scw.window: 3s
+
+    # Only used if the scw.window is set (e.g. only if TWA is enabled)
+    # scw.window.idle.timeout: 30s
+    
+    #   Generate output headers using other header values (header.<other header name>)
+    #   or JsonPath expressions apply over the output message body (applicable for Avro content types as well)
+    scw.output.headers: "test2=header.watermark;test3=header.watermark"
+
+    #   Not defining side-containers is equivalent to set scw.skipUdf = true
+    # scw.skipUdf: "true"
+
+  # template:
+  #   spec:
+  #     containers:
+  #       - name: my-udf
+  #         image: ghcr.io/vmware-tanzu/streaming-runtimes/udf-uppercase-go:0.1
+---
+apiVersion: streaming.tanzu.vmware.com/v1alpha1
+kind: Stream
+metadata:
+  name: data-out-stream
+spec:
+  name: data-out
+  keys: ["test2"]
+  protocol: "kafka"
+  storage:
+    clusterStream: "data-out-cluster-stream"

@@ -1,0 +1,162 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: authorization-attempts-data-generator
+  labels:
+    app: authorization-attempts-data-generator
+    component: authorization-attempts-data-generator
+    type: streaming-spike
+    spring-deployment-id: authorization-attempts-data-generator
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 80
+      name: authorization-attempts-data-generator
+      targetPort: 8080
+      protocol: TCP
+
+  selector:
+    app: authorization-attempts-data-generator
+    component: authorization-attempts-data-generator
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: authorization-attempts-data-generator
+  labels:
+    app: authorization-attempts-data-generator
+    type: streaming-spike
+    component: authorization-attempts-data-generator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: authorization-attempts-data-generator
+  template:
+    metadata:
+      labels:
+        app: authorization-attempts-data-generator
+        component: authorization-attempts-data-generator
+    spec:
+      terminationGracePeriodSeconds: 15
+      containers:
+        - name: authorization-attempts-data-generator
+          image: ghcr.io/logaritex/stream-data-generator:test1
+          env:
+          - name: KAFKA_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: SPRING_CONFIG_LOCATION
+            value: "file:/config/application.yaml"
+          volumeMounts:
+            - name: config
+              mountPath: /config
+          ports:
+            - containerPort: 8080
+      volumes:
+      - configMap:
+          items:
+          - key: application.yaml
+            path: application.yaml
+          name: data-generator-configmap
+        name: config
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: data-generator-configmap
+data:
+  application.yaml: |-
+    stream:
+      data:
+        generator:
+          terminateAfter: 60s
+
+          streams:
+            - streamName: card-authorizations
+              destination:
+                type: STREAM
+                name: card-authorizations
+              valueFormat: JSON
+              avroSchema: |-
+                namespace: com.tanzu.streaming.runtime.anomaly.detection
+                type: record
+                name: AuthorizationAttempts
+                fields:
+                  - name: card_number
+                    type: string
+                    doc: "#{business.credit_card_numbers}"
+                  - name: card_type
+                    type: string
+                    doc: "#{business.credit_card_types}"
+                  - name: card_expiry
+                    type: string
+                    doc: "#{business.credit_card_expiry_dates}"
+                  - name: name
+                    type: string
+                    doc: "#{name.fullName}"                      
+
+              batch:
+                size: 100
+                initialDelay: 1s
+                messageDelay: 1s
+                delay: 1s
+
+            - streamName: card-authorizations
+              destination:
+                type: STREAM
+                name: card-authorizations
+              valueFormat: JSON
+              avroSchema: |-
+                namespace: com.tanzu.streaming.runtime.anomaly.detection
+                type: record
+                name: AuthorizationAttempts
+                doc: "unique_on=card_number"
+                fields:
+                - name: card_number
+                  type: string
+                  doc: "#{options.option '3529-1841-8961-4637','1228-1221-1221-1431','1212-1221-1121-1234','1228-1221-1221-1431','1211-1221-1234-2201'}"
+                - name: card_type
+                  type: string
+                  doc: "#{business.credit_card_types}"
+                - name: card_expiry
+                  type: string
+                  doc: "#{business.credit_card_expiry_dates}"
+                - name: name
+                  type: string
+                  doc: "#{name.fullName}"
+
+              batch:
+                size: 50
+                initialDelay: 1s
+                delay: 25s
+                messageDelay: 100ms
+
+    server:
+      shutdown: graceful
+
+    spring:  
+      lifecycle:
+        timeout-per-shutdown-phase: "100m"
+
+      cloud:  
+        stream:           
+          default-binder: kafka
+          bindings:
+            card-authorizations:
+              binder: kafka1
+              destination: card-authorizations
+              contentType: application/json            
+          binders:
+            kafka1:
+              type: kafka
+              environment:
+                spring:
+                  kafka:
+                    bootstrapServers: 'kafka.${KAFKA_NAMESPACE}.svc.cluster.local:9092'
+                  # cloud:
+                  #   stream:            
+                  #     kafka:
+                  #       binder:
+                  #         brokers: 'kafka.${KAFKA_NAMESPACE}.svc.cluster.local:9092'                            

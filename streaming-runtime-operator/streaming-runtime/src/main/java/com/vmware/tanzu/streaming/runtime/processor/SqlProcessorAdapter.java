@@ -38,7 +38,10 @@ import io.kubernetes.client.openapi.ApiException;
 import io.kubernetes.client.openapi.apis.AppsV1Api;
 import io.kubernetes.client.openapi.models.V1ConfigMap;
 import io.kubernetes.client.openapi.models.V1Container;
+import io.kubernetes.client.openapi.models.V1ContainerPortBuilder;
 import io.kubernetes.client.openapi.models.V1Deployment;
+import io.kubernetes.client.openapi.models.V1DeploymentList;
+import io.kubernetes.client.openapi.models.V1EnvVar;
 import io.kubernetes.client.openapi.models.V1EnvVarBuilder;
 import io.kubernetes.client.openapi.models.V1KeyToPathBuilder;
 import io.kubernetes.client.openapi.models.V1OwnerReference;
@@ -54,8 +57,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+/**
+ * Processor adapter to run Apache Flink Streaming SQLs. (Uses the embedded Apache Flink)
+ */
 @Component
-public class SqlProcessorAdapter implements ProcessorAdapter {
+public class SqlProcessorAdapter extends AbstractProcessAdapter {
 
     private static final Logger LOG = LoggerFactory.getLogger(SqlProcessorAdapter.class);
 
@@ -86,7 +92,7 @@ public class SqlProcessorAdapter implements ProcessorAdapter {
     }
 
     @Override
-    public void createProcessorDeployment(V1alpha1Processor processor, V1OwnerReference ownerReference,
+    public void createProcessor(V1alpha1Processor processor, V1OwnerReference ownerReference,
             List<V1alpha1Stream> inputStreams, List<V1alpha1Stream> outputStreams)
             throws IOException, ApiException, ProcessorStatusException {
 
@@ -105,8 +111,7 @@ public class SqlProcessorAdapter implements ProcessorAdapter {
 
         List<String> unresolvedSqlQueries = processor.getSpec().getInlineQuery();
 
-        // The SQL aggregation is activated, only if the processor is configured with
-        // SQL queries.
+        // The SQL aggregation is activated, only if the processor is configured with SQL queries.
         if (!CollectionUtils.isEmpty(unresolvedSqlQueries)) {
 
             // Retrieve the names of the streams used in the processor queries.
@@ -119,9 +124,11 @@ public class SqlProcessorAdapter implements ProcessorAdapter {
                 List<String> resolvedSqlStatements = new ArrayList<>();
 
                 // holds mapping between the query placeholder and the name of the table
-                // computed from the
-                // stream data schema.
+                // computed from the stream data schema.
                 Map<String, String> placeholderToTableNames = new HashMap<>();
+
+                String kafkaBrokers = null;
+                String schemaRegistryUri = null;
 
                 for (String placeholder : placeholderToStreamNames.keySet()) {
 
@@ -131,6 +138,17 @@ public class SqlProcessorAdapter implements ProcessorAdapter {
                     // Retrieve the stream instance by name.
                     // An exception is thrown if the Stream is not ready yet.
                     V1alpha1Stream stream = this.streamResolver.getStreamByName(streamName);
+
+                    if (!StringUtils.hasText(kafkaBrokers) || !StringUtils.hasText(schemaRegistryUri)) {
+                        Map<String, String> serverVariables = stream.getStatus().getStorageAddress().getServer()
+                                .get("production").getVariables();
+                        if (!StringUtils.hasText(kafkaBrokers)) {
+                            kafkaBrokers = serverVariables.get("brokers");
+                        }
+                        if (!StringUtils.hasText(schemaRegistryUri)) {
+                            schemaRegistryUri = serverVariables.get("schemaRegistry");
+                        }
+                    }
 
                     // Convert Stream's data schema into an executable Create-Table DDL statement.
                     DataSchemaProcessingContext context = DataSchemaProcessingContext.of(stream);
@@ -149,12 +167,12 @@ public class SqlProcessorAdapter implements ProcessorAdapter {
 
                 resolvedSqlStatements.addAll(resolvedQueries);
 
-                this.createSqlAppConfigMap(processor, ownerReference, resolvedSqlStatements);
+                this.createSqlAppConfigMap(processor, ownerReference, resolvedSqlStatements, kafkaBrokers,
+                        schemaRegistryUri);
             }
         }
 
         // In case of SQL input enable the sql-aggregator (e.g. Flink) container
-        // TODO check for SqlAggregator Config Map instead.
         if (!CollectionUtils.isEmpty(unresolvedSqlQueries)) {
 
             List<V1Volume> volumes = Optional.ofNullable(body.getSpec().getTemplate().getSpec().getVolumes())
@@ -176,28 +194,37 @@ public class SqlProcessorAdapter implements ProcessorAdapter {
             V1Container sqlAggregatorContainer = this.yamlMapper
                     .readValue(SQL_AGGREGATION_CONTAINER_TEMPLATE.getInputStream(), V1Container.class);
 
-            // TODO replae hard-coded Kafka/SRegistry addresses with information from the input/output streams
-            sqlAggregatorContainer.setEnv(List.of(new V1EnvVarBuilder()
-                    .withName("SQL_AGGREGATION_KAFKASERVER")
-                    .withValue("kafka." + processor.getMetadata().getNamespace() + ".svc.cluster.local:9092") // TODO
-                    // .withValue("localhost:9094") // TODO
-                    .build(),
-                    new V1EnvVarBuilder()
-                            .withName("SQL_AGGREGATION_SCHEMAREGISTRY")
-                            .withValue("http://s-registry." + processor.getMetadata()
-                                    .getNamespace() + ".svc.cluster.local:8081") // TODO
-                            // .withValue("http://localhost:8081") // TODO
-                            .build()));
+            List<V1EnvVar> containerVariables = Optional.ofNullable(sqlAggregatorContainer.getEnv())
+                    .orElse(new ArrayList<>());
+
+            this.configureRemoteDebuggingIfEnabled(processor, sqlAggregatorContainer, containerVariables);
+
+            sqlAggregatorContainer.setEnv(containerVariables);
+
             body.getSpec().getTemplate().getSpec().getContainers().add(sqlAggregatorContainer);
         }
 
-        this.appsV1Api.createNamespacedDeployment(
-                processor.getMetadata().getNamespace(), body, null, null, null);
+        V1DeploymentList existingDeployment = this.appsV1Api.listNamespacedDeployment(
+                processor.getMetadata().getNamespace(),
+                null, null, null,
+                "metadata.name=" + body.getMetadata().getName(),
+                "app in (streaming-runtime-processor)",
+                null, null, null, null, null);
+
+        if (existingDeployment.getItems().size() > 0) {
+            String name = existingDeployment.getItems().iterator().next().getMetadata().getName();
+            this.appsV1Api.replaceNamespacedDeployment(
+                    name, processor.getMetadata().getNamespace(), body, null, null, null);
+        }
+        else {
+            this.appsV1Api.createNamespacedDeployment(
+                    processor.getMetadata().getNamespace(), body, null, null, null);
+        }
 
     }
 
     private V1ConfigMap createSqlAppConfigMap(V1alpha1Processor processor, V1OwnerReference ownerReference,
-            List<String> sqlQueriesAndDdl) throws ApiException {
+            List<String> sqlQueriesAndDdl, String kafkaBrokerUri, String schemaRegistryUri) throws ApiException {
 
         String debugQuery = "";
         List<Integer> explainIds = new ArrayList<>();
@@ -212,14 +239,15 @@ public class SqlProcessorAdapter implements ProcessorAdapter {
                     for (String id : explainIdsStr.strip().split(",")) {
                         explainIds.add(Integer.parseInt(id));
                     }
-                }   
+                }
             }
         }
         // if (processor.getSpec().getInputs().getDebug() != null) {
         // debugQuery = processor.getSpec().getInputs().getDebug().getQuery();
         // explainIds = processor.getSpec().getInputs().getDebug().getExplain();
         // }
-        Aggregation sqlAggregation = new Aggregation(sqlQueriesAndDdl, debugQuery, explainIds);
+        Aggregation sqlAggregation = new Aggregation(sqlQueriesAndDdl, debugQuery, explainIds, kafkaBrokerUri,
+                schemaRegistryUri);
         ApplicationYaml appYaml = new ApplicationYaml(new Sql(sqlAggregation));
 
         String configMapName = processor.getMetadata().getName();
@@ -230,11 +258,13 @@ public class SqlProcessorAdapter implements ProcessorAdapter {
             if (this.configMapUpdater.configMapExists(configMapName, configMapNamespace)) {
                 return this.configMapUpdater.updateConfigMap(
                         configMapName, configMapNamespace, configMapKey, serializedContent);
-            } else {
+            }
+            else {
                 return this.configMapUpdater.createConfigMap(ownerReference,
                         configMapName, configMapNamespace, configMapKey, serializedContent);
             }
-        } catch (JsonProcessingException e) {
+        }
+        catch (JsonProcessingException e) {
             LOG.error("Failed to serialize processor config map", e);
             throw new ApiException(e);
         }
@@ -285,14 +315,19 @@ public class SqlProcessorAdapter implements ProcessorAdapter {
         private List<String> executeSql;
         private String continuousQuery;
         private List<Integer> explainStatements;
+        private String kafkaServer;
+        private String schemaRegistry;
 
         public Aggregation() {
         }
 
-        public Aggregation(List<String> executeSql, String continuousQuery, List<Integer> explainStatements) {
+        public Aggregation(List<String> executeSql, String continuousQuery, List<Integer> explainStatements,
+                String kafkaServer, String schemaRegistryUri) {
             this.executeSql = executeSql;
             this.continuousQuery = continuousQuery;
             this.explainStatements = explainStatements;
+            this.kafkaServer = kafkaServer;
+            this.schemaRegistry = schemaRegistryUri;
         }
 
         public List<String> getExecuteSql() {
@@ -318,6 +353,23 @@ public class SqlProcessorAdapter implements ProcessorAdapter {
         public void setExplainStatements(List<Integer> explainStatements) {
             this.explainStatements = explainStatements;
         }
+
+        public String getKafkaServer() {
+            return kafkaServer;
+        }
+
+        public void setKafkaServer(String kafkaServer) {
+            this.kafkaServer = kafkaServer;
+        }
+
+        public String getSchemaRegistry() {
+            return schemaRegistry;
+        }
+
+        public void setSchemaRegistry(String schemaRegistry) {
+            this.schemaRegistry = schemaRegistry;
+        }
+
     }
 
     private static Resource toResource(String uri) {

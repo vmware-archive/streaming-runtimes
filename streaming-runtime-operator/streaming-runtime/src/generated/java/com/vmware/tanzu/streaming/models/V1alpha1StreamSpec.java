@@ -33,7 +33,7 @@ import java.util.Map;
 /**
  * V1alpha1StreamSpec
  */
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2022-06-13T09:15:52.676Z[Etc/UTC]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2022-07-09T10:43:22.614Z[Etc/UTC]")
 public class V1alpha1StreamSpec {
   public static final String SERIALIZED_NAME_ATTRIBUTES = "attributes";
   @SerializedName(SERIALIZED_NAME_ATTRIBUTES)
@@ -47,6 +47,10 @@ public class V1alpha1StreamSpec {
   @SerializedName(SERIALIZED_NAME_DATA_SCHEMA_CONTEXT)
   private V1alpha1StreamSpecDataSchemaContext dataSchemaContext;
 
+  public static final String SERIALIZED_NAME_KEY_EXPRESSION = "keyExpression";
+  @SerializedName(SERIALIZED_NAME_KEY_EXPRESSION)
+  private String keyExpression;
+
   public static final String SERIALIZED_NAME_KEYS = "keys";
   @SerializedName(SERIALIZED_NAME_KEYS)
   private List<String> keys = null;
@@ -54,6 +58,10 @@ public class V1alpha1StreamSpec {
   public static final String SERIALIZED_NAME_NAME = "name";
   @SerializedName(SERIALIZED_NAME_NAME)
   private String name;
+
+  public static final String SERIALIZED_NAME_PARTITION_COUNT = "partitionCount";
+  @SerializedName(SERIALIZED_NAME_PARTITION_COUNT)
+  private Integer partitionCount;
 
   public static final String SERIALIZED_NAME_PROTOCOL = "protocol";
   @SerializedName(SERIALIZED_NAME_PROTOCOL)
@@ -145,6 +153,29 @@ public class V1alpha1StreamSpec {
   }
 
 
+  public V1alpha1StreamSpec keyExpression(String keyExpression) {
+    
+    this.keyExpression = keyExpression;
+    return this;
+  }
+
+   /**
+   * Get keyExpression
+   * @return keyExpression
+  **/
+  @javax.annotation.Nullable
+  @ApiModelProperty(value = "")
+
+  public String getKeyExpression() {
+    return keyExpression;
+  }
+
+
+  public void setKeyExpression(String keyExpression) {
+    this.keyExpression = keyExpression;
+  }
+
+
   public V1alpha1StreamSpec keys(List<String> keys) {
     
     this.keys = keys;
@@ -195,6 +226,29 @@ public class V1alpha1StreamSpec {
 
   public void setName(String name) {
     this.name = name;
+  }
+
+
+  public V1alpha1StreamSpec partitionCount(Integer partitionCount) {
+    
+    this.partitionCount = partitionCount;
+    return this;
+  }
+
+   /**
+   * Get partitionCount
+   * @return partitionCount
+  **/
+  @javax.annotation.Nullable
+  @ApiModelProperty(value = "")
+
+  public Integer getPartitionCount() {
+    return partitionCount;
+  }
+
+
+  public void setPartitionCount(Integer partitionCount) {
+    this.partitionCount = partitionCount;
   }
 
 
@@ -286,8 +340,10 @@ public class V1alpha1StreamSpec {
     return Objects.equals(this.attributes, v1alpha1StreamSpec.attributes) &&
         Objects.equals(this.binding, v1alpha1StreamSpec.binding) &&
         Objects.equals(this.dataSchemaContext, v1alpha1StreamSpec.dataSchemaContext) &&
+        Objects.equals(this.keyExpression, v1alpha1StreamSpec.keyExpression) &&
         Objects.equals(this.keys, v1alpha1StreamSpec.keys) &&
         Objects.equals(this.name, v1alpha1StreamSpec.name) &&
+        Objects.equals(this.partitionCount, v1alpha1StreamSpec.partitionCount) &&
         Objects.equals(this.protocol, v1alpha1StreamSpec.protocol) &&
         Objects.equals(this.storage, v1alpha1StreamSpec.storage) &&
         Objects.equals(this.streamMode, v1alpha1StreamSpec.streamMode);
@@ -295,7 +351,7 @@ public class V1alpha1StreamSpec {
 
   @Override
   public int hashCode() {
-    return Objects.hash(attributes, binding, dataSchemaContext, keys, name, protocol, storage, streamMode);
+    return Objects.hash(attributes, binding, dataSchemaContext, keyExpression, keys, name, partitionCount, protocol, storage, streamMode);
   }
 
 
@@ -306,8 +362,10 @@ public class V1alpha1StreamSpec {
     sb.append("    attributes: ").append(toIndentedString(attributes)).append("\n");
     sb.append("    binding: ").append(toIndentedString(binding)).append("\n");
     sb.append("    dataSchemaContext: ").append(toIndentedString(dataSchemaContext)).append("\n");
+    sb.append("    keyExpression: ").append(toIndentedString(keyExpression)).append("\n");
     sb.append("    keys: ").append(toIndentedString(keys)).append("\n");
     sb.append("    name: ").append(toIndentedString(name)).append("\n");
+    sb.append("    partitionCount: ").append(toIndentedString(partitionCount)).append("\n");
     sb.append("    protocol: ").append(toIndentedString(protocol)).append("\n");
     sb.append("    storage: ").append(toIndentedString(storage)).append("\n");
     sb.append("    streamMode: ").append(toIndentedString(streamMode)).append("\n");

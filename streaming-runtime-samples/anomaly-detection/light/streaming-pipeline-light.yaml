@@ -1,0 +1,62 @@
+apiVersion: streaming.tanzu.vmware.com/v1alpha1
+kind: Stream
+metadata:
+  name: card-authorizations-stream
+spec:
+  name: card-authorizations
+  protocol: "kafka"
+  dataSchemaContext:
+    schema:
+      namespace: com.tanzu.streaming.runtime.anomaly.detection
+      name: AuthorizationAttempts
+      fields:
+        - name: card_number
+          type: string
+        - name: card_type
+          type: string
+        - name: card_expiry
+          type: string
+        - name: name
+          type: string
+    timeAttributes:
+      # As the message payload doesn't have an explicit event-time use the Kafka ingestion time stored in the header as a timestamp.
+      # Generated watermark uses 3 sec. out-of-orderness tolerance.
+      - name: header.timestamp
+        watermark: "`header.timestamp` - INTERVAL '3' SECOND"
+---
+apiVersion: streaming.tanzu.vmware.com/v1alpha1
+kind: Processor
+metadata:
+  name: fraud-detector
+spec:
+  type: SCW
+  inputs:
+    - name: card-authorizations-stream
+  outputs:
+    - name: fraud-alert-stream
+  attributes:
+    scw.window: 5s
+    scw.window.idle.timeout: 60s
+  template:
+    spec:
+      containers:
+        - name: fraud-detection-udf
+          image: ghcr.io/vmware-tanzu/streaming-runtimes/udf-anomaly-detection-js:latest
+---
+apiVersion: streaming.tanzu.vmware.com/v1alpha1
+kind: Processor
+metadata:
+  #https://docs.spring.io/stream-applications/docs/2021.1.2/reference/html/#spring-cloud-stream-modules-log-sink
+  name: fraud-alert
+spec:
+  type: SCS
+  inputs:
+    - name: fraud-alert-stream
+  template:
+    spec:
+      containers:
+        - name: scdf-log-sink-kafka
+          image: springcloudstream/log-sink-kafka:3.2.0
+          env:
+            - name: LOG_EXPRESSION
+              value: "'Possible fraud transactions: ' + payload"

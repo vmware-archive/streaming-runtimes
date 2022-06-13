@@ -1,0 +1,14 @@
+{
+  "name": "fraud-detection-udf",
+  "version": "1.0.0",
+  "description": "JS aggregation function that computes the count of logging attempts per user",
+  "main": "fraud-detector.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "streaming-runtime-udf-aggregator": "^1.0.6"
+  }
+}

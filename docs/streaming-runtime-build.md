@@ -25,7 +25,7 @@ The `./scripts/all.sh` combines above two steps.
 
 ```shell
 ./mvnw clean install -Dnative -DskipTests spring-boot:build-image
-docker push ghcr.io/vmware-tanzu/streaming-runtimes/streaming-runtime:0.0.3-SNAPSHOT
+docker push ghcr.io/vmware-tanzu/streaming-runtimes/streaming-runtime:0.0.4-SNAPSHOT
 ```
 (For no-native build remove the `-Dnative`).
 

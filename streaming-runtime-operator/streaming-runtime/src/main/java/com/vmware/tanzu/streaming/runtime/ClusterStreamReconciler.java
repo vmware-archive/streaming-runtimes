@@ -30,13 +30,6 @@ import com.vmware.tanzu.streaming.models.V1alpha1ClusterStream;
 import com.vmware.tanzu.streaming.models.V1alpha1ClusterStreamSpecStorageServer;
 import com.vmware.tanzu.streaming.runtime.config.ClusterStreamConfiguration;
 import com.vmware.tanzu.streaming.runtime.protocol.ProtocolDeploymentEditor;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
-
 import io.kubernetes.client.custom.V1Patch;
 import io.kubernetes.client.extended.controller.reconciler.Reconciler;
 import io.kubernetes.client.extended.controller.reconciler.Request;
@@ -47,6 +40,12 @@ import io.kubernetes.client.informer.cache.Lister;
 import io.kubernetes.client.openapi.ApiException;
 import io.kubernetes.client.openapi.models.V1OwnerReference;
 import io.kubernetes.client.util.PatchUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 @Component
 public class ClusterStreamReconciler implements Reconciler {
@@ -96,7 +95,7 @@ public class ClusterStreamReconciler implements Reconciler {
 
 				serviceBinding = server.getBinding();
 
-				String protocolAdapterName = getProtocolAdapterName(clusterStream.getSpec().getStorage()
+				String protocolAdapterName = this.getProtocolAdapterName(clusterStream.getSpec().getStorage()
 						.getAttributes(), server.getProtocol());
 				ProtocolDeploymentEditor protocolDeploymentEditor = this.protocolDeploymentEditors
 						.get(protocolAdapterName);
@@ -122,7 +121,7 @@ public class ClusterStreamReconciler implements Reconciler {
 					readyStatus = "true";
 					reason = "ProtocolDeployed";
 				}
-			} 
+			}
 
 			boolean isStatusReady = StringUtils.hasText(storageAddress);
 
@@ -131,14 +130,16 @@ public class ClusterStreamReconciler implements Reconciler {
 			if (!isStatusReady) {
 				return new Result(REQUEUE, Duration.of(15, ChronoUnit.SECONDS));
 			}
-		} catch (ApiException e) {
+		}
+		catch (ApiException e) {
 			if (e.getCode() == 409) {
 				LOG.info("Required subresource is already present, skip creation.");
 				return new Result(!REQUEUE);
 			}
 			logFailureEvent(clusterStream, namespace, e.getCode() + " - " + e.getResponseBody(), e);
 			return new Result(REQUEUE, Duration.of(15, ChronoUnit.SECONDS));
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			logFailureEvent(clusterStream, namespace, e.getMessage(), e);
 			return new Result(REQUEUE, Duration.of(15, ChronoUnit.SECONDS));
 		}
@@ -214,7 +215,8 @@ public class ClusterStreamReconciler implements Reconciler {
 								new V1Patch(patch), null, null, null, null),
 						V1Patch.PATCH_FORMAT_JSON_MERGE_PATCH,
 						api.getApiClient());
-			} catch (ApiException e) {
+			}
+			catch (ApiException e) {
 				LOG.error("Status API call failed: {}: {}, {}, with patch {}", e.getCode(), e.getMessage(),
 						e.getResponseBody(), patch);
 			}

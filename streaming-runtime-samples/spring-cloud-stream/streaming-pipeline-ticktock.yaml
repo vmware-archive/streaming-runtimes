@@ -20,16 +20,6 @@ spec:
               value: "dd/MM/yyyy HH:mm:ss"
 ---
 apiVersion: streaming.tanzu.vmware.com/v1alpha1
-kind: Stream
-metadata:
-  name: timestamps-stream
-spec:
-  name: timestamps
-  protocol: "kafka"
-  storage:
-    clusterStream: "cs-timestamps"
----
-apiVersion: streaming.tanzu.vmware.com/v1alpha1
 kind: Processor
 metadata:
   #https://docs.spring.io/stream-applications/docs/2021.1.2/reference/html/#spring-cloud-stream-modules-transform-processor
@@ -48,16 +38,6 @@ spec:
           env:
             - name: SPEL_FUNCTION_EXPRESSION
               value: "payload.toUpperCase()"
----
-apiVersion: streaming.tanzu.vmware.com/v1alpha1
-kind: Stream
-metadata:
-  name: uppercase-stream
-spec:
-  name: uppercase
-  protocol: "kafka"
-  storage:
-    clusterStream: "cs-uppercase"
 ---
 apiVersion: streaming.tanzu.vmware.com/v1alpha1
 kind: Processor

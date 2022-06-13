@@ -47,8 +47,6 @@ public class StreamResolver {
 				null, null, null, null, null);
 
 		if (CollectionUtils.isEmpty(streamList.getItems())) {
-			// this.setProcessorStatus(processor, FALSE, "ProcessorMissingStream");
-			// throw new ApiException("Missing Stream: " + streamName);
 			throw new ProcessorStatusException(null, "FALSE", "ProcessorMissingStream", "Missing Stream: " + streamName);
 		}
 
@@ -60,13 +58,9 @@ public class StreamResolver {
 		V1alpha1Stream stream = streamList.getItems().get(0);
 
 		if (stream == null) {
-			// this.setProcessorStatus(processor, FALSE, "ProcessorMissingStream");
-			// throw new ApiException("MissingStream: " + streamName);
 			throw new ProcessorStatusException(null, FALSE, "ProcessorMissingStream", "MissingStream: " + streamName);
 		}
 		if (!isStreamReady(stream)) {
-			// this.setProcessorStatus(processor, FALSE, "ProcessorStreamNotReady");
-			// throw new ApiException("StreamNotReady: " + streamName);
 			throw new ProcessorStatusException(null, FALSE, "ProcessorStreamNotReady", "StreamNotReady: " + streamName);
 		}
 

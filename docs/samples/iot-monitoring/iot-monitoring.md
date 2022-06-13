@@ -54,7 +54,7 @@ The `monitoring-utf` processor registers a [User Defined Function (UDF)](../../u
 For example the UDF can look for the root causes of the frequently occurring error or send alerting notifications to 3rd party systems.
 The UDF function can be implemented in any programming language as long as it adheres to the Streaming-Runtime `gRPC` protocol.
 
-Following diagram illustrates the implementation flow and involved resources:
+Following diagram visualizes the [streaming-pipeline.yaml](https://github.com/vmware-tanzu/streaming-runtimes/blob/main/streaming-runtime-samples/iot-monitoring/streaming-pipeline.yaml), implementing the iot-monitoring application with the help of `Stream` and `Processor` resources:
 ![IoT Monitoring Flow](iot-monitoring.svg)
 
 ## Quick start
@@ -62,6 +62,7 @@ Following diagram illustrates the implementation flow and involved resources:
 - Follow the [Streaming Runtime Install](../../install.md) instructions to instal the operator.
 
 - Install the IoT monitoring streaming application:
+
 ```shell
 kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-samples/iot-monitoring/streaming-pipeline.yaml' -n streaming-runtime
 ```

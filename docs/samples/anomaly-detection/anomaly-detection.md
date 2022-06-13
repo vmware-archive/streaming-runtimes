@@ -54,7 +54,7 @@ The `possible-fraud-detection` processor emits new `possible-fraud` stream conta
 
 Next with the help for the `fraud-alert` processor we can register a custom function [UDF](../../architecture/udf/architecture.md), that consumes the `possible-fraud` stream, investigates the suspicious transactions further for example to send alert emails. 
 
-Following diagram illustrates the implementation flow and involved resources:
+Following diagram visualizes the [streaming-pipeline.yaml](https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-samples/anomaly-detection/streaming-pipeline.yaml), implementing the use case with `Stream` and `Processor` resources:
 ![Anomaly Detection Flow](anomaly-detection-deployed.svg)
 
 ## Quick start

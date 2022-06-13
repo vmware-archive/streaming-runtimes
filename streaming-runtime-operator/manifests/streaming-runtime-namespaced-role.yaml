@@ -8,12 +8,16 @@ rules:
       - apps
     resources:
       - deployments
+      - statefulsets
+      - statefulsets/scale
     verbs:
       - get
       - list
       - create
       - patch
-
+      - watch
+      - update
+      - delete
   - apiGroups:
       - "" # "" indicates the core API group
     resources:

@@ -35,7 +35,7 @@ import java.util.Map;
 /**
  * V1alpha1StreamSpecDataSchemaContext
  */
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2022-06-13T09:15:52.676Z[Etc/UTC]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2022-07-09T10:43:22.614Z[Etc/UTC]")
 public class V1alpha1StreamSpecDataSchemaContext {
   public static final String SERIALIZED_NAME_INLINE = "inline";
   @SerializedName(SERIALIZED_NAME_INLINE)
@@ -56,6 +56,14 @@ public class V1alpha1StreamSpecDataSchemaContext {
   public static final String SERIALIZED_NAME_SCHEMA = "schema";
   @SerializedName(SERIALIZED_NAME_SCHEMA)
   private V1alpha1StreamSpecDataSchemaContextSchema schema;
+
+  public static final String SERIALIZED_NAME_SCHEMA_REGISTRY_URI = "schemaRegistryUri";
+  @SerializedName(SERIALIZED_NAME_SCHEMA_REGISTRY_URI)
+  private String schemaRegistryUri;
+
+  public static final String SERIALIZED_NAME_SCHEMALESS = "schemaless";
+  @SerializedName(SERIALIZED_NAME_SCHEMALESS)
+  private String schemaless;
 
   public static final String SERIALIZED_NAME_TIME_ATTRIBUTES = "timeAttributes";
   @SerializedName(SERIALIZED_NAME_TIME_ATTRIBUTES)
@@ -201,6 +209,52 @@ public class V1alpha1StreamSpecDataSchemaContext {
   }
 
 
+  public V1alpha1StreamSpecDataSchemaContext schemaRegistryUri(String schemaRegistryUri) {
+    
+    this.schemaRegistryUri = schemaRegistryUri;
+    return this;
+  }
+
+   /**
+   * Get schemaRegistryUri
+   * @return schemaRegistryUri
+  **/
+  @javax.annotation.Nullable
+  @ApiModelProperty(value = "")
+
+  public String getSchemaRegistryUri() {
+    return schemaRegistryUri;
+  }
+
+
+  public void setSchemaRegistryUri(String schemaRegistryUri) {
+    this.schemaRegistryUri = schemaRegistryUri;
+  }
+
+
+  public V1alpha1StreamSpecDataSchemaContext schemaless(String schemaless) {
+    
+    this.schemaless = schemaless;
+    return this;
+  }
+
+   /**
+   * Get schemaless
+   * @return schemaless
+  **/
+  @javax.annotation.Nullable
+  @ApiModelProperty(value = "")
+
+  public String getSchemaless() {
+    return schemaless;
+  }
+
+
+  public void setSchemaless(String schemaless) {
+    this.schemaless = schemaless;
+  }
+
+
   public V1alpha1StreamSpecDataSchemaContext timeAttributes(List<V1alpha1StreamSpecDataSchemaContextTimeAttributes> timeAttributes) {
     
     this.timeAttributes = timeAttributes;
@@ -246,12 +300,14 @@ public class V1alpha1StreamSpecDataSchemaContext {
         Objects.equals(this.options, v1alpha1StreamSpecDataSchemaContext.options) &&
         Objects.equals(this.primaryKey, v1alpha1StreamSpecDataSchemaContext.primaryKey) &&
         Objects.equals(this.schema, v1alpha1StreamSpecDataSchemaContext.schema) &&
+        Objects.equals(this.schemaRegistryUri, v1alpha1StreamSpecDataSchemaContext.schemaRegistryUri) &&
+        Objects.equals(this.schemaless, v1alpha1StreamSpecDataSchemaContext.schemaless) &&
         Objects.equals(this.timeAttributes, v1alpha1StreamSpecDataSchemaContext.timeAttributes);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(inline, metadataFields, options, primaryKey, schema, timeAttributes);
+    return Objects.hash(inline, metadataFields, options, primaryKey, schema, schemaRegistryUri, schemaless, timeAttributes);
   }
 
 
@@ -264,6 +320,8 @@ public class V1alpha1StreamSpecDataSchemaContext {
     sb.append("    options: ").append(toIndentedString(options)).append("\n");
     sb.append("    primaryKey: ").append(toIndentedString(primaryKey)).append("\n");
     sb.append("    schema: ").append(toIndentedString(schema)).append("\n");
+    sb.append("    schemaRegistryUri: ").append(toIndentedString(schemaRegistryUri)).append("\n");
+    sb.append("    schemaless: ").append(toIndentedString(schemaless)).append("\n");
     sb.append("    timeAttributes: ").append(toIndentedString(timeAttributes)).append("\n");
     sb.append("}");
     return sb.toString();

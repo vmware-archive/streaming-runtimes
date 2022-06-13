@@ -35,20 +35,26 @@ import io.kubernetes.client.openapi.apis.AppsV1Api;
 import io.kubernetes.client.openapi.apis.CoreV1Api;
 import io.kubernetes.client.openapi.models.V1Container;
 import io.kubernetes.client.openapi.models.V1ContainerBuilder;
+import io.kubernetes.client.openapi.models.V1ContainerPortBuilder;
 import io.kubernetes.client.openapi.models.V1Deployment;
+import io.kubernetes.client.openapi.models.V1DeploymentList;
+import io.kubernetes.client.openapi.models.V1EnvVar;
+import io.kubernetes.client.openapi.models.V1EnvVarBuilder;
 import io.kubernetes.client.openapi.models.V1OwnerReference;
 import io.kubernetes.client.openapi.models.V1PodSpec;
 import io.kubernetes.client.openapi.models.V1Service;
 import io.kubernetes.client.openapi.models.V1StatefulSet;
+import io.kubernetes.client.openapi.models.V1StatefulSetList;
 import io.kubernetes.client.openapi.models.V1VolumeMountBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-public abstract class AbstractScsProcessorAdapter implements ProcessorAdapter {
+public abstract class AbstractScsProcessorAdapter extends AbstractProcessAdapter {
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractScsProcessorAdapter.class);
     public static final String TRUE = "true";
@@ -76,7 +82,7 @@ public abstract class AbstractScsProcessorAdapter implements ProcessorAdapter {
     }
 
     @Override
-    public void createProcessorDeployment(V1alpha1Processor processor, V1OwnerReference ownerReference,
+    public void createProcessor(V1alpha1Processor processor, V1OwnerReference ownerReference,
             List<V1alpha1Stream> inputStreams, List<V1alpha1Stream> outputStreams)
             throws IOException, ApiException, ProcessorStatusException {
 
@@ -85,18 +91,26 @@ public abstract class AbstractScsProcessorAdapter implements ProcessorAdapter {
         // Env variables
         Map<String, String> envs = new HashMap<>();
 
+        envs.put("MANAGEMENT_ENDPOINT_HEALTH_SHOW-DETAILS", "ALWAYS");
+        envs.put("MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE", "*");
+
         V1alpha1Stream inputStream = this.getSingleOrNull(inputStreams);
         V1alpha1Stream outputStream = this.getSingleOrNull(outputStreams);
+
+        boolean useRabbitBinder = false;
 
         if (inputStream != null) {
             V1alpha1ClusterStreamStatusStorageAddressServer inServer = inputStream.getStatus()
                     .getStorageAddress().getServer().values().iterator().next();
 
+            useRabbitBinder = useRabbitBinder || inServer.getProtocol().equalsIgnoreCase("rabbitmq");
+
             if (inServer.getProtocol().equalsIgnoreCase("kafka")) {
                 envs.put("SPRING_CLOUD_STREAM_BINDINGS_INPUT_BINDER", "kafka");
                 envs.put("SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS", inServer.getVariables().get("brokers"));
                 envs.put("SPRING_CLOUD_STREAM_KAFKA_BINDER_ZKNODES", inServer.getVariables().get("zkNodes"));
-            } else if (inServer.getProtocol().equalsIgnoreCase("rabbitmq")) {
+            }
+            else if (inServer.getProtocol().equalsIgnoreCase("rabbitmq")) {
                 envs.put("SPRING_CLOUD_STREAM_BINDINGS_INPUT_BINDER", "rabbit");
                 envs.put("SPRING_RABBITMQ_HOST", inServer.getVariables().get("host"));
                 envs.put("SPRING_RABBITMQ_PORT", inServer.getVariables().get("port"));
@@ -108,6 +122,18 @@ public abstract class AbstractScsProcessorAdapter implements ProcessorAdapter {
             }
             envs.put("SPRING_CLOUD_STREAM_BINDINGS_INPUT_DESTINATION", inputStream.getSpec().getName()); // TODO
             envs.put("SPRING_CLOUD_STREAM_FUNCTION_BINDINGS_PROXY-IN-0", "input"); // TODO
+
+            // Partition Input
+            if (!CollectionUtils.isEmpty(inputStream.getSpec().getKeys())
+                    || StringUtils.hasText(inputStream.getSpec().getKeyExpression())) {
+                envs.put("SPRING_CLOUD_STREAM_BINDINGS_INPUT_CONSUMER_PARTITIONED", "true");
+                envs.put("SPRING_CLOUD_STREAM_BINDINGS_INPUT_GROUP", processor.getMetadata().getName());
+                Integer replicas = processor.getSpec().getReplicas();
+                if (replicas == null) {
+                    replicas = 1;
+                }
+                envs.put("SPRING_CLOUD_STREAM_INSTANCECOUNT", "" + replicas);
+            }
         }
 
         if (outputStream != null) {
@@ -115,11 +141,14 @@ public abstract class AbstractScsProcessorAdapter implements ProcessorAdapter {
             V1alpha1ClusterStreamStatusStorageAddressServer outServer = outputStream.getStatus()
                     .getStorageAddress().getServer().values().iterator().next();
 
+            useRabbitBinder = useRabbitBinder || outServer.getProtocol().equalsIgnoreCase("rabbitmq");
+
             if (outServer.getProtocol().equalsIgnoreCase("kafka")) {
                 envs.put("SPRING_CLOUD_STREAM_BINDINGS_OUTPUT_BINDER", "kafka");
                 envs.put("SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS", outServer.getVariables().get("brokers"));
                 envs.put("SPRING_CLOUD_STREAM_KAFKA_BINDER_ZKNODES", outServer.getVariables().get("zkNodes"));
-            } else if (outServer.getProtocol().equalsIgnoreCase("rabbitmq")) {
+            }
+            else if (outServer.getProtocol().equalsIgnoreCase("rabbitmq")) {
                 envs.put("SPRING_CLOUD_STREAM_BINDINGS_OUTPUT_BINDER", "rabbit");
                 envs.put("SPRING_RABBITMQ_HOST", outServer.getVariables().get("host"));
                 envs.put("SPRING_RABBITMQ_PORT", outServer.getVariables().get("port"));
@@ -131,15 +160,50 @@ public abstract class AbstractScsProcessorAdapter implements ProcessorAdapter {
             }
             envs.put("SPRING_CLOUD_STREAM_BINDINGS_OUTPUT_DESTINATION", outputStream.getSpec().getName()); // TODO
             envs.put("SPRING_CLOUD_STREAM_FUNCTION_BINDINGS_PROXY-OUT-0", "output"); // TODO
+
+            // Partition Output
+            String partitionKeyExpression = null;
+            if (StringUtils.hasText(outputStream.getSpec().getKeyExpression())) {
+                partitionKeyExpression = outputStream.getSpec().getKeyExpression();
+            }
+            else if (!CollectionUtils.isEmpty(outputStream.getSpec().getKeys())) {
+                partitionKeyExpression = String.format("headers['%s']",
+                        outputStream.getSpec().getKeys().iterator().next());
+            }
+            if (StringUtils.hasText(partitionKeyExpression)) {
+                Integer partitionCount = outputStream.getSpec().getPartitionCount();
+                partitionCount = (partitionCount == null) ? 5 : partitionCount;
+                envs.put("SPRING_CLOUD_STREAM_KAFKA_BINDER_MINPARTITIONCOUNT", "" + (partitionCount + 1));
+                envs.put("SPRING_CLOUD_STREAM_BINDINGS_OUTPUT_PRODUCER_PARTITIONCOUNT", "" + partitionCount);
+                envs.put("SPRING_CLOUD_STREAM_KAFKA_BINDER_AUTOADDPARTITIONS", "true");
+                envs.put("SPRING_CLOUD_STREAM_BINDINGS_OUTPUT_PRODUCER_PARTITIONKEYEXPRESSION", partitionKeyExpression);
+            }
         }
 
-        String partitionedInput = getProcessorAttribute(processor, "partitionedInput");
-        
-        if (StringUtils.hasText(partitionedInput) && "true".equalsIgnoreCase(partitionedInput)) {
-            createStatefulSet(processor, ownerReference, envs);
-        } else {
-            createDeployment(processor, ownerReference, envs);            
+        // If neither the input or output binders use Rabbit disable the boot auto-configuration.
+        if (!useRabbitBinder) {
+            envs.put("SPRING_AUTOCONFIGURE_EXCLUDE",
+                    "org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration");
         }
+
+        this.doAdditionalConfigurations(processor, inputStream, outputStream, envs);
+
+        if (this.isPartitionedInput(processor, inputStream, outputStream)) {
+            this.createStatefulSet(processor, ownerReference, envs);
+        }
+        else {
+            this.createDeployment(processor, ownerReference, envs);
+        }
+    }
+
+    protected boolean isPartitionedInput(V1alpha1Processor processor, V1alpha1Stream inputStream,
+            V1alpha1Stream outputStream) {
+        return this.getProcessorAttributeBoolean(processor, "partitionedInput");
+    }
+
+    protected void doAdditionalConfigurations(V1alpha1Processor processor, V1alpha1Stream inputStream,
+            V1alpha1Stream outputStream, Map<String, String> envs) {
+        // Extension hook
     }
 
     protected String getProcessorAttribute(V1alpha1Processor processor, String attributeName) {
@@ -149,6 +213,29 @@ public abstract class AbstractScsProcessorAdapter implements ProcessorAdapter {
             }
         }
         return null;
+    }
+
+    protected Map<String, String> getProcessorAttributeWithNamePrefix(V1alpha1Processor processor,
+            String attributeNamePrefix) {
+        Map<String, String> nameToValue = new HashMap<>();
+        Map<String, String> attributes = processor.getSpec().getAttributes();
+        if (!CollectionUtils.isEmpty(attributes)) {
+            for (String attributeName : attributes.keySet()) {
+                if (StringUtils.hasText(attributeName) && attributeName.startsWith(attributeNamePrefix)) {
+                    nameToValue.put(attributeName, attributes.get(attributeName));
+                }
+            }
+        }
+        return nameToValue;
+    }
+
+    protected boolean getProcessorAttributeBoolean(V1alpha1Processor processor, String attributeName) {
+        String value = getProcessorAttribute(processor, attributeName);
+        if (!StringUtils.hasText(value)) {
+            return false;
+        }
+
+        return Boolean.valueOf(value);
     }
 
     protected abstract List<V1Container> doAddContainers(V1alpha1Processor processor, Map<String, String> envs)
@@ -180,8 +267,40 @@ public abstract class AbstractScsProcessorAdapter implements ProcessorAdapter {
         // Add additional containers
         body.getSpec().getTemplate().getSpec().getContainers().addAll(this.doAddContainers(processor, envs));
 
-        this.appsV1Api.createNamespacedDeployment(
-                processor.getMetadata().getNamespace(), body, null, null, null);
+        V1DeploymentList existingDeployment = this.appsV1Api.listNamespacedDeployment(
+                processor.getMetadata().getNamespace(),
+                null, null, null,
+                "metadata.name=" + body.getMetadata().getName(),
+                "app in (streaming-runtime-processor)",
+                null, null, null, null, null);
+
+        if (existingDeployment.getItems().size() > 0) {
+            String name = existingDeployment.getItems().iterator().next().getMetadata().getName();
+            this.appsV1Api.replaceNamespacedDeployment(name, processor.getMetadata().getNamespace(), body, null, null,
+                    null);
+        }
+        else {
+            this.appsV1Api.createNamespacedDeployment(
+                    processor.getMetadata().getNamespace(), body, null, null, null);
+
+            // Remove any existing StatefulSets for the same Processor
+            V1StatefulSetList existingStatefulSets = this.listProcessorStatefulSets(
+                    processor.getMetadata().getNamespace(), body.getMetadata().getName());
+            for (V1StatefulSet statefulSet : existingStatefulSets.getItems()) {
+                this.appsV1Api.deleteNamespacedStatefulSet(statefulSet.getMetadata().getName(),
+                        statefulSet.getMetadata().getNamespace(), null, null,
+                        null, null, null, null);
+            }
+        }
+    }
+
+    protected V1DeploymentList listProcessorDeployments(String namespace, String processorName) throws ApiException {
+        return this.appsV1Api.listNamespacedDeployment(
+                namespace,
+                null, null, null,
+                "metadata.name=" + processorName,
+                "app in (streaming-runtime-processor)",
+                null, null, null, null, null);
     }
 
     protected void createStatefulSet(V1alpha1Processor processor, V1OwnerReference ownerReference,
@@ -220,8 +339,36 @@ public abstract class AbstractScsProcessorAdapter implements ProcessorAdapter {
         this.createService(ownerReference, PROCESSOR_STATEFULSET_SERVICE_TEMPLATE,
                 processor.getMetadata().getNamespace());
 
-        this.appsV1Api.createNamespacedStatefulSet(
-                processor.getMetadata().getNamespace(), body, null, null, null);
+        V1StatefulSetList existingStatefulSet = this.listProcessorStatefulSets(processor.getMetadata().getNamespace(),
+                body.getMetadata().getName());
+
+        if (existingStatefulSet.getItems().size() > 0) {
+            String name = existingStatefulSet.getItems().iterator().next().getMetadata().getName();
+            this.appsV1Api.replaceNamespacedStatefulSet(name, processor.getMetadata().getNamespace(), body,
+                    null, null, null);
+        }
+        else {
+            this.appsV1Api.createNamespacedStatefulSet(
+                    processor.getMetadata().getNamespace(), body, null, null, null);
+
+            // Remove any existing Deployment/ReplicationSets for the same Processor.
+            V1DeploymentList existingDeployments = this.listProcessorDeployments(
+                    processor.getMetadata().getNamespace(), body.getMetadata().getName());
+            for (V1Deployment deployment : existingDeployments.getItems()) {
+                this.appsV1Api.deleteNamespacedDeployment(deployment.getMetadata().getName(),
+                        deployment.getMetadata().getNamespace(),
+                        null, null, null, null, null, null);
+            }
+        }
+    }
+
+    protected V1StatefulSetList listProcessorStatefulSets(String namespace, String processorName) throws ApiException {
+        return this.appsV1Api.listNamespacedStatefulSet(
+                namespace,
+                null, null, null,
+                "metadata.name=" + processorName,
+                "app in (streaming-runtime-processor)",
+                null, null, null, null, null);
     }
 
     protected V1Service createService(V1OwnerReference ownerReference,
@@ -236,9 +383,11 @@ public abstract class AbstractScsProcessorAdapter implements ProcessorAdapter {
 
             return coreV1Api.createNamespacedService(appNamespace, body, null, null, null);
 
-        } catch (IOException ioe) {
+        }
+        catch (IOException ioe) {
             throw new ApiException(ioe);
-        } catch (ApiException apiException) {
+        }
+        catch (ApiException apiException) {
             if (apiException.getCode() == 409) {
                 LOG.info("Required service is already deployed: " + ownerReference.getName());
                 return null;

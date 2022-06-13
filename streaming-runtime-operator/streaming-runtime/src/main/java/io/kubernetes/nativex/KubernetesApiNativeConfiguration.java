@@ -66,7 +66,7 @@ import org.springframework.nativex.type.NativeConfiguration;
 								"io.kubernetes.client.extended.controller.Controller",
 								"io.kubernetes.client.util.generic.GenericKubernetesApi$StatusPatch",
 								"io.kubernetes.client.util.Watch$Response",
-								"com.vmware.tanzu.streaming.runtime.uitil.DataSchemaToDdlConverter$TableDdlInfo",
+								//"com.vmware.tanzu.streaming.runtime.uitil.DataSchemaToDdlConverter$TableDdlInfo",
 								"com.vmware.tanzu.streaming.runtime.processor.SqlProcessorAdapter$ApplicationYaml",
 								"com.vmware.tanzu.streaming.runtime.processor.SqlProcessorAdapter$Sql",
 								"com.vmware.tanzu.streaming.runtime.processor.SqlProcessorAdapter$Aggregation"}) //

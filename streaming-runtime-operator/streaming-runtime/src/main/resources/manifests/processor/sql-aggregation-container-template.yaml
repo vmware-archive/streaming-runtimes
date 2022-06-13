@@ -11,6 +11,15 @@ volumeMounts:
 ports:
   - containerPort: 8080
   - containerPort: 8089
+  # - containerPort: 5006
+  #   name: jdwp
+  #   protocol: TCP  
 env:
-  - name: TEST
-    value: ONE
+  - name: MANAGEMENT_ENDPOINT_HEALTH_SHOW-DETAILS
+    value: "ALWAYS"
+  - name: MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE
+    value: "*"
+  - name: SPRING_CONFIG_LOCATION
+    value: "file:/config/application.yaml"
+  # - name: JAVA_TOOL_OPTIONS
+  #   value: -agentlib:jdwp=transport=dt_socket,server=y,address=5006,suspend=y,quiet=y

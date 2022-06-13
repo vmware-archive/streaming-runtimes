@@ -1,0 +1,143 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: twa-data-generator
+  labels:
+    app: twa-data-generator
+    component: twa-data-generator
+    type: streaming-spike
+    spring-deployment-id: twa-data-generator
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 80
+      name: twa-data-generator
+      targetPort: 8080
+      protocol: TCP
+  selector:
+    app: twa-data-generator
+    component: twa-data-generator
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: twa-data-generator
+  labels:
+    app: twa-data-generator
+    type: streaming-spike
+    component: twa-data-generator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: twa-data-generator
+  template:
+    metadata:
+      labels:
+        app: twa-data-generator
+        component: twa-data-generator
+    spec:
+      terminationGracePeriodSeconds: 15
+      containers:
+        - name: twa-data-generator
+          image: ghcr.io/logaritex/stream-data-generator:latest
+          env:
+          - name: KAFKA_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          volumeMounts:
+            - name: config
+              mountPath: /config
+          ports:
+            - containerPort: 8080
+      volumes:
+      - configMap:
+          items:
+          - key: application.yaml
+            path: application.yaml
+          name: data-generator-configmap
+        name: config
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: data-generator-configmap
+data:
+  application.yaml: |-
+    stream:
+      data:
+        generator:
+          terminateAfter: 200h
+
+          streams:
+            - streamName: twa-stream
+              destination:
+                type: STREAM
+                name: twa-stream
+              valueFormat: AVRO
+              avroSchema: |-
+                namespace: io.twa
+                type: record
+                name: User
+                fields:
+                - name: id
+                  type: string
+                  doc: "#{id_number.valid}" 
+                - name: score_time
+                  type:
+                    type: long
+                    logicalType: timestamp-millis
+                  doc: "[[T(System).currentTimeMillis()]]" 
+                - name: fullName
+                  type: string
+                  doc: "#{name.fullName}"
+                - name: email
+                  type: string
+                  doc: "#{internet.emailAddress}"
+                - name: score
+                  type: int
+                  doc: "#{number.number_between '0','100'}"
+                - name: team
+                  type: string
+                  doc: "#{options.option 'red','blue','green','black','white'}"
+
+              batch:
+                size: 100
+                initialDelay: 10ms
+                messageDelay: 10ms
+                delay: 3s
+
+    server:
+      shutdown: graceful
+
+    spring:  
+      lifecycle:
+        timeout-per-shutdown-phase: "100m"
+
+      cloud:  
+        stream:           
+          default-binder: kafka
+          bindings:
+            twa-stream:
+              binder: kafka1
+              destination: dataIn
+              contentType: application/*+avro
+              producer:
+                useNativeEncoding: true
+
+          binders:
+            kafka1:
+              type: kafka
+              environment:
+                spring:
+                  cloud:
+                    stream:            
+                      kafka:
+                        binder:
+                          brokers: 'kafka.${KAFKA_NAMESPACE}.svc.cluster.local:9092'                                        
+                          producerProperties:
+                            schema.registry.url: 'http://s-registry.${KAFKA_NAMESPACE}.svc.cluster.local:8081'
+                            value.serializer: 'io.confluent.kafka.streams.serdes.avro.GenericAvroSerializer'
+                            # value.serializer: 'io.confluent.kafka.serializers.KafkaAvroSerializer'
+                            

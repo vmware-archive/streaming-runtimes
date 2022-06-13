@@ -57,19 +57,20 @@ public class StreamReconciler implements Reconciler {
 	private static final Logger LOG = LoggerFactory.getLogger(StreamReconciler.class);
 	private static final boolean REQUEUE = true;
 	private static final String FINALIZER_STRING = "finalizer.streams.streaming.tanzu.vmware.com";
+	private static final String DEFAULT_CLUSTER_STREAM_SUFFIX = "-cluster-stream";
 
 	private final Lister<V1alpha1Stream> streamLister;
 	private final EventRecorder eventRecorder;
-	private final Boolean autoProvisionClusterStream;
 	private final StreamingTanzuVmwareComV1alpha1Api api;
+	private final StreamingRuntimeProperties streamingRuntimeProperties;
 
 	public StreamReconciler(SharedIndexInformer<V1alpha1Stream> streamInformer,
 			StreamingTanzuVmwareComV1alpha1Api api, EventRecorder eventRecorder,
-			@Value("${streaming-runtime.autoProvisionClusterStream}") Boolean autoProvisionClusterStream) {
+			StreamingRuntimeProperties streamingRuntimeProperties) {
 		this.api = api;
+		this.streamingRuntimeProperties = streamingRuntimeProperties;
 		this.streamLister = new Lister<>(streamInformer.getIndexer());
 		this.eventRecorder = eventRecorder;
-		this.autoProvisionClusterStream = autoProvisionClusterStream;
 	}
 
 	@Override
@@ -89,21 +90,23 @@ public class StreamReconciler implements Reconciler {
 
 			final boolean toDelete = stream.getMetadata().getDeletionTimestamp() != null;
 
-			String clusterStreamName = stream.getSpec().getStorage().getClusterStream();
+			String clusterStreamName = this.getClusterStreamName(stream, streamName);
 
 			if (toDelete) {
 				removeFinalizer(stream);
-			} else {
+			}
+			else {
 
 				V1alpha1ClusterStream clusterStream = findClusterStream(clusterStreamName);
 
 				if (clusterStream == null) {
-					if (this.autoProvisionClusterStream) {
+					if (this.streamingRuntimeProperties.isAutoProvisionClusterStream()) {
 						this.autoProvisionCusterStream(clusterStreamName, streamNamespace, stream);
 						this.setStreamStatus(stream, "false", "AutoProvisionClusterStream", null);
 						throw new ApiException(String.format("Auto-provision ClusterStream: %s for Stream: %s",
 								clusterStreamName, streamName));
-					} else {
+					}
+					else {
 						this.setStreamStatus(stream, "false", "NoClusterStreamFound", null);
 						throw new ApiException(String.format("No ClusterStream: %s found for Stream: %s",
 								clusterStreamName, streamName));
@@ -148,7 +151,8 @@ public class StreamReconciler implements Reconciler {
 					return new Result(REQUEUE, Duration.of(30, ChronoUnit.SECONDS));
 				}
 			}
-		} catch (ApiException e) {
+		}
+		catch (ApiException e) {
 			if (e.getCode() == 409) {
 				LOG.info("Required subresource is already present, skip creation.");
 				return new Result(!REQUEUE);
@@ -156,11 +160,25 @@ public class StreamReconciler implements Reconciler {
 			logFailureEvent(stream, e.getMessage(), e.getCode() + " - " + e.getResponseBody(), e);
 
 			return new Result(REQUEUE, Duration.of(15, ChronoUnit.SECONDS));
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			logFailureEvent(stream, e.getMessage(), "", e);
 			return new Result(REQUEUE, Duration.of(15, ChronoUnit.SECONDS));
 		}
 		return new Result(!REQUEUE);
+	}
+
+	private String getClusterStreamName(V1alpha1Stream stream, String streamName) {
+
+		String clusterStreamName = null;
+		if (stream.getSpec().getStorage() != null && stream.getSpec().getStorage().getClusterStream() != null) {
+			clusterStreamName = stream.getSpec().getStorage().getClusterStream();
+		}
+
+		clusterStreamName = StringUtils.hasText(clusterStreamName) ? clusterStreamName
+				: streamName + DEFAULT_CLUSTER_STREAM_SUFFIX;
+
+		return clusterStreamName;
 	}
 
 	private boolean hasConditionChanged(V1alpha1Stream stream, String newReadyStatus, String newStatusReason) {
@@ -206,7 +224,8 @@ public class StreamReconciler implements Reconciler {
 
 		if (StringUtils.hasText(storageAddress)) {
 			storageAddress = "," + storageAddress;
-		} else {
+		}
+		else {
 			storageAddress = "";
 		}
 
@@ -229,7 +248,8 @@ public class StreamReconciler implements Reconciler {
 					V1Patch.PATCH_FORMAT_JSON_MERGE_PATCH,
 					api.getApiClient());
 
-		} catch (ApiException e) {
+		}
+		catch (ApiException e) {
 			LOG.error("Status API call failed: {}: {}, {}, with patch {}", e.getCode(), e.getMessage(),
 					e.getResponseBody(), patch);
 		}
@@ -247,20 +267,19 @@ public class StreamReconciler implements Reconciler {
 	}
 
 	private V1alpha1Stream removeFinalizer(V1alpha1Stream stream) throws ApiException {
-		// Currently, we don't have other finalizers so for now we just recklessly
-		// remove all finalizers.
+		// Currently, we don't have other finalizers so for now we just recklessly remove all finalizers.
 		LOG.info("Try to remove Finalizers for stream: " + stream.getMetadata().getName());
 		try {
 			return streamPatch(stream, "[{\"op\": \"remove\", \"path\": \"/metadata/finalizers\"}]",
 					V1Patch.PATCH_FORMAT_JSON_PATCH);
-		} catch (ApiException e) {
+		}
+		catch (ApiException e) {
 			LOG.error("Finalizer removal problem", e);
 			throw e;
 		}
 	}
 
-	// NOTE: The api.patchNamespacedStreamCall(...) won't patch Stream's status! For
-	// this use the
+	// NOTE: The api.patchNamespacedStreamCall(...) won't patch Stream's status! For this use the
 	// api.patchNamespacedStreamStatusCall(...) install
 	private V1alpha1Stream streamPatch(V1alpha1Stream stream, String jsonPatch, String patchFormat)
 			throws ApiException {
@@ -278,7 +297,7 @@ public class StreamReconciler implements Reconciler {
 	private void autoProvisionCusterStream(String clusterStreamName, String streamNamespace, V1alpha1Stream stream)
 			throws ApiException {
 
-		if (findClusterStream(clusterStreamName) != null) {
+		if (this.findClusterStream(clusterStreamName) != null) {
 			return;
 		}
 
@@ -294,7 +313,8 @@ public class StreamReconciler implements Reconciler {
 		cs.getSpec().setName(stream.getSpec().getName());
 		if (!CollectionUtils.isEmpty(stream.getSpec().getKeys())) {
 			cs.getSpec().setKeys(stream.getSpec().getKeys());
-		} else {
+		}
+		else {
 			cs.getSpec().setKeys(new ArrayList<>());
 		}
 

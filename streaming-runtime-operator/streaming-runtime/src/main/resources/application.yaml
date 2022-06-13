@@ -1,3 +1,5 @@
-streaming-runtime:
-  enablePortForward: false
-  autoProvisionClusterStream: true
+streaming:
+  runtime:
+    operator:
+      autoProvisionStream: true
+      autoProvisionClusterStream: true

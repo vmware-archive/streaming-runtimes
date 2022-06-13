@@ -7,8 +7,6 @@ spec:
   protocol: "kafka"
   storage:
     clusterStream: "cluster-stream-card-authorizations"
-  streamMode: [ "read" ]
-  keys: [ "card_number" ]
   dataSchemaContext:
     schema:
       namespace: com.tanzu.streaming.runtime.anomaly.detection
@@ -40,8 +38,6 @@ spec:
   protocol: "kafka"
   storage:
     clusterStream: "cluster-stream-possible-fraud"
-  streamMode: [ "read", "write" ]
-  keys: [ "card_number" ]
   dataSchemaContext:
     schema:
       namespace: com.tanzu.streaming.runtime.anomaly.detection
@@ -67,8 +63,6 @@ metadata:
   name: fraud-alert-stream
 spec:
   name: fraud-alert
-  keys: [ "card_id" ]
-  streamMode: [ "write" ]
   protocol: "rabbitmq"
   storage:
     clusterStream: "cluster-stream-fraud-alert-stream"
@@ -88,13 +82,14 @@ spec:
   attributes:
     debugQuery: "SELECT * FROM PossibleFraud"
     debugExplain: "2"
+    # remoteDebugPort: "5007"
 ---
 apiVersion: streaming.tanzu.vmware.com/v1alpha1
 kind: Processor
 metadata:
   name: fraud-alert
 spec:
-  type: TWA
+  type: SCW
   inputs:
     - name: "possible-fraud-stream"
   outputs:

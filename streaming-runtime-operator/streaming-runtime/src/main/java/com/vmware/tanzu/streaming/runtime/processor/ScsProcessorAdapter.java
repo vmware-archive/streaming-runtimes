@@ -101,6 +101,8 @@ public class ScsProcessorAdapter extends AbstractScsProcessorAdapter {
                                                         .build())
                                         .collect(Collectors.toList()));
 
+                        this.configureRemoteDebuggingIfEnabled(processor, container, containerVariables);                                        
+                        
                         container.setEnv(containerVariables);
 
                         containers.add(container);

@@ -50,12 +50,14 @@ rules:
     resources:
       - deployments
       - statefulsets
+      - statefulsets/scale      
     verbs:
       - get
       - list
       - create
       - patch
       - watch
+      - update
   - apiGroups:
       - rabbitmq.com
     resources:

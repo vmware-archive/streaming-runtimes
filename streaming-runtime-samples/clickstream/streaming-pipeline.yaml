@@ -7,8 +7,6 @@ spec:
   protocol: "kafka"
   storage:
     clusterStream: "cluster-stream-user"
-  streamMode: [ "read" ]
-  keys: [ "user_id" ]
   dataSchemaContext:
     inline:
       type: 'avro'
@@ -37,8 +35,6 @@ spec:
   protocol: kafka
   storage:
     clusterStream: "cluster-stream-click"
-  streamMode: [ "read" ]
-  keys: [ "user_id" ]
   dataSchemaContext:
     schema:
       namespace: com.tanzu.streaming.runtime.clickstream.etl
@@ -72,8 +68,6 @@ spec:
   protocol: "kafka"
   storage:
     clusterStream: "cluster-stream-vip-action"
-  streamMode: [ "read", "write" ]
-  keys: [ "user_id" ]
   dataSchemaContext:
     schema:
       namespace: com.tanzu.streaming.runtime.clickstream.etl
@@ -102,8 +96,6 @@ metadata:
   name: udf-output-stream
 spec:
   name: udf-output
-  keys: [ "user_id" ]
-  streamMode: [ "write" ]
   protocol: "rabbitmq"
   storage:
     clusterStream: "cluster-stream-udf-output"
@@ -129,7 +121,7 @@ kind: Processor
 metadata:
   name: vip-act-upon
 spec:
-  type: TWA
+  type: SCW
   inputs:
     - name: "vip-action-stream"
   outputs:

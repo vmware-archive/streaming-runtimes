@@ -1,0 +1,104 @@
+apiVersion: streaming.tanzu.vmware.com/v1alpha1
+kind: Stream
+metadata:
+  name: data-in-stream
+spec:
+  name: data-in
+  protocol: "kafka"
+  dataSchemaContext:
+    schemaless: "application/octet-stream"
+    timeAttributes:
+      - name: score_time
+        watermark: "`score_time` - INTERVAL '1' SECOND"
+    schemaRegistryUri: http://s-registry.streaming-runtime.svc.cluster.local:8081
+---
+apiVersion: streaming.tanzu.vmware.com/v1alpha1
+kind: Processor
+metadata:
+  name: user-partition-processor
+spec:  
+  inputs:
+    - name: data-in-stream
+  outputs:
+    - name: partitioned-by-user-stream
+  attributes:
+    #  Extract the payload#fullName field value into a message header 'user=<value>'.
+    #  The output header name MUST match the output's Stream keys value or the partitioning wont work!
+    scw.output.headers: "user=payload.fullName"
+---
+apiVersion: streaming.tanzu.vmware.com/v1alpha1
+kind: Stream
+metadata:
+  name: partitioned-by-user-stream
+spec:
+  name: partitioned-by-user
+  protocol: "kafka"
+  keys: ["user"]
+  partitionCount: 3  
+  dataSchemaContext:
+    schemaless: "application/octet-stream"
+    timeAttributes:
+      - name: header.eventtime
+---
+apiVersion: streaming.tanzu.vmware.com/v1alpha1
+kind: Processor
+metadata:
+  name: user-scores-processor
+spec: 
+  replicas: 2
+  inputs:
+    - name: partitioned-by-user-stream
+  outputs:
+    - name: user-scores-stream
+  attributes:
+#    scw.input.timestampExpression: "header.eventtime"
+    scw.window: 3s
+    scw.window.idle.timeout: 30s
+    scw.output.headers: "team=payload.team"    
+  template:
+    spec:
+      containers:
+        - name: gaming-user-score-java
+          image: ghcr.io/vmware-tanzu/streaming-runtimes/gaming-user-score:latest
+---
+apiVersion: streaming.tanzu.vmware.com/v1alpha1
+kind: Stream
+metadata:
+  name: user-scores-stream
+spec:
+  name: user-scores
+  protocol: "kafka"
+  keys: ["team"]
+  partitionCount: 3
+  dataSchemaContext:
+    schemaless: "application/octet-stream"
+    timeAttributes:
+      - name: header.eventtime
+---
+apiVersion: streaming.tanzu.vmware.com/v1alpha1
+kind: Processor
+metadata:
+  name: team-scores-processor
+spec: 
+  replicas: 3
+  inputs:
+    - name: user-scores-stream
+  outputs:
+    - name: team-scores-stream
+  attributes:
+    # scw.input.timestampExpression: "header.eventtime"
+    scw.window: 10s
+    scw.window.idle.timeout: 30s
+  template:
+    spec:
+      containers:
+        - name: gaming-team-score-javascript
+          image: ghcr.io/vmware-tanzu/streaming-runtimes/gaming-team-score:latest
+---
+apiVersion: streaming.tanzu.vmware.com/v1alpha1
+kind: Stream
+metadata:
+  name: team-scores-stream
+spec:
+  name: team-scores
+  protocol: "kafka"

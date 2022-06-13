@@ -18,24 +18,27 @@ package com.vmware.tanzu.streaming.runtime;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-@ConfigurationProperties("streaming-runtime")
+@ConfigurationProperties("streaming.runtime.operator")
 public class StreamingRuntimeProperties {
-	private boolean enablePortForward = false;
+	
 	private boolean autoProvisionClusterStream = true;
 
-	public boolean isEnablePortForward() {
-		return enablePortForward;
-	}
-
-	public void setEnablePortForward(boolean enablePortForward) {
-		this.enablePortForward = enablePortForward;
-	}
+	private boolean autoProvisionStream = true;
 
 	public boolean isAutoProvisionClusterStream() {
-		return autoProvisionClusterStream;
+		return this.autoProvisionClusterStream;
 	}
 
 	public void setAutoProvisionClusterStream(boolean autoProvisionClusterStream) {
 		this.autoProvisionClusterStream = autoProvisionClusterStream;
 	}
+
+	public void setAutoProvisionStream(boolean autoProvisionStream) {
+		this.autoProvisionStream = autoProvisionStream;
+	}
+
+	public boolean isAutoProvisionStream() {
+		return this.autoProvisionStream;
+	}
+
 }

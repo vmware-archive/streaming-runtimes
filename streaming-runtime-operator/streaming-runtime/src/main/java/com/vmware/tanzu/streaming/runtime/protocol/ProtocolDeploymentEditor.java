@@ -28,7 +28,7 @@ public interface ProtocolDeploymentEditor {
 
 	/**
 	 * Identifies uniquely the protocol deployment editor.
-	 * If not implemented it defaults to the protocolName.
+	 * It defaults to the protocolName.
 	 * @return Unique protocol deployment editor identifier.
 	 */
 	default String getProtocolDeploymentEditorName() {
