@@ -77,6 +77,6 @@ kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runti
 - Delete all pipelines:
 ```shell
 kubectl delete srs,srcs,srp --all -n streaming-runtime 
-kubectl delete deployments -l app=clickstream-data-generator -n streaming-runtime 
+kubectl delete deployments,svc -l app=clickstream-data-generator -n streaming-runtime 
 ```
 

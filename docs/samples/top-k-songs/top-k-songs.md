@@ -85,19 +85,19 @@ The [streaming-pipeline.yaml](streaming-pipeline.yaml) uses the `Stream` and `Pr
     === "with SQL schema"  
  
         ```shell
-        kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-sample/top-k-songs/streaming-pipeline-inline-sql-schema.yaml' -n streaming-runtime
+        kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-samples/top-k-songs/streaming-pipeline-inline-sql-schema.yaml' -n streaming-runtime
         ``` 
 
     === "with Avro schema"
 
         ```shell
-        kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-sample/top-k-songs/streaming-pipeline-inline-avro-schema.yaml' -n streaming-runtime
+        kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-samples/top-k-songs/streaming-pipeline-inline-avro-schema.yaml' -n streaming-runtime
         ```
 
     === "with Avro Schema Registry"
 
         ```shell
-        kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-sample/top-k-songs/streaming-pipeline-inline-avro-confluent-schema.yaml' -n streaming-runtime
+        kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-samples/top-k-songs/streaming-pipeline-inline-avro-confluent-schema.yaml' -n streaming-runtime
         ```
     _Note: you can choose between different Stream schema definitions approaches, selecting between sr-native, avro, sql-ddl and use remote schema registry._
 
@@ -105,7 +105,7 @@ The [streaming-pipeline.yaml](streaming-pipeline.yaml) uses the `Stream` and `Pr
   by the `songs` and `playevents` Streams and send to the topics defined in those streams.
 
     ```shell
-    kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-sample/top-k-songs/data-generator.yaml' -n streaming-runtime
+    kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-samples/top-k-songs/data-generator.yaml' -n streaming-runtime
     ```
 
 * Follow the instructions to [explore the results](../../instructions/#explore-the-results).
@@ -137,5 +137,5 @@ The [streaming-pipeline.yaml](streaming-pipeline.yaml) uses the `Stream` and `Pr
 
     ```shell
     kubectl delete srs,srcs,srp --all -n streaming-runtime 
-    kubectl delete deployments -l app=top-k-songs-data-generator -n streaming-runtime
+    kubectl delete deployments,svc -l app=top-k-songs-data-generator -n streaming-runtime
     ```

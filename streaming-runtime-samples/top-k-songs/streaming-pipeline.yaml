@@ -160,6 +160,8 @@ spec:
         SELECT Plays.song_id, Songs.album, Songs.artist, Songs.name, Songs.genre, Plays.duration, Plays.event_time   
         FROM(SELECT * FROM [[STREAM:playevents-stream]] WHERE duration >= 30000) AS Plays 
         INNER JOIN [[STREAM:songs-stream]] as Songs ON Plays.song_id = Songs.song_id"
+  attributes:
+    debugQuery: "SELECT * FROM SongPlays"        
 ---
 apiVersion: streaming.tanzu.vmware.com/v1alpha1
 kind: Processor
