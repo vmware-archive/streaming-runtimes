@@ -64,7 +64,7 @@ class MessageService(MessageService_pb2_grpc.MessagingServiceServicer):
 
 The UDF can be written in any programming language as long as it adhere to the [User Defined Function](../../../architecture/udf/architecture) contract.
 
-The [streaming-pipeline.yaml](streaming-pipeline.yaml) uses the `Stream` and `Processor` resources to implement and deploy the music chart application:
+The [streaming-pipeline.yaml](https://github.com/vmware-tanzu/streaming-runtimes/blob/main/streaming-runtime-samples/top-k-songs/streaming-pipeline.yaml){:target="_blank"} uses the `Stream` and `Processor` resources to implement and deploy the music chart application:
 
 ![pipeline](topk-deployed.svg)
 

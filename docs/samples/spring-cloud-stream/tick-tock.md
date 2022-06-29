@@ -23,7 +23,7 @@ The `Streams` exchange plain text payloads (e.g. byte-array) and do not require 
 > For each application there are two builds one with `Apache Kafka` and another with `RabbitMQ`. 
 > It is still possible to re-compile those applications for different message brokers (e.g. `protocols`) or even mixture for multiple protocols (e.g. `multibinder`).
 
-The [streaming-pipeline-tiktock.yaml](../../../streaming-runtime-samples/spring-cloud-stream/streaming-pipeline-tiktock.yaml) puts the entire pipeline together and after deployed would look like:
+The [streaming-pipeline-tiktock.yaml](https://github.com/vmware-tanzu/streaming-runtimes/blob/main/streaming-runtime-samples/spring-cloud-stream/streaming-pipeline-ticktock.yaml){:target="_blank"} puts the entire pipeline together and after deployed would look like:
 
 ![SR SCS deployment](./ticktock-deployment.svg)
 
