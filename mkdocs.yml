@@ -68,11 +68,9 @@ copyright: "Copyright © 2022 The Tanzu Streaming Runtime Authors"
 
 extra:
   social:
-    - icon: fontawesome/brands/twitter
-      link: https://twitter.com/vmwaretap
     - icon: fontawesome/brands/github
       link: https://github.com/vmware-tanzu/streaming-runtimes
       name: Streaming Runtime Community on Github
     - icon: fontawesome/brands/slack
-      link: https://join.slack.com/share/enQtMzE3MTc4MjY3NzM2MS1mZDdmNzQyYTQwNTljZjc0NWY1Y2M4NTRmNThlODA0YmVlMGIwMDUxZmVmYzAzNjFkOTUwMWI2NzMwNzAzY2Q4
+      link: https://kubernetes.slack.com/archives/C03GFRBHM43
       name: Slack
