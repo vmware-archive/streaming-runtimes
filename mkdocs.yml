@@ -51,10 +51,10 @@ nav:
         - Processors:
           - Overview: architecture/processors/overview.md
           - User Defined Functions:
-              - Architecture: architecture/processors/udf/architecture.md
+              - Overview: architecture/processors/udf/overview.md
               - Usage: architecture/processors/udf/usage.md
-          - Spring Cloud Stream: architecture/processors/scs/architecture.md
-          - FSQL: architecture/processors/fsql/architecture.md
+          - Spring Cloud Stream: architecture/processors/scs/overview.md
+          - FSQL: architecture/processors/fsql/overview.md
         - Cluster Streams:
           - Overview: architecture/cluster-streams/overview.md
         - Streams:
