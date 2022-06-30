@@ -1,6 +1,6 @@
 # Flink SQL Processor
 
-Backed by Apache Flink SQL Streaming. Allow inline Query definition. The set of input stream data which should trigger a transformation is represented by a (streaming) SQL query across the various inputs which yields event tuples which are emitted to the output streams.
+Backed by Apache Flink SQL Streaming, it allows inline Query definitions to be expressed in the resource. The set of input stream data which should trigger a transformation is represented by a (streaming) SQL query across the various inputs which yields event tuples which are emitted to the output streams.
 
 ## Usage
 
