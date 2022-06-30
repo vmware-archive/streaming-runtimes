@@ -48,9 +48,17 @@ nav:
       - Install: install.md
       - Usage: streaming-runtime-usage.md
       - Architecture:
-        - User Defined Functions:
-            - Architecture: architecture/udf/architecture.md
-            - Usage: architecture/udf/usage.md
+        - Processors:
+          - Overview: architecture/processors/overview.md
+          - User Defined Functions:
+              - Architecture: architecture/processors/udf/architecture.md
+              - Usage: architecture/processors/udf/usage.md
+          - Spring Cloud Stream: architecture/processors/scs/architecture.md
+          - FSQL: architecture/processors/fsql/architecture.md
+        - Cluster Streams:
+          - Overview: architecture/cluster-streams/overview.md
+        - Streams:
+          - Overview: architecture/streams/overview.md
         - Service Binding: architecture/service-binding/service-binding.md
         - Stream Data Schema: architecture/streaming-data-schema.md
       - Build: streaming-runtime-build.md
