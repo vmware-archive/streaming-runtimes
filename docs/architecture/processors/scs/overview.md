@@ -8,7 +8,8 @@ Runs [Spring Cloud Stream](https://spring.io/projects/spring-cloud-stream) appli
 apiVersion: streaming.tanzu.vmware.com/v1alpha1
 kind: Processor
 metadata:
-    # Name of the source of the Spring Cloud Stream. List: https://docs.spring.io/stream-applications/docs/2021.1.2/reference/html/#sources
+    # Name of the source of the Spring Cloud Stream.
+    # List: https://docs.spring.io/stream-applications/docs/2021.1.2/reference/html/#sources
     name: <string>
 spec:
     # Type of the processor. In this case SCS (Spring Cloud Stream)
