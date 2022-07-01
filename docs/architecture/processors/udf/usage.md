@@ -49,4 +49,3 @@ Note that the `my-python-udf-container` (lines `13`-`14`) uses the `udf-uppercas
 When deployed by the streaming runtime this processor would look like this:
 
 ![Python UDF Flow](./streaming-runtime-python-udf-pipeline.jpg)
-
