@@ -31,15 +31,15 @@ spec:
 
 ## The Multibinder
 
-The Streaming Runtime Operator deploys a side-container next to processor container that handles connections between the input streams and the output streams.
+The Streaming Runtime Operator deploys a side-container next to the processor container that handles connections between the input streams and the output streams.
 
-This sidecar called the `multibinder` exposes an interface to the processor container with an API to process incoming events from the streams and API to received the data once it's processed by the function.
+This sidecar called the `multibinder` exposes an interface to the processor container with an API to process incoming events from the streams and API to receive the data once it's processed by the function.
 
 ![Multibinder](./function-multibinder.png)
 
 ## The Protocol
 
-The contract of the function specify a `GrpcMessage` schema to model the messages exchanged between the multibinder and the function. It also defines a `MessagingService` offering four interaction modes to choose from.
+The contract of the function specifies a `GrpcMessage` schema to model the messages exchanged between the multibinder and the function. It also defines a `MessagingService` offering four interaction modes to choose from.
 
 ```protobuf
 syntax = "proto3";
@@ -60,7 +60,7 @@ service MessagingService {
 }
 ```
 
-The [MessageService.proto](https://github.com/vmware-tanzu/streaming-runtimes/blob/main/user-defined-functions/MessageService.proto) allows you to generate required stubs to support true polyglot nature of gRPC while interacting with functions hosted by `Streaming Runtime`.
+The [MessageService.proto](https://github.com/vmware-tanzu/streaming-runtimes/blob/main/user-defined-functions/MessageService.proto) allows you to generate required stubs to support the true polyglot nature of gRPC while interacting with functions hosted by `Streaming Runtime`.
 
 The Multibinder forwards the incoming messages over the `MessagingService` to the pre-configured function.
 The function response in turn is sent to the Multibinder's output stream.
@@ -77,7 +77,7 @@ The `MessagingService` gRPC provides 4 interaction modes:
 
 #### Request Reply RPC
 
-The most straight forward interaction mode is Request/Reply. Suppose you have a function in
+The most straightforward interaction mode is Request/Reply. Suppose you have a function in
 
 Java:
 ```java
