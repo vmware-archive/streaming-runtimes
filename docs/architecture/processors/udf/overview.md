@@ -2,7 +2,7 @@
 
 The Streaming Runtime provides a way for users to specify a function as a processor with basic Time Windowed Aggregation capabilities. The runtime deploys the function with a sidecar called [multibinder](#the-multibinder) that acts as the connection between the streams and the function deployed. The sidecar exposes an interface with a [protocol](#the-protocol) you can follow in order to build your functions.
 
-## Usage
+## Resource Definition
 
 ```yaml
 apiVersion: streaming.tanzu.vmware.com/v1alpha1
