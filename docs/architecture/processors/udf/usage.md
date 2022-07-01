@@ -1,8 +1,8 @@
-The [udf-uppercase-java](./udf-uppercase-java), [udf-uppercase-go](./udf-uppercase-go) and [udf-uppercase-python](./udf-uppercase-python) sample projects
+The [udf-uppercase-java](https://github.com/vmware-tanzu/streaming-runtimes/blob/main/user-defined-functions/udf-uppercase-java){:target="_blank"}, [udf-uppercase-go](https://github.com/vmware-tanzu/streaming-runtimes/blob/main/user-defined-functions/udf-uppercase-go){:target="_blank"}, and [udf-uppercase-python](https://github.com/vmware-tanzu/streaming-runtimes/blob/main/user-defined-functions/udf-uppercase-python){:target="_blank"} sample projects
 show how to build simple UDFs in `Java`, `Python` or `Go` using the `Reques/Repply` RPC mode.
 Also, you can find there instructions how to build the UDF container image and push those to the container registry of choice.
 
-For example in case of the [Python UDF](./udf-uppercase-python) you can use a `Dockerfile` like this:
+For example in case of the [Python UDF](https://github.com/vmware-tanzu/streaming-runtimes/blob/main/user-defined-functions/udf-uppercase-python){:target="_blank"} you can use a `Dockerfile` like this:
 
 ```dockerfile
 FROM python:3.9.7-slim
