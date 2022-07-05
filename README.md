@@ -5,9 +5,6 @@
 Kubernetes' execution environment, designed to simplify the development and the operation of streaming data processing applications.
 It enables complex data processing scenarios including Time Windowing Aggregation, streaming joins as well as user-defined functions to process the streamed data.
 
-## Documetation
-[streaming-runtimes](https://vmware-tanzu.github.io/streaming-runtimes/)
-
 ## Try it out
 
 ### Prerequisites
@@ -72,6 +69,22 @@ Finally, you can chain multiple Streams and Processors (e.g. the output `Stream`
 * User Defined Functions - follow the [User Defined Function](./user-defined-functions) about information how implement and build your own UDF and how to use it from within a Processor resource. 
 
 ## Documentation
+
+Visit the official site of the [Streaming Runtimes](https://vmware-tanzu.github.io/streaming-runtimes/) for documentation.
+
+### Build it locally
+
+We use the [docs](./docs/) folder to generate documentation website for this project.
+
+You can build the documentation container image and run it with:
+
+```bash
+make docs.build docs.serve
+```
+
+This will serve in `localhost:8000` the docs site.
+
+## Samples
 
 The [Streaming Runtime Samples](./streaming-runtime-samples) offers a good starting point to start learning how to build streaming pipeline and what are the components involved.
 
