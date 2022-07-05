@@ -52,7 +52,7 @@ If we see that happening it is flagged as a possible fraud and inserted to the p
 
 The `possible-fraud-detection` processor emits new `possible-fraud` stream containing the fraudulent transactions.
 
-Next with the help for the `fraud-alert` processor we can register a custom function [UDF](../../architecture/udf/architecture.md), that consumes the `possible-fraud` stream, investigates the suspicious transactions further for example to send alert emails. 
+Next with the help for the `fraud-alert` processor we can register a custom [Function](../../architecture/functions/architecture.md), that consumes the `possible-fraud` stream, investigates the suspicious transactions further for example to send alert emails.
 
 Following diagram illustrates the implementation flow and involved resources:
 ![Anomaly Detection Flow](anomaly-detection-deployed.svg)
@@ -194,7 +194,7 @@ spec:
       ddl.scan.startup.mode: earliest-offset
 ```
 
-The `possible-fraud-stream` is given to `fraud-alert` processor configured with UDF to uppercase the payload content:
+The `possible-fraud-stream` is given to `fraud-alert` processor configured with Function to uppercase the payload content:
 
 ```yaml
 apiVersion: streaming.tanzu.vmware.com/v1alpha1
@@ -214,9 +214,9 @@ spec:
           image: ghcr.io/vmware-tanzu/streaming-runtimes/udf-uppercase-go:0.1
 ```
 
-Note that the UDF function can be implemented in any programming language.
+Note that the function can be implemented in any programming language.
 
-Finally, the output of the UDF function is send to the `fraud-alert-stream` stream defined like this: 
+Finally, the output of the function is send to the `fraud-alert-stream` stream defined like this:
 
 ```yaml
 apiVersion: streaming.tanzu.vmware.com/v1alpha1

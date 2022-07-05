@@ -50,9 +50,9 @@ This effectively computes the top-k aggregate and when expressed in streaming SQ
 
 The aggregated `topk-songs-per-genre` stream emits every minute the top 3 songs per genre.
 
-Next the `song-udf` Processor is configured with a [User Defined Function](../../../architecture/udf/architecture)(UDF) to alter the payload programmatically send the result downstream to the `stream-out` stream.
+Next the `song-udf` Processor is configured with a [Function](../../../docs/architecture/processors/functions/overview.md) to alter the payload programmatically send the result downstream to the `stream-out` stream.
 
-For this demo the `song-udf` Processor is configured with simple Python UDF that simply converts the input payload to uppercase:
+For this demo the `song-udf` Processor is configured with simple Python Function that simply converts the input payload to uppercase:
 
 ```python
 class MessageService(MessageService_pb2_grpc.MessagingServiceServicer):
@@ -62,7 +62,7 @@ class MessageService(MessageService_pb2_grpc.MessagingServiceServicer):
             payload=str.encode(request.payload.decode().upper()), headers=request.headers)
 ```
 
-The UDF can be written in any programming language as long as it adhere to the [User Defined Function](../../../architecture/udf/architecture) contract.
+The Function can be written in any programming language as long as it adhere to the [User Defined Function](../../../docs/architecture/processors/function/overview.md) contract.
 
 The [streaming-pipeline.yaml](https://github.com/vmware-tanzu/streaming-runtimes/blob/main/streaming-runtime-samples/top-k-songs/streaming-pipeline.yaml){:target="_blank"} uses the `Stream` and `Processor` resources to implement and deploy the music chart application:
 
@@ -109,7 +109,7 @@ The [streaming-pipeline.yaml](https://github.com/vmware-tanzu/streaming-runtimes
     ```
 
 * Follow the instructions to [explore the results](../../instructions/#explore-the-results).
- 
+
     Use the `kubectl get srcs,srs,srp -n streaming-runtime` to list all Streaming Runtime resources:
    ```shell
    kubectl get srcs,srs,srp -n streaming-runtime

@@ -5,9 +5,9 @@ With the streaming ETL we get some kind of data events coming into the streaming
 
 The clickstream analysis is common ETL data processing technique for helping understand the customer browsing behavior.
 
-> `Clickstream` data is the pathway that a user takes through their online journey. 
-> For a single website it generally shows how the user progressed from search to purchase. 
-> The clickstream links together the actions a single user has taken within a single session. 
+> `Clickstream` data is the pathway that a user takes through their online journey.
+> For a single website it generally shows how the user progressed from search to purchase.
+> The clickstream links together the actions a single user has taken within a single session.
 > This means identifying where a search, click or purchase was performed within a single session.
 
 For example with clickstream analysis we can understand who are the high status customers currently using our websites,
@@ -26,7 +26,7 @@ The first input, `user-stream`, provides detailed information about the website 
 ...
 ```
 
-The second input, `click-stream`, streams the actions and paths the users take throughout their website browsing journey: 
+The second input, `click-stream`, streams the actions and paths the users take throughout their website browsing journey:
 
 ```json
 {"user_id":"170-65-1094","page":5535,"action":"selection","device":"computer","agent":"Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36 OPR/43.0.2442.991"}
@@ -35,7 +35,7 @@ The second input, `click-stream`, streams the actions and paths the users take t
 ...
 ```
 
-The `vip-join-and-filter` Processor joins the input streams to enrich the click behavior with user details and filter in only the high status customer. 
+The `vip-join-and-filter` Processor joins the input streams to enrich the click behavior with user details and filter in only the high status customer.
 Processor uses streaming SQL to continuously analyze the input streams and produces a new stream containing only enriched information for the Platinum level users:
 
 ```sql
@@ -52,8 +52,8 @@ Processor uses streaming SQL to continuously analyze the input streams and produ
 
 Computed VIP Actions are contentiously written the the output `vip-action-stream`.
 
-The second, `vip-act-upon`, Processor consumes the VIP-Actions events and allows us to implement a domain specific, [User Defined Function](../../architecture/udf/architecture.md) that act and apply some business logic upon the VIP events. 
-The UDF can be written in language of our choice!
+The second, `vip-act-upon`, Processor consumes the VIP-Actions events and allows us to implement a domain specific,  [Function](../../architecture/processors/functions/overview.md) that act and apply some business logic upon the VIP events.
+The Function can be written in language of our choice!
 
 Following diagram illustrates the implementation flow and involved resources:
 ![Click Streams Flow](clickstream-arch.svg)
@@ -63,20 +63,22 @@ Following diagram illustrates the implementation flow and involved resources:
 - Follow the [Streaming Runtime Install](../../install.md) instructions to instal the operator.
 
 - Install the Clickstream pipeline:
+
 ```shell
 kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-samples/clickstream/streaming-pipeline.yaml' -n streaming-runtime
 ```
 
 - Install the click-stream random data stream:
+
 ```shell
 kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-samples/clickstream/data-generator.yaml' -n streaming-runtime
 ```
 
-- Follow the [explore results](../../instructions/#explore-the-results) instructions to see what data is generated and how it is processed though the pipeline. 
+- Follow the [explore results](../../instructions/#explore-the-results) instructions to see what data is generated and how it is processed though the pipeline.
 
 - Delete all pipelines:
+
 ```shell
 kubectl delete srs,srcs,srp --all -n streaming-runtime 
 kubectl delete deployments,svc -l app=clickstream-data-generator -n streaming-runtime 
 ```
-

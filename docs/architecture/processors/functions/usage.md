@@ -1,8 +1,8 @@
-The [udf-uppercase-java](https://github.com/vmware-tanzu/streaming-runtimes/blob/main/user-defined-functions/udf-uppercase-java){:target="_blank"}, [udf-uppercase-go](https://github.com/vmware-tanzu/streaming-runtimes/blob/main/user-defined-functions/udf-uppercase-go){:target="_blank"}, and [udf-uppercase-python](https://github.com/vmware-tanzu/streaming-runtimes/blob/main/user-defined-functions/udf-uppercase-python){:target="_blank"} sample projects
-show how to build simple UDFs in `Java`, `Python` or `Go` using the `Reques/Repply` RPC mode.
-Also, you can find there instructions how to build the UDF container image and push those to the container registry of choice.
+The [function-uppercase-java](https://github.com/vmware-tanzu/streaming-runtimes/blob/main/user-defined-functions/udf-uppercase-java){:target="_blank"}, [function-uppercase-go](https://github.com/vmware-tanzu/streaming-runtimes/blob/main/user-defined-functions/udf-uppercase-go){:target="_blank"}, and [function-uppercase-python](https://github.com/vmware-tanzu/streaming-runtimes/blob/main/user-defined-functions/udf-uppercase-python){:target="_blank"} sample projects
+show how to build simple Functions in `Java`, `Python` or `Go` using the `Reques/Repply` RPC mode.
+Also, you can find there instructions how to build the Function container image and push those to the container registry of choice.
 
-For example in case of the [Python UDF](https://github.com/vmware-tanzu/streaming-runtimes/blob/main/user-defined-functions/udf-uppercase-python){:target="_blank"} you can use a `Dockerfile` like this:
+For example in case of the [Python Function](https://github.com/vmware-tanzu/streaming-runtimes/blob/main/user-defined-functions/udf-uppercase-python){:target="_blank"} you can use a `Dockerfile` like this:
 
 ```dockerfile
 FROM python:3.9.7-slim
@@ -34,9 +34,9 @@ For example:
 4.    name: my-streaming-processor
 5.  spec:
 6.    inputs: 
-7.      - name: "my-input-stream" # input streams for the UDF function  
+7.      - name: "my-input-stream" # input streams for the Function
 8.    outputs: 
-9.      - name: "my-output-stream" # output streams for the UDF function        
+9.      - name: "my-output-stream" # output streams for the Function
 10.   template:
 11.     spec:
 12.       containers:
@@ -48,4 +48,4 @@ Note that the `my-python-udf-container` (lines `13`-`14`) uses the `udf-uppercas
 
 When deployed by the streaming runtime this processor would look like this:
 
-![Python UDF Flow](./streaming-runtime-python-udf-pipeline.jpg)
+![Python Function Flow](./streaming-runtime-python-udf-pipeline.jpg)

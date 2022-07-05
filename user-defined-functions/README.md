@@ -1,6 +1,6 @@
 # Sample User Defined Functions
 
-The Streaming Runtime provides a `GrpcMessage` schema to model the messages exchanged between the `Multibinder` and the User Defined Functions (UDF).
+The Streaming Runtime provides a `GrpcMessage` schema to model the messages exchanged between the `Multibinder` and the Functions.
 It also defines a `MessagingService` offering four interaction modes to choose from. 
 
 ```protobuf
@@ -24,15 +24,15 @@ service MessagingService {
 
 The [MessageService.proto](./MessageService.proto) allows you to generate required stubs to support true polyglot nature of gRPC while interacting with functions hosted by `Streaming Runtime`.
 
-The Multibinder forwards the incoming messages over the `MessagingService` to the pre-configured UDF function.
-The UDF response in turn is sent to the Multibinder's output stream.
-If the `Time Windowing Aggregation` is enabled, the Multibinder will collect all messages part of the window and pass them at once to the UDF to compute aggregated state.
+The Multibinder forwards the incoming messages over the `MessagingService` to the pre-configured Function.
+The Function response in turn is sent to the Multibinder's output stream.
+If the `Time Windowing Aggregation` is enabled, the Multibinder will collect all messages part of the window and pass them at once to the Function to compute aggregated state.
 
 The [udf-uppercase-java](./udf-uppercase-java), [udf-uppercase-go](./udf-uppercase-go) and [udf-uppercase-python](./udf-uppercase-python) sample projects
 show how to build simple UDFs in `Java`, `Python` or `Go` using the `Reques/Repply` RPC mode.
-Also, you can find there instructions how to build the UDF container image and push those to the container registry of choice.
+Also, you can find there instructions how to build the Function container image and push those to the container registry of choice.
 
-For example in case of the [Python UDF](./udf-uppercase-python) you can use a `Dockerfile` like this:
+For example in case of the [Python Function](./udf-uppercase-python) you can use a `Dockerfile` like this:
 
 ```dockerfile
 FROM python:3.9.7-slim
@@ -64,9 +64,9 @@ For example:
 4.    name: my-streaming-processor
 5.  spec:
 6.    inputs: 
-7.      - name: "my-input-stream" # input streams for the UDF function  
+7.      - name: "my-input-stream" # input streams for the Function
 8.    outputs: 
-9.      - name: "my-output-stream" # output streams for the UDF function        
+9.      - name: "my-output-stream" # output streams for the Function
 10.   template:
 11.     spec:
 12.       containers:
@@ -78,7 +78,7 @@ Note that the `my-python-udf-container` (lines `13`-`14`) uses the `udf-uppercas
 
 When deployed by the streaming runtime this processor would look like this:
 
-![Python UDF Flow](./streaming-runtime-python-udf-pipeline.jpg)
+![Python Function Flow](./streaming-runtime-python-udf-pipeline.jpg)
 
 
 ## Interaction RPC Modes
@@ -128,4 +128,4 @@ WIP
 
 ----
 
-If you are building your `UDF` in Java you can find more information about the Spring Cloud Function gRPC support [here](https://github.com/spring-cloud/spring-cloud-function/blob/v3.2.1/spring-cloud-function-adapters/spring-cloud-function-grpc/README.md).
+If you are building your `Function` in Java you can find more information about the Spring Cloud Function gRPC support [here](https://github.com/spring-cloud/spring-cloud-function/blob/v3.2.1/spring-cloud-function-adapters/spring-cloud-function-grpc/README.md).

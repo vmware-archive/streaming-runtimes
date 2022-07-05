@@ -45,20 +45,20 @@ In general the streaming data pipeline implementation would like this:
 
 ![Streaming Runtime Arch Overview Flow](./streming-runtime-pipeline.jpg)
 
-Your streaming data pipeline is implementing by defining `Stream` and `Processor` custom resources along with custom user defined functions (UDF) implemented in you language of choice. 
+Your streaming data pipeline is implementing by defining `Stream` and `Processor` custom resources along with custom functions implemented in you language of choice.
 
-The `Stream` input and output resources are used to model the access to your messaging infrastructure (aka Kafka, Pulsar or RabbitMQ), the messaging streams (like topics or exchanges) as well as the schema of the data that flows through those Streams. 
+The `Stream` input and output resources are used to model the access to your messaging infrastructure (aka Kafka, Pulsar or RabbitMQ), the messaging streams (like topics or exchanges) as well as the schema of the data that flows through those Streams.
 The `Processor` CRD defines how the input should be processed in order to produce the output streams.
-You can (optionally) provide Streaming (SQL) Queries that can aggregate, join , re-arrange or just cleanse the input streams before later are passed to the multibinder and your UDF implementations.
+You can (optionally) provide Streaming (SQL) Queries that can aggregate, join , re-arrange or just cleanse the input streams before later are passed to the multibinder and your function implementations.
 
 If you decide not to use streaming query then the entire architecture might look like this:
 ![Streaming Runtime No SQL Flow](./user-defined-functions/streaming-runtime-python-udf-pipeline.jpg)
-E.g. you only define the input and output `Stream`s and the `Processor` to wire them with your custom UDF implementation. 
-Check the [user-defined-functions](./user-defined-functions) to learn how to build UDFs. 
+E.g. you only define the input and output `Stream`s and the `Processor` to wire them with your custom Function implementation.
+Check the [user-defined-functions](./user-defined-functions) to learn how to build Functions.
 
 NOTE: There is an [undergoing work](https://github.com/vmware-tanzu/streaming-runtimes/issues/13) for implementing a very basic `Time Windowed Aggregation` 
-that would allow the developers to calculate aggregates in near-real time directly in their UDFs. 
-This feature would provide an alternative (simple) way to build analytics in addition to elaborate Streaming SQL features explained above. 
+that would allow the developers to calculate aggregates in near-real time directly in their Functions.
+This feature would provide an alternative (simple) way to build analytics in addition to elaborate Streaming SQL features explained above.
 
 Finally, you can chain multiple Streams and Processors (e.g. the output `Stream` of one `Processor` is used an input of another) to build  streaming data pipeline.    
 
@@ -66,7 +66,7 @@ Finally, you can chain multiple Streams and Processors (e.g. the output `Stream`
 ### Build & Run
 
 * Streaming Runtime Operator - follow the [Streaming Runtime Operator](./streaming-runtime-operator#build) build instructions to build the operator, create a container image and upload it to container registry.
-* User Defined Functions - follow the [User Defined Function](./user-defined-functions) about information how implement and build your own UDF and how to use it from within a Processor resource. 
+* User Defined Functions - follow the [User Defined Function](./user-defined-functions) about information how implement and build your own Function and how to use it from within a Processor resource.
 
 ## Documentation
 

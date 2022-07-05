@@ -10,5 +10,5 @@ The Processor defines how the input(s) should be processed in order to produce t
 ## Processor types
 
 - [FSQL](fsql/overview.md): Backed by Apache Flink SQL Streaming. Allow inline Query definition.
-- [UDF](udf/overview.md): User Defined Function. Allow for custom functions in the language of choice to be used as processors.
+- [Functions](functions/overview.md): User Defined Function. Allow for custom functions in the language of choice to be used as processors.
 - [SCS](scs/overview.md): Runs Spring Cloud Stream applications as processors in the pipeline.

@@ -13,15 +13,15 @@ Here we demonstrate how the `Streaming Runtime` can be used to implement various
 All use-case implementation follows the same folder and file structure. 
 
 ### Folder structure
-Each use-case folder contains two files: 
- 
-* `data-generator.yaml` - kubernetes deployment manifest that generates streaming, mockup date for this use case. 
+Each use-case folder contains two files:
+
+* `data-generator.yaml` - kubernetes deployment manifest that generates streaming, mockup date for this use case.
   This could mean 1 or more threads continuously pumping new messages to the scenarios' input streams.
 
-* `streaming-pipeline.yaml` - Streaming-Runtime custom resources (such as `ClusterStream`, `Stream` and `Processor`) used to define the input and output stream as well as the processing queries and UDF references.
+* `streaming-pipeline.yaml` - Streaming-Runtime custom resources (such as `ClusterStream`, `Stream` and `Processor`) used to define the input and output stream as well as the processing queries and Function references.
 
+### Run use-case
 
-### Run use-case 
 Normally to run the use case you would need a K8s instance and installed [Streaming-Runtime operator](../).
 
 For example with minikube you can install the operator like this:
@@ -38,6 +38,7 @@ kubectl apply -f '<use-case-folder>/streaming-pipeline.yaml' -n streaming-runtim
 ```
 
 and run the data generator for the use case:
+
 ```shell
 kubectl apply -f '<use-case-folder>/data-generator.yaml' -n streaming-runtime
 ```
@@ -46,15 +47,17 @@ Make sure to substitute the `<use-case-folder>` placeholder with the folder name
 
 then follow the use-case's own instructions.
 
-
 ### Explore Kafka or RabbitMQ content
 
 #### Explore Kafka Topics
+
 Use the `kubectl get all` to find the Kafka broker pod name and then
+
 ```shell
 kubectl exec -it pod/<your-kafka-pod> -- /bin/bash`
 ```
-to SSH to kafka broker container.
+
+to SSH to Kafka broker container.
 
 From within the kafka-broker container use the bin utils to list the topics or check their content:
 
@@ -63,11 +66,13 @@ From within the kafka-broker container use the bin utils to list the topics or c
 ```
 
 Then to list the topic content:
+
 ```shell
 /opt/kafka/bin/kafka-console-consumer.sh --topic <topic-name> --from-beginning --bootstrap-server localhost:9092
 ```
 
 To delete a topic:
+
 ```shell
 /opt/kafka/bin/kafka-topics.sh --delete --topic <topic-name> --bootstrap-server localhost:9092
 ```
@@ -75,6 +80,7 @@ To delete a topic:
 #### Explore Rabbit Queues
 
 To access the Rabbit management UI first forward the `15672` port:
+
 ```shell
 kubectl port-forward svc/rabbitmq 15672:15672
 ```

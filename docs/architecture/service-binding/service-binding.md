@@ -1,9 +1,10 @@
+# Service Bindings
 
 ## Overview
 
-To fulfil its tasks, the Streaming Runtime (SR) interacts with external distributed systems such as Apache Kafka, RabbitMQ, Apache Flink and others. This implies that SR uses credentials to access those systems. 
+To fulfill its tasks, the Streaming Runtime (SR) interacts with external distributed systems such as Apache Kafka, RabbitMQ, Apache Flink and others. This implies that SR uses credentials to access those systems.
 Furthermore the SR internally exchanges status information between the managed( ClusterStream, Stream and Processor) resources and part of this information could include sensitive attributes as well.
-To avoid configuring and sharing sensitive attributes in plain text the SR needs a mechanism to encapsulate and securely share such attributes amongst its managed resources. 
+To avoid configuring and sharing sensitive attributes in plain text the SR needs a mechanism to encapsulate and securely share such attributes amongst its managed resources.
 
 The [Service Binding Specification for Kubernetes](https://servicebinding.io/) is designed to address this problem by providing aKubernetes-wide specification for communicating service secrets to workloads in an automated way.
 
@@ -57,11 +58,12 @@ spec:
 
 * Install the [Service Binding Operator](https://github.com/vmware-tanzu/servicebinding).
 Any specification compliant operator can be used but we advice for the VMWare-Tanzu operator:
+
 ```bash
 kubectl apply -f https://github.com/vmware-tanzu/servicebinding/releases/download/v0.7.1/service-bindings-0.7.1.yaml
 ```
 
-* Create Kubernetes Secrets for the protected services (e.g. Kafka, RabbitMQ …). 
+* Create Kubernetes Secrets for the protected services (e.g. Kafka, RabbitMQ …).
 Note: When operators are used to provision those services, later create the needed secrets automatically. Follow the service operator instructions to find the names of the generated secrets.
 
 ```yaml
