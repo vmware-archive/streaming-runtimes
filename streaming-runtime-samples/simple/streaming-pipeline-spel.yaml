@@ -1,0 +1,12 @@
+apiVersion: streaming.tanzu.vmware.com/v1alpha1
+kind: Processor
+metadata:
+  name: spel-processor
+spec:
+  inputs:
+    - name: data-in
+  outputs:
+    - name: data-out
+  attributes:
+     scw.spel.expression: '''{"'' + #jsonPath(payload, ''$.fullName'') + ''":"'' + #jsonPath(payload, ''$.email'') + ''"}'''
+    # scw.spel.expression: "new java.lang.String(payload).toUpperCase()"
