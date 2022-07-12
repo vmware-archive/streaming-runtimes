@@ -6,6 +6,13 @@ As prerequisite you need `node` and `npm` installed.
 
 Run `npm install ` to install required `node_modules`. Later are not committed in Git.
 
+Publish to npm:
+```
+npm publish
+```
+You have to update the version first: `npm version <new version>`.
+
+
 ### Implement your custom UDF
 
 * Create new folder: `mkdir myUdf` and from inside run:
@@ -93,23 +100,6 @@ if the `grpc_tools_node_protoc` is not available run:
 
 ```
 npm install -g grpc-tools
-```
-
-### Build gaming-team-score Image
-
-
-```
-export PAT=<YOUR_GH_PAT>
-echo $PAT | docker login ghcr.io --username <YOUR-PAT-USERNAME> --password-stdin
-
-docker build --tag ghcr.io/vmware-tanzu/streaming-runtimes/gaming-team-score .
-docker push ghcr.io/vmware-tanzu/streaming-runtimes/gaming-team-score:latest
-```
-
-you can run the image locally:
-
-```
-docker run -p 50051:50051 node-docker:latest
 ```
 
 ## Resources
