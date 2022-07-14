@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.tanzu.streaming.runtime.scw.processor;
+package com.tanzu.streaming.runtime.scw.processor.stateless;
 
 import java.time.Duration;
 
+import com.tanzu.streaming.runtime.scw.processor.EventTimeProcessor;
 import com.tanzu.streaming.runtime.scw.timestamp.RecordTimestampAssigner;
 import com.tanzu.streaming.runtime.scw.watermark.WatermarkService;
 import com.tanzu.streaming.runtime.scw.watermark.WatermarkService.WatermarkUpdateStatus;

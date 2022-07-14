@@ -112,6 +112,22 @@
 		</dependency>
 		<!-- Cloud Events END -->
 
+		<!-- Flink core is used only because of some utility classes for RocksDB ser/desr -->
+		<dependency>
+			<groupId>org.apache.flink</groupId>
+			<artifactId>flink-core</artifactId>
+			<version>1.15.1</version>
+			<!-- <scope>test</scope> -->
+		</dependency>
+		<dependency>
+			<groupId>org.rocksdb</groupId>
+			<artifactId>rocksdbjni</artifactId>
+			<version>7.3.1</version>
+			<!-- <scope>test</scope> -->
+		</dependency>
+
+		<!-- Flink core is used only because of some utility classes for RocksDB ser/desr -->
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
@@ -133,6 +149,7 @@
 			<classifier>test-binder</classifier>
 			<type>test-jar</type>
 		</dependency>
+
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>

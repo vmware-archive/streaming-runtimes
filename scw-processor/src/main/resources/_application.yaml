@@ -1,6 +1,10 @@
 spring:
   cloud:
     stream:
+      function:
+        bindings:
+          proxy-out-0: output
+          proxy-out-1: outputlate
       default-binder: kafka
       kafka:
         binder:
@@ -29,6 +33,12 @@ spring:
           producer:
             useNativeEncoding: true
           # binder: rabbit
+        proxy-out-1:
+          destination: data-out-late
+          binder: kafka
+          producer:
+            useNativeEncoding: true
+
     function:
       definition: proxy
       grpc:
@@ -60,11 +70,14 @@ scw:
     window: 3s
     idleWindowTimeout: 30s
     maxOutOfOrderness: 500ms
-    # allowedLateness: 0s
+    # allowedLateness: 10h
     # Enable or disable TWA aggregation. When disabled (skipAggregation = true) the input messages are processed element-wise.
     skipAggregation: false
     # When the UDF is disabled (skipUdf = true) the computed aggregate (skipAggregation = false) or the input message are send downstream. 
     # The watermarks headers are allways propagated. 
-    skipUdf: false
+    skipUdf: true
     # forceGrpcPayloadCollection: true
+    # lateEventMode: SIDE_CHANNEL
+    stateType:  ROCKSDB
+    rocksDbPath: "./rocksdb-data/"
     

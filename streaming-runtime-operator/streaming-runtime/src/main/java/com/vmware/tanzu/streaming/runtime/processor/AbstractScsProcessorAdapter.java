@@ -145,11 +145,13 @@ public abstract class AbstractScsProcessorAdapter extends AbstractProcessAdapter
 
             if (outServer.getProtocol().equalsIgnoreCase("kafka")) {
                 envs.put("SPRING_CLOUD_STREAM_BINDINGS_OUTPUT_BINDER", "kafka");
+                envs.put("SPRING_CLOUD_STREAM_BINDINGS_OUTPUTLATE_BINDER", "kafka");
                 envs.put("SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS", outServer.getVariables().get("brokers"));
                 envs.put("SPRING_CLOUD_STREAM_KAFKA_BINDER_ZKNODES", outServer.getVariables().get("zkNodes"));
             }
             else if (outServer.getProtocol().equalsIgnoreCase("rabbitmq")) {
                 envs.put("SPRING_CLOUD_STREAM_BINDINGS_OUTPUT_BINDER", "rabbit");
+                envs.put("SPRING_CLOUD_STREAM_BINDINGS_OUTPUTLATE_BINDER", "rabbit");
                 envs.put("SPRING_RABBITMQ_HOST", outServer.getVariables().get("host"));
                 envs.put("SPRING_RABBITMQ_PORT", outServer.getVariables().get("port"));
 
@@ -160,6 +162,9 @@ public abstract class AbstractScsProcessorAdapter extends AbstractProcessAdapter
             }
             envs.put("SPRING_CLOUD_STREAM_BINDINGS_OUTPUT_DESTINATION", outputStream.getSpec().getName()); // TODO
             envs.put("SPRING_CLOUD_STREAM_FUNCTION_BINDINGS_PROXY-OUT-0", "output"); // TODO
+
+            envs.put("SPRING_CLOUD_STREAM_BINDINGS_OUTPUTLATE_DESTINATION", outputStream.getSpec().getName()); // TODO
+            envs.put("SPRING_CLOUD_STREAM_FUNCTION_BINDINGS_PROXY-OUT-1", "outputlate"); // TODO
 
             // Partition Output
             String partitionKeyExpression = null;

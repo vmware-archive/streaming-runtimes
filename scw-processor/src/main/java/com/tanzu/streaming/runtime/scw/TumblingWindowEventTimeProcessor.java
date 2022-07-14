@@ -19,11 +19,12 @@ package com.tanzu.streaming.runtime.scw;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 import com.tanzu.streaming.runtime.processor.common.proto.GrpcPayloadCollectionSeDe;
 import com.tanzu.streaming.runtime.scw.ScwProcessorApplicationProperties.LateEventMode;
-import com.tanzu.streaming.runtime.scw.processor.window.AbstractTumblingWindowEventTimeProcessor;
+import com.tanzu.streaming.runtime.scw.processor.window.AbstractTumblingWindowEventProcessor;
+import com.tanzu.streaming.runtime.scw.processor.window.state.State;
+import com.tanzu.streaming.runtime.scw.processor.window.state.StateEntry;
 import com.tanzu.streaming.runtime.scw.timestamp.RecordTimestampAssigner;
 import com.tanzu.streaming.runtime.scw.watermark.WatermarkService;
 import org.apache.commons.logging.Log;
@@ -34,7 +35,7 @@ import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 
-public class TumblingWindowEventTimeProcessor extends AbstractTumblingWindowEventTimeProcessor {
+public class TumblingWindowEventTimeProcessor extends AbstractTumblingWindowEventProcessor {
 
     private static final Log logger = LogFactory.getLog(TumblingWindowEventTimeProcessor.class);
 
@@ -48,13 +49,11 @@ public class TumblingWindowEventTimeProcessor extends AbstractTumblingWindowEven
 
     private ScwProcessorApplicationProperties properties;
 
-    public TumblingWindowEventTimeProcessor(ScwProcessorApplicationProperties properties,
-            RecordTimestampAssigner<byte[]> timestampAssigner,
-            WatermarkService watermarkService, StreamBridge streamBridge, int grpcPort,
-            ScwHeaderAugmenter outputHeadersAugmenter) {
+    public TumblingWindowEventTimeProcessor(State windowState, ScwProcessorApplicationProperties properties,
+            RecordTimestampAssigner<byte[]> timestampAssigner, WatermarkService watermarkService,
+            StreamBridge streamBridge, int grpcPort, ScwHeaderAugmenter outputHeadersAugmenter) {
 
-        super(properties.getName(), timestampAssigner, watermarkService, properties.getWindow(),
-                properties.getIdleWindowTimeout());
+        super(windowState, watermarkService, properties.getWindow(), timestampAssigner, properties.getName());
 
         this.streamBridge = streamBridge;
         this.grpcPort = grpcPort;
@@ -64,10 +63,10 @@ public class TumblingWindowEventTimeProcessor extends AbstractTumblingWindowEven
 
     @Override
     public List<MessageBuilder<?>> computeWindowAggregate(Duration windowStartTime, Duration windowEndTime,
-            ConcurrentLinkedQueue<Message<byte[]>> windowAggregate, boolean isPartial) {
+            StateEntry windowAggregate, boolean isPartial) {
 
         MessageBuilder<byte[]> aggregatedGrpcMessageBuilder = GrpcPayloadCollectionSeDe
-                .encodeToGrpcPayloadCollection(windowAggregate);
+                .encodeToGrpcPayloadCollection(windowAggregate.getHeaders(), windowAggregate.getPayloads());
 
         aggregatedGrpcMessageBuilder
                 .setHeader("windowStartTime", windowStartTime.toMillis())

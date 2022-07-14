@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package com.tanzu.streaming.runtime.twaprocessor.attic;
+package com.tanzu.streaming.runtime.scw.attic;
 
 import java.time.Duration;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
-import com.tanzu.streaming.runtime.twaprocessor.attic.WatermarkService_old.AbstractWatermarking.MessageUpdateStatus;
+import com.tanzu.streaming.runtime.scw.attic.WatermarkService_old.AbstractWatermarking.MessageUpdateStatus;
 
 import org.springframework.messaging.Message;
 import org.springframework.util.Assert;

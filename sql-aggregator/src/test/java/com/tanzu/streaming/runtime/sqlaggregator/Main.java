@@ -3,11 +3,8 @@ package com.tanzu.streaming.runtime.sqlaggregator;
 import java.util.List;
 
 import org.apache.calcite.config.Lex;
-import org.apache.calcite.sql.SqlDdl;
-import org.apache.calcite.sql.SqlNode;
 import org.apache.calcite.sql.parser.SqlParseException;
 import org.apache.calcite.sql.parser.SqlParser;
-import org.apache.calcite.sql.parser.SqlParserImplFactory;
 import org.apache.calcite.sql.validate.SqlConformanceEnum;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.configuration.JobManagerOptions;
@@ -29,6 +26,7 @@ import org.apache.flink.table.types.DataType;
 
 public class Main {
 	public static void main(String[] args) throws SqlParseException {
+
 		Configuration strConf = new Configuration();
 		strConf.setInteger(RestOptions.PORT, 8089); // Flink UI port.
 		strConf.setString(RestOptions.BIND_PORT, "8088-8090");

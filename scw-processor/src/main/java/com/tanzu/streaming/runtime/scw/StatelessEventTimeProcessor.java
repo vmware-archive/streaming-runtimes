@@ -20,13 +20,12 @@ import java.util.List;
 
 import com.tanzu.streaming.runtime.processor.common.proto.GrpcPayloadCollectionSeDe;
 import com.tanzu.streaming.runtime.scw.ScwProcessorApplicationProperties.LateEventMode;
-import com.tanzu.streaming.runtime.scw.processor.AbstractStatelessEventTimeProcessor;
+import com.tanzu.streaming.runtime.scw.processor.stateless.AbstractStatelessEventTimeProcessor;
 import com.tanzu.streaming.runtime.scw.timestamp.RecordTimestampAssigner;
 import com.tanzu.streaming.runtime.scw.watermark.WatermarkService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import org.springframework.cloud.function.grpc.FunctionGrpcProperties;
 import org.springframework.cloud.function.grpc.GrpcUtils;
 import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.messaging.Message;

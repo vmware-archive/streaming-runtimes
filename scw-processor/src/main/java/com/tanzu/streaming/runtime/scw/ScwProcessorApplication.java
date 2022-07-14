@@ -23,6 +23,12 @@ import com.tanzu.streaming.runtime.processor.common.avro.AvroSchemaMessageConver
 import com.tanzu.streaming.runtime.processor.common.avro.AvroSchemaReaderWriter;
 import com.tanzu.streaming.runtime.processor.common.avro.AvroSchemaRegistryMessageConvertor;
 import com.tanzu.streaming.runtime.scw.processor.EventTimeProcessor;
+import com.tanzu.streaming.runtime.scw.processor.window.IdleWindowsReleaser;
+import com.tanzu.streaming.runtime.scw.processor.window.IdleWindowsWatchdog;
+import com.tanzu.streaming.runtime.scw.processor.window.TumblingWindowService;
+import com.tanzu.streaming.runtime.scw.processor.window.state.InMemoryState;
+import com.tanzu.streaming.runtime.scw.processor.window.state.RocksDBWindowState;
+import com.tanzu.streaming.runtime.scw.processor.window.state.State;
 import com.tanzu.streaming.runtime.scw.timestamp.JsonPathTimestampAssigner;
 import com.tanzu.streaming.runtime.scw.timestamp.MessageHeaderTimestampAssigner;
 import com.tanzu.streaming.runtime.scw.timestamp.ProcTimestampAssigner;
@@ -65,6 +71,7 @@ public class ScwProcessorApplication {
 		logger.info("input.schemaRegistryUri: " + properties.getInput().getSchemaRegistryUri());
 		logger.info("input.schemaUri: " + properties.getInput().getSchemaUri());
 		logger.info("input.output.headers: " + properties.getOutput().getHeaders());
+		logger.info("stateType: " + properties.getStateType());
 
 		this.properties = properties;
 	}
@@ -115,15 +122,44 @@ public class ScwProcessorApplication {
 	}
 
 	@Bean
-	@ConditionalOnProperty(value = "scw.processor.skipAggregation", havingValue = "false")
+	@ConditionalOnProperty(value = "scw.processor.stateType", havingValue = "MEMORY", matchIfMissing = true)
+	public State inMemoryState() {
+		logger.info("Enable In-Memory Window State!");
+		return new InMemoryState();
+	}
+
+	@Bean
+	@ConditionalOnProperty(value = "scw.processor.stateType", havingValue = "ROCKSDB")
+	public State rocksDbState() {
+		logger.info("Enable RocksDB Window State!");
+		return new RocksDBWindowState(this.properties.getRocksDbPath());
+	}
+
+
+	@Bean
+	@ConditionalOnProperty(value = "scw.processor.skipAggregation", havingValue = "false", matchIfMissing = true)
+	public IdleWindowsReleaser idleWindowsReleaser(TumblingWindowService tumblingWindowService) {
+		return new IdleWindowsReleaser(tumblingWindowService, this.properties.getIdleWindowTimeout());
+	}
+
+	@Bean
+	@ConditionalOnProperty(value = "scw.processor.skipAggregation", havingValue = "false", matchIfMissing = true)
+	public IdleWindowsWatchdog idleWindowsReleaserExecutorService(
+			IdleWindowsReleaser idleWindowsReleaser) {
+		return new IdleWindowsWatchdog(idleWindowsReleaser);
+	}
+
+	@Bean
+	@ConditionalOnProperty(value = "scw.processor.skipAggregation", havingValue = "false", matchIfMissing = true)
 	public TumblingWindowEventTimeProcessor tumblingWindowProcessorService(
+			State windowState,
 			RecordTimestampAssigner<byte[]> timestampAssigner,
 			WatermarkService watermarkService, StreamBridge streamBridge, FunctionGrpcProperties grpcProperties,
 			ScwHeaderAugmenter outputHeadersAugmenter) {
 
 		logger.info("Use: TumblingWindowEventTimeProcessor with: " + timestampAssigner.getClass().getSimpleName());
 
-		return new TumblingWindowEventTimeProcessor(this.properties, timestampAssigner, watermarkService,
+		return new TumblingWindowEventTimeProcessor(windowState, this.properties, timestampAssigner, watermarkService,
 				streamBridge, grpcProperties.getPort(), outputHeadersAugmenter);
 	}
 

@@ -32,7 +32,7 @@ apiVersion: streaming.tanzu.vmware.com/v1alpha1
 kind: Processor
 metadata:
   name: user-partition-processor
-spec:
+spec:  
   inputs:
     - name: data-in-stream
   outputs:

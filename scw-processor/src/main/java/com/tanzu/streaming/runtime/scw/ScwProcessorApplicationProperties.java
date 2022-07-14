@@ -25,13 +25,17 @@ import org.springframework.core.io.Resource;
 @ConfigurationProperties("scw.processor")
 public class ScwProcessorApplicationProperties {
 
-    public static final String DEFAULT_PROXY_OUT_LATE_EVENTS_DESTINATION = "output-late-events";
+    public static final String DEFAULT_PROXY_OUT_LATE_EVENTS_DESTINATION = "outputlate";
 
     public static final String PROXY_OUT_0 = "output";
 
     public enum LateEventMode {
         DROP, UPSERT, SIDE_CHANNEL
     };
+
+    public enum WindowStateType {
+        MEMORY, ROCKSDB
+    }
 
     private String name = "scw-processor";
 
@@ -60,6 +64,10 @@ public class ScwProcessorApplicationProperties {
      * expect/support only GrpcPayloadCollection payloads.
      */
     private boolean forceGrpcPayloadCollection = false;
+
+    private WindowStateType stateType = WindowStateType.MEMORY;
+
+    private String rocksDbPath = "/tmp/rocksdb-data/";
 
     public static class Input {
         /**
@@ -220,4 +228,22 @@ public class ScwProcessorApplicationProperties {
     public boolean isEnableSpelTransformation() {
         return this.enableSpelTransformation;
     }
+
+    public WindowStateType getStateType() {
+        return stateType;
+    }
+
+    public void setStateType(WindowStateType stateType) {
+        this.stateType = stateType;
+    }
+
+    public String getRocksDbPath() {
+        return rocksDbPath;
+    }
+
+    public void setRocksDbPath(String rocksDbPath) {
+        this.rocksDbPath = rocksDbPath;
+    }
+
+    
 }

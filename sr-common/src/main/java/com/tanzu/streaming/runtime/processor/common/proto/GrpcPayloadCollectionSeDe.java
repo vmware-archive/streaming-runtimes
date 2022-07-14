@@ -18,6 +18,7 @@ package com.tanzu.streaming.runtime.processor.common.proto;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
@@ -43,6 +44,22 @@ public class GrpcPayloadCollectionSeDe {
                 messageMimeType = CONTENT_TYPE_RESOLVER.resolve(message.getHeaders());
             }
             grpcBuilder.addPayload(ByteString.copyFrom(message.getPayload()));
+        }
+        if (messageMimeType == null) {
+            throw new RuntimeException("Couldn't not resolve the MIME type for the aggregated messages!");
+        }
+        MessageBuilder<byte[]> messageBuilder = MessageBuilder
+                .withPayload(grpcBuilder.build().toByteArray())
+                .setHeader(MessageHeaders.CONTENT_TYPE, "multipart/" + messageMimeType.getSubtype());
+        return messageBuilder;
+    }
+
+    public static MessageBuilder<byte[]> encodeToGrpcPayloadCollection(Map<String, Object> headersMap, Collection<byte[]> payloads) {
+        MessageHeaders headers = new MessageHeaders(headersMap);
+        MimeType messageMimeType = CONTENT_TYPE_RESOLVER.resolve(headers);
+        Builder grpcBuilder = GrpcPayloadCollection.newBuilder();
+        for (byte[] payload : payloads) {
+            grpcBuilder.addPayload(ByteString.copyFrom(payload));
         }
         if (messageMimeType == null) {
             throw new RuntimeException("Couldn't not resolve the MIME type for the aggregated messages!");
