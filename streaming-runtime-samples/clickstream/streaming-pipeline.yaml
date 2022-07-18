@@ -60,6 +60,22 @@ spec:
       ddl.scan.startup.mode: earliest-offset
 ---
 apiVersion: streaming.tanzu.vmware.com/v1alpha1
+kind: Processor
+metadata:
+  name: vip-join-and-filter
+spec:
+  type: FSQL
+  inlineQuery:
+    - "INSERT INTO [[STREAM:vip-action-stream]] 
+       SELECT Users.user_id, Users.name, Clicks.page, Clicks.action, Clicks.event_time 
+       FROM [[STREAM:click-stream]]  
+       INNER JOIN [[STREAM:user-stream]] ON Clicks.user_id = Users.user_id  
+       WHERE Users.level = 'PLATINUM'"
+  attributes:
+    debugQuery: "SELECT * FROM VipActions"
+    debugExplain: "3"
+---
+apiVersion: streaming.tanzu.vmware.com/v1alpha1
 kind: Stream
 metadata:
   name: vip-action-stream
@@ -91,32 +107,6 @@ spec:
       ddl.scan.startup.mode: earliest-offset
 ---
 apiVersion: streaming.tanzu.vmware.com/v1alpha1
-kind: Stream
-metadata:
-  name: udf-output-stream
-spec:
-  name: udf-output
-  protocol: "rabbitmq"
-  storage:
-    clusterStream: "cluster-stream-udf-output"
----
-apiVersion: streaming.tanzu.vmware.com/v1alpha1
-kind: Processor
-metadata:
-  name: vip-join-and-filter
-spec:
-  type: FSQL
-  inlineQuery:
-    - "INSERT INTO [[STREAM:vip-action-stream]] 
-       SELECT Users.user_id, Users.name, Clicks.page, Clicks.action, Clicks.event_time 
-       FROM [[STREAM:click-stream]]  
-       INNER JOIN [[STREAM:user-stream]] ON Clicks.user_id = Users.user_id  
-       WHERE Users.level = 'PLATINUM'"
-  attributes:
-    debugQuery: "SELECT * FROM VipActions"
-    debugExplain: "3"
----
-apiVersion: streaming.tanzu.vmware.com/v1alpha1
 kind: Processor
 metadata:
   name: vip-act-upon
@@ -131,3 +121,13 @@ spec:
       containers:
         - name: uppercase-grpc
           image: ghcr.io/vmware-tanzu/streaming-runtimes/udf-uppercase-go:0.1
+---
+apiVersion: streaming.tanzu.vmware.com/v1alpha1
+kind: Stream
+metadata:
+  name: udf-output-stream
+spec:
+  name: udf-output
+  protocol: "rabbitmq"
+  storage:
+    clusterStream: "cluster-stream-udf-output"
