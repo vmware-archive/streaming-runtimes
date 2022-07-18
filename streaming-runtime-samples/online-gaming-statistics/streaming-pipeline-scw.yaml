@@ -42,6 +42,7 @@ spec:
     #  Note: header name should match the output stream's 'keys' value for the partitioning wont work!
     scw.output.headers: 
       "user=payload.fullName"
+
 ---
 apiVersion: streaming.tanzu.vmware.com/v1alpha1
 kind: Stream

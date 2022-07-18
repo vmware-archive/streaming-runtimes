@@ -1,0 +1,20 @@
+# The SpEL expressions can be applied to transform the input payloads on the fly. 
+#
+# - The spel.expression is applied on the inbound message and the result is used as outbound payload.
+# - The output.headers expression extracts values from the inbound headers/payload and injects new 
+#   key/value headers to the outbound messages: <header-name>=<[payload.|header.]expression>
+#
+# Note: SCW specific feature.
+#
+apiVersion: streaming.tanzu.vmware.com/v1alpha1
+kind: Processor
+metadata:
+  name: inline-transformation
+spec:
+  inputs:
+    - name: data-in
+  outputs:
+    - name: data-out
+  attributes:
+    scw.output.headers: "user=payload.fullName"  
+    scw.spel.expression: '''{"'' + #jsonPath(payload, ''$.fullName'') + ''":"'' + #jsonPath(payload, ''$.email'') + ''"}'''

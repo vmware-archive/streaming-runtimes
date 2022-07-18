@@ -1,0 +1,45 @@
+# Any Spring Cloud Stream (https://spring.io/projects/spring-cloud-stream) or
+# Spring Cloud Function (https://spring.io/projects/spring-cloud-function) application can be run
+# as Processor.
+# Just build a container image for the application and run it as 'spec.type: SCS' Processor type.
+#
+# Spring Cloud DataFlow provides 60+ pre-built SCS/SCF application that can be used Out-Of-The-Box:
+#   https://docs.spring.io/stream-applications/docs/2021.1.2/reference/html/#applications
+#
+# Use the environment variables to configure the Spring application.
+#
+apiVersion: streaming.tanzu.vmware.com/v1alpha1
+kind: Processor
+metadata:
+  name: time-source
+spec:
+  type: SCS
+  outputs:
+    - name: "timestamps-stream"
+  template:
+    spec:
+      containers:
+        - name: scdf-time-source-kafka
+          image: springcloudstream/time-source-kafka:3.2.0
+          env:
+            - name: SPRING_CLOUD_STREAM_POLLER_FIXED-DELAY
+              value: "2000"
+            - name: TIME_DATE-FORMAT
+              value: "dd/MM/yyyy HH:mm:ss"
+---
+apiVersion: streaming.tanzu.vmware.com/v1alpha1
+kind: Processor
+metadata:
+  name: log-sink
+spec:
+  type: SCS
+  inputs:
+    - name: "uppercase-stream"
+  template:
+    spec:
+      containers:
+        - name: scdf-log-sink-kafka
+          image: springcloudstream/log-sink-kafka:3.2.0
+          env:
+            - name: LOG_EXPRESSION
+              value: "'My uppercase timestamp is: ' + payload"

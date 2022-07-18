@@ -123,11 +123,12 @@ public abstract class AbstractScsProcessorAdapter extends AbstractProcessAdapter
             envs.put("SPRING_CLOUD_STREAM_BINDINGS_INPUT_DESTINATION", inputStream.getSpec().getName()); // TODO
             envs.put("SPRING_CLOUD_STREAM_FUNCTION_BINDINGS_PROXY-IN-0", "input"); // TODO
 
-            // Partition Input
-            if (!CollectionUtils.isEmpty(inputStream.getSpec().getKeys())
-                    || StringUtils.hasText(inputStream.getSpec().getKeyExpression())) {
-                envs.put("SPRING_CLOUD_STREAM_BINDINGS_INPUT_CONSUMER_PARTITIONED", "true");
+            if (!this.getProcessorAttributeBoolean(processor, "disableCustomerGroup")) {
                 envs.put("SPRING_CLOUD_STREAM_BINDINGS_INPUT_GROUP", processor.getMetadata().getName());
+            }
+            // Partition Input
+            if (this.isPartitionedInput(processor, inputStream, outputStream)) {
+                envs.put("SPRING_CLOUD_STREAM_BINDINGS_INPUT_CONSUMER_PARTITIONED", "true");
                 Integer replicas = processor.getSpec().getReplicas();
                 if (replicas == null) {
                     replicas = 1;
@@ -170,6 +171,10 @@ public abstract class AbstractScsProcessorAdapter extends AbstractProcessAdapter
             String partitionKeyExpression = null;
             if (StringUtils.hasText(outputStream.getSpec().getKeyExpression())) {
                 partitionKeyExpression = outputStream.getSpec().getKeyExpression();
+                if (partitionKeyExpression.contains("payload.")) {
+                    // Hack to handle byte[] payload type.
+                    partitionKeyExpression = partitionKeyExpression.replace("payload.", "(new String(payload)).");
+                }
             }
             else if (!CollectionUtils.isEmpty(outputStream.getSpec().getKeys())) {
                 partitionKeyExpression = String.format("headers['%s']",
@@ -193,7 +198,8 @@ public abstract class AbstractScsProcessorAdapter extends AbstractProcessAdapter
 
         this.doAdditionalConfigurations(processor, inputStream, outputStream, envs);
 
-        if (this.isPartitionedInput(processor, inputStream, outputStream)) {
+        if (this.isPartitionedInput(processor, inputStream, outputStream)
+                || this.getProcessorAttributeBoolean(processor, "forceStatefulSet")) {
             this.createStatefulSet(processor, ownerReference, envs);
         }
         else {
@@ -203,7 +209,16 @@ public abstract class AbstractScsProcessorAdapter extends AbstractProcessAdapter
 
     protected boolean isPartitionedInput(V1alpha1Processor processor, V1alpha1Stream inputStream,
             V1alpha1Stream outputStream) {
-        return this.getProcessorAttributeBoolean(processor, "partitionedInput");
+
+        // Explicitly set via the partitionedInput attribute. Overrides other conventions.
+        String value = getProcessorAttribute(processor, "partitionedInput");
+        if (StringUtils.hasText(value)) {
+            return Boolean.valueOf(value);
+        }
+
+        // If the input stream defines keys or keyExpression, then assume that partition is expected
+        return (inputStream != null) && (!CollectionUtils.isEmpty(inputStream.getSpec().getKeys())
+                || StringUtils.hasText(inputStream.getSpec().getKeyExpression()));
     }
 
     protected void doAdditionalConfigurations(V1alpha1Processor processor, V1alpha1Stream inputStream,

@@ -30,6 +30,23 @@ spec:
       ddl.scan.startup.mode: earliest-offset
 ---
 apiVersion: streaming.tanzu.vmware.com/v1alpha1
+kind: Processor
+metadata:
+  name: possible-fraud-detection
+spec:
+  type: FSQL
+  inlineQuery:
+    - "INSERT INTO [[STREAM:possible-fraud-stream]]  
+        SELECT window_start, window_end, card_number, COUNT(*) AS authorization_attempts 
+        FROM TABLE(TUMBLE(TABLE [[STREAM:card-authorizations-stream]], DESCRIPTOR(event_time), INTERVAL '5' SECONDS)) 
+        GROUP BY window_start, window_end, card_number    
+        HAVING COUNT(*) > 5"
+  attributes:
+    debugQuery: "SELECT * FROM PossibleFraud"
+    debugExplain: "2"
+    # remoteDebugPort: "5007"
+---
+apiVersion: streaming.tanzu.vmware.com/v1alpha1
 kind: Stream
 metadata:
   name: possible-fraud-stream
@@ -58,33 +75,6 @@ spec:
       ddl.scan.startup.mode: earliest-offset
 ---
 apiVersion: streaming.tanzu.vmware.com/v1alpha1
-kind: Stream
-metadata:
-  name: fraud-alert-stream
-spec:
-  name: fraud-alert
-  protocol: "rabbitmq"
-  storage:
-    clusterStream: "cluster-stream-fraud-alert-stream"
----
-apiVersion: streaming.tanzu.vmware.com/v1alpha1
-kind: Processor
-metadata:
-  name: possible-fraud-detection
-spec:
-  type: FSQL
-  inlineQuery:
-    - "INSERT INTO [[STREAM:possible-fraud-stream]]  
-        SELECT window_start, window_end, card_number, COUNT(*) AS authorization_attempts 
-        FROM TABLE(TUMBLE(TABLE [[STREAM:card-authorizations-stream]], DESCRIPTOR(event_time), INTERVAL '5' SECONDS)) 
-        GROUP BY window_start, window_end, card_number    
-        HAVING COUNT(*) > 5"
-  attributes:
-    debugQuery: "SELECT * FROM PossibleFraud"
-    debugExplain: "2"
-    # remoteDebugPort: "5007"
----
-apiVersion: streaming.tanzu.vmware.com/v1alpha1
 kind: Processor
 metadata:
   name: fraud-alert
@@ -99,4 +89,13 @@ spec:
       containers:
         - name: possible-fraud-analysis-udf
           image: ghcr.io/vmware-tanzu/streaming-runtimes/udf-uppercase-go:0.1
-
+---
+apiVersion: streaming.tanzu.vmware.com/v1alpha1
+kind: Stream
+metadata:
+  name: fraud-alert-stream
+spec:
+  name: fraud-alert
+  protocol: "rabbitmq"
+  storage:
+    clusterStream: "cluster-stream-fraud-alert-stream"

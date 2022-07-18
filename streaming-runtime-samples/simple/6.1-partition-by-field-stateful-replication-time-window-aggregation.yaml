@@ -1,0 +1,82 @@
+apiVersion: streaming.tanzu.vmware.com/v1alpha1
+kind: Stream
+metadata:
+  name: data-in-stream
+spec:
+  name: data-in
+  protocol: kafka
+  dataSchemaContext:
+    schema:
+      namespace: sr.poc.online.gaming
+      name: User
+      fields:
+        - name: id
+          type: string
+        - name: fullName
+          type: string
+        - name: team
+          type: string
+        - name: email
+          type: string
+        - name: score
+          type: int
+        - name: score_time
+          type: long_timestamp-millis
+    timeAttributes:
+      # Data field to be used as an event-time.
+      # Generated watermark uses 2 sec. out-of-orderness.
+      - name: score_time
+        watermark: "`score_time` - INTERVAL '2' SECOND"
+---
+apiVersion: streaming.tanzu.vmware.com/v1alpha1
+kind: Processor
+metadata:
+  name: team-partition-processor
+spec:
+  inputs:
+    - name: data-in-stream
+  outputs:
+    - name: partitioned-by-team-stream
+---
+apiVersion: streaming.tanzu.vmware.com/v1alpha1
+kind: Stream
+metadata:
+  name: partitioned-by-team-stream
+spec:
+  name: partitioned-by-team
+  protocol: kafka
+  # Partition by Team name
+  keyExpression: "payload.team"
+  # Break into 3 partition groups
+  partitionCount: 3
+  # Note: The inbound message event-time is injected automatically by the upstream processor into the 'header.eventtime'.
+  # The downstream processor looks it up automatically, no need to define it explicitly via the Stream 'timeAttributes'.
+---
+apiVersion: streaming.tanzu.vmware.com/v1alpha1
+kind: Processor
+metadata:
+  name: team-scores-processor
+spec:
+  # Process the scores in parallel -
+  # one processor instance per partition.
+  replicas: 3 
+  inputs:
+    - name: partitioned-by-team-stream
+  outputs:
+    - name: team-scores-stream
+  attributes:
+    scw.window: 5s
+    scw.window.idle.timeout: 140s
+  template:
+    spec:
+      containers:
+        - name: scores-by-team-javascript
+          image: ghcr.io/vmware-tanzu/streaming-runtimes/team-score-js:latest
+---
+apiVersion: streaming.tanzu.vmware.com/v1alpha1
+kind: Stream
+metadata:
+  name: team-scores-stream
+spec:
+  name: team-scores
+  protocol: kafka

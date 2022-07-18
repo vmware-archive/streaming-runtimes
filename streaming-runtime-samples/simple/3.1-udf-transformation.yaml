@@ -1,0 +1,29 @@
+# The (SCW) Processor can be assigned with custom User Defined Function running in a side-card container
+# next to the processor in the same Pod.
+# Processor calls the UDF either for every received message or in the case of temporal aggregation calls
+# it once the aggregate is ready. 
+#
+# The communication between the Processor and the custom UDF is performed over gRPC using well defined 
+# Protocol Buffer contract. Because the Protocol Buffers are language-neutral, this allows implementing 
+# the UDF in any language of choice! (e.g. polyglot UDF).
+#
+#
+# Note: The inline transformations can be applied on the outbound message (e.g. the UDF response)
+# before it is sent.
+#
+# Note: SCW specific feature.
+#
+apiVersion: streaming.tanzu.vmware.com/v1alpha1
+kind: Processor
+metadata:
+  name: udf-transformation
+spec:
+  inputs:
+    - name: data-in
+  outputs:
+    - name: data-out
+  template:
+    spec:
+      containers:
+        - name: uppercase-grpc-python
+          image: ghcr.io/vmware-tanzu/streaming-runtimes/udf-uppercase-python:0.1

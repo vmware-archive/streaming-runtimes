@@ -210,18 +210,6 @@ public class ScwProcessorAdapter extends AbstractScsProcessorAdapter {
     }
 
     @Override
-    protected boolean isPartitionedInput(V1alpha1Processor processor, V1alpha1Stream inputStream,
-            V1alpha1Stream outputStream) {
-
-        if (super.isPartitionedInput(processor, inputStream, outputStream)) {
-            return true;
-        }
-
-        // if the input stream defines keys then assume that partition is expected
-        return (inputStream != null) && !CollectionUtils.isEmpty(inputStream.getSpec().getKeys());
-    }
-
-    @Override
     protected List<V1Container> doAddContainers(V1alpha1Processor processor, Map<String, String> envs)
             throws ApiException {
 

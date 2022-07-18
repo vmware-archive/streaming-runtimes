@@ -29,6 +29,7 @@ import com.tanzu.streaming.runtime.scw.processor.window.TumblingWindowService;
 import com.tanzu.streaming.runtime.scw.processor.window.state.InMemoryState;
 import com.tanzu.streaming.runtime.scw.processor.window.state.RocksDBWindowState;
 import com.tanzu.streaming.runtime.scw.processor.window.state.State;
+import com.tanzu.streaming.runtime.scw.timestamp.DefaultEventHeaderOrProcTimestampAssigner;
 import com.tanzu.streaming.runtime.scw.timestamp.JsonPathTimestampAssigner;
 import com.tanzu.streaming.runtime.scw.timestamp.MessageHeaderTimestampAssigner;
 import com.tanzu.streaming.runtime.scw.timestamp.ProcTimestampAssigner;
@@ -96,8 +97,11 @@ public class ScwProcessorApplication {
 	@Bean
 	public RecordTimestampAssigner<byte[]> timestampAssigner(AvroMessageReader avroMessageReader) {
 
-		if (this.properties.getInput().getTimestampExpression() == null ||
-				this.properties.getInput().getTimestampExpression().equalsIgnoreCase("proc")) {
+		if (this.properties.getInput().getTimestampExpression() == null) {
+			return new DefaultEventHeaderOrProcTimestampAssigner();
+		}
+
+		if (this.properties.getInput().getTimestampExpression().equalsIgnoreCase("proc")) {
 			return new ProcTimestampAssigner();
 		}
 
@@ -134,7 +138,6 @@ public class ScwProcessorApplication {
 		logger.info("Enable RocksDB Window State!");
 		return new RocksDBWindowState(this.properties.getRocksDbPath());
 	}
-
 
 	@Bean
 	@ConditionalOnProperty(value = "scw.processor.skipAggregation", havingValue = "false", matchIfMissing = true)

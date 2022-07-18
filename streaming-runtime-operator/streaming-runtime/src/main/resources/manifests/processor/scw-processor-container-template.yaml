@@ -9,6 +9,8 @@ env:
     value: "false"
   - name: SPRING_CLOUD_FUNCTION_DEFINITION
     value: "proxy"
+  - name: LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_CLOUD_STREAM_BINDER
+    value: "ERROR"
 livenessProbe:
   httpGet:
     path: /actuator/health
