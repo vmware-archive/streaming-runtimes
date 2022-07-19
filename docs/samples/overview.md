@@ -1,5 +1,5 @@
 
-Samples below demonstrate how to implement various streaming and event-driven use case scenarios wiht the help of the `Streaming Runtime`.
+Samples below demonstrate how to implement various streaming and event-driven use case scenarios with the help of the `Streaming Runtime`.
 
 The [setup instructions](./instructions.md) helps to setup the demo infrastructure (e.g. minikube) and to explore the demo results - e.g. exploring the Apache Kafka topics and/or RabbitMQ queues data.
 
