@@ -3,13 +3,13 @@
 ## Overview
 
 Kubernetes' execution environment, designed to simplify the development and the operation of streaming data processing applications.
-It enables complex data processing scenarios including Time Windowing Aggregation, streaming joins as well as user-defined functions to process the streamed data.
+It enables complex data processing scenarios including Time Windowing Aggregation, streaming joins as well as user-defined functions to process the streamed data. [Find more](https://vmware-tanzu.github.io/streaming-runtimes/install/).
 
 ![Streaming Runtime](./docs/sr-deployment-pipeline.svg)
 
 ## Try it out
 
-Follow the [Installation](https://vmware-tanzu.github.io/streaming-runtimes/install) and the [Usage](https://vmware-tanzu.github.io/streaming-runtimes/streaming-runtime-usage/) instructions.
+Follow the [Installation](https://vmware-tanzu.github.io/streaming-runtimes/install) & [Usage](https://vmware-tanzu.github.io/streaming-runtimes/streaming-runtime-usage/) instructions.
 
 ### Build & Run
 
