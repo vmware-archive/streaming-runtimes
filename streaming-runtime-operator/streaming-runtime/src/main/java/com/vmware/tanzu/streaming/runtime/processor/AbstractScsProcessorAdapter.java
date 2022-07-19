@@ -35,11 +35,8 @@ import io.kubernetes.client.openapi.apis.AppsV1Api;
 import io.kubernetes.client.openapi.apis.CoreV1Api;
 import io.kubernetes.client.openapi.models.V1Container;
 import io.kubernetes.client.openapi.models.V1ContainerBuilder;
-import io.kubernetes.client.openapi.models.V1ContainerPortBuilder;
 import io.kubernetes.client.openapi.models.V1Deployment;
 import io.kubernetes.client.openapi.models.V1DeploymentList;
-import io.kubernetes.client.openapi.models.V1EnvVar;
-import io.kubernetes.client.openapi.models.V1EnvVarBuilder;
 import io.kubernetes.client.openapi.models.V1OwnerReference;
 import io.kubernetes.client.openapi.models.V1PodSpec;
 import io.kubernetes.client.openapi.models.V1Service;
@@ -56,6 +53,8 @@ import org.springframework.util.StringUtils;
 
 public abstract class AbstractScsProcessorAdapter extends AbstractProcessAdapter {
 
+    private static final String RABBITMQ_PROTOCOL = "rabbitmq";
+    private static final String KAFKA_PROTOCOL = "kafka";
     private static final Logger LOG = LoggerFactory.getLogger(AbstractScsProcessorAdapter.class);
     public static final String TRUE = "true";
     public static final String FALSE = "false";
@@ -103,14 +102,14 @@ public abstract class AbstractScsProcessorAdapter extends AbstractProcessAdapter
             V1alpha1ClusterStreamStatusStorageAddressServer inServer = inputStream.getStatus()
                     .getStorageAddress().getServer().values().iterator().next();
 
-            useRabbitBinder = useRabbitBinder || inServer.getProtocol().equalsIgnoreCase("rabbitmq");
+            useRabbitBinder = useRabbitBinder || inServer.getProtocol().equalsIgnoreCase(RABBITMQ_PROTOCOL);
 
-            if (inServer.getProtocol().equalsIgnoreCase("kafka")) {
-                envs.put("SPRING_CLOUD_STREAM_BINDINGS_INPUT_BINDER", "kafka");
+            if (inServer.getProtocol().equalsIgnoreCase(KAFKA_PROTOCOL)) {
+                envs.put("SPRING_CLOUD_STREAM_BINDINGS_INPUT_BINDER", KAFKA_PROTOCOL);
                 envs.put("SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS", inServer.getVariables().get("brokers"));
                 envs.put("SPRING_CLOUD_STREAM_KAFKA_BINDER_ZKNODES", inServer.getVariables().get("zkNodes"));
             }
-            else if (inServer.getProtocol().equalsIgnoreCase("rabbitmq")) {
+            else if (inServer.getProtocol().equalsIgnoreCase(RABBITMQ_PROTOCOL)) {
                 envs.put("SPRING_CLOUD_STREAM_BINDINGS_INPUT_BINDER", "rabbit");
                 envs.put("SPRING_RABBITMQ_HOST", inServer.getVariables().get("host"));
                 envs.put("SPRING_RABBITMQ_PORT", inServer.getVariables().get("port"));
@@ -128,6 +127,13 @@ public abstract class AbstractScsProcessorAdapter extends AbstractProcessAdapter
             }
             // Partition Input
             if (this.isPartitionedInput(processor, inputStream, outputStream)) {
+
+//                envs.put("DEBUG", "true");
+
+                // The SPRING_CLOUD_STREAM_BINDINGS_INPUT_CONSUMER_INSTANCEINDEX is configured from the mounted
+                // /config/application.properties
+                envs.put("SPRING_CONFIG_LOCATION", "file:/config/application.properties");
+
                 envs.put("SPRING_CLOUD_STREAM_BINDINGS_INPUT_CONSUMER_PARTITIONED", "true");
                 Integer replicas = processor.getSpec().getReplicas();
                 if (replicas == null) {
@@ -142,15 +148,15 @@ public abstract class AbstractScsProcessorAdapter extends AbstractProcessAdapter
             V1alpha1ClusterStreamStatusStorageAddressServer outServer = outputStream.getStatus()
                     .getStorageAddress().getServer().values().iterator().next();
 
-            useRabbitBinder = useRabbitBinder || outServer.getProtocol().equalsIgnoreCase("rabbitmq");
+            useRabbitBinder = useRabbitBinder || outServer.getProtocol().equalsIgnoreCase(RABBITMQ_PROTOCOL);
 
-            if (outServer.getProtocol().equalsIgnoreCase("kafka")) {
-                envs.put("SPRING_CLOUD_STREAM_BINDINGS_OUTPUT_BINDER", "kafka");
-                envs.put("SPRING_CLOUD_STREAM_BINDINGS_OUTPUTLATE_BINDER", "kafka");
+            if (outServer.getProtocol().equalsIgnoreCase(KAFKA_PROTOCOL)) {
+                envs.put("SPRING_CLOUD_STREAM_BINDINGS_OUTPUT_BINDER", KAFKA_PROTOCOL);
+                envs.put("SPRING_CLOUD_STREAM_BINDINGS_OUTPUTLATE_BINDER", KAFKA_PROTOCOL);
                 envs.put("SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS", outServer.getVariables().get("brokers"));
                 envs.put("SPRING_CLOUD_STREAM_KAFKA_BINDER_ZKNODES", outServer.getVariables().get("zkNodes"));
             }
-            else if (outServer.getProtocol().equalsIgnoreCase("rabbitmq")) {
+            else if (outServer.getProtocol().equalsIgnoreCase(RABBITMQ_PROTOCOL)) {
                 envs.put("SPRING_CLOUD_STREAM_BINDINGS_OUTPUT_BINDER", "rabbit");
                 envs.put("SPRING_CLOUD_STREAM_BINDINGS_OUTPUTLATE_BINDER", "rabbit");
                 envs.put("SPRING_RABBITMQ_HOST", outServer.getVariables().get("host"));
@@ -183,9 +189,14 @@ public abstract class AbstractScsProcessorAdapter extends AbstractProcessAdapter
             if (StringUtils.hasText(partitionKeyExpression)) {
                 Integer partitionCount = outputStream.getSpec().getPartitionCount();
                 partitionCount = (partitionCount == null) ? 5 : partitionCount;
-                envs.put("SPRING_CLOUD_STREAM_KAFKA_BINDER_MINPARTITIONCOUNT", "" + (partitionCount + 1));
+
+                if (outServer.getProtocol().equalsIgnoreCase(KAFKA_PROTOCOL)) {
+                    envs.put("SPRING_CLOUD_STREAM_KAFKA_BINDER_MINPARTITIONCOUNT", "" + (partitionCount + 1));
+                    envs.put("SPRING_CLOUD_STREAM_KAFKA_BINDER_AUTOADDPARTITIONS", "true");
+                }
+
+                // envs.put("SPRING_CLOUD_STREAM_BINDINGS_OUTPUT_PRODUCER_PARTITIONED", "true");
                 envs.put("SPRING_CLOUD_STREAM_BINDINGS_OUTPUT_PRODUCER_PARTITIONCOUNT", "" + partitionCount);
-                envs.put("SPRING_CLOUD_STREAM_KAFKA_BINDER_AUTOADDPARTITIONS", "true");
                 envs.put("SPRING_CLOUD_STREAM_BINDINGS_OUTPUT_PRODUCER_PARTITIONKEYEXPRESSION", partitionKeyExpression);
             }
         }

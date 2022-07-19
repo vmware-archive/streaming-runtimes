@@ -1,0 +1,51 @@
+#
+#
+# 
+apiVersion: streaming.tanzu.vmware.com/v1alpha1
+kind: Stream
+metadata:
+  name: data-in-stream
+spec:
+  name: data-in
+  protocol: kafka
+---
+apiVersion: streaming.tanzu.vmware.com/v1alpha1
+kind: Processor
+metadata:
+  name: user-partition-processor
+spec:
+  inputs:
+    - name: data-in-stream
+  outputs:
+    - name: partitioned-by-team-stream
+---
+apiVersion: streaming.tanzu.vmware.com/v1alpha1
+kind: Stream
+metadata:
+  name: partitioned-by-team-stream
+spec:
+  name: partitioned-by-team
+  protocol: rabbitmq
+  keyExpression: "payload.team"
+  partitionCount: 3
+---
+apiVersion: streaming.tanzu.vmware.com/v1alpha1
+kind: Processor
+metadata:
+  name: user-scores-processor
+spec:
+  replicas: 3
+  inputs:
+    - name: partitioned-by-team-stream
+  outputs:
+    - name: team-scores-stream
+  attributes:
+    scw.spel.expression: '''Team:'' + #jsonPath(payload, ''$.team'') + '', Score:'' + #jsonPath(payload, ''$.score'')'
+---
+apiVersion: streaming.tanzu.vmware.com/v1alpha1
+kind: Stream
+metadata:
+  name: team-scores-stream
+spec:
+  name: team-scores
+  protocol: rabbitmq

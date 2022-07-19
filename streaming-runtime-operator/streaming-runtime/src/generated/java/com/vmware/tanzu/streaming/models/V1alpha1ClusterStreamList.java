@@ -32,7 +32,7 @@ import java.util.List;
  * ClusterStreamList is a list of ClusterStream
  */
 @ApiModel(description = "ClusterStreamList is a list of ClusterStream")
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2022-07-14T14:27:05.942Z[Etc/UTC]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2022-07-19T19:28:42.758Z[Etc/UTC]")
 public class V1alpha1ClusterStreamList implements io.kubernetes.client.common.KubernetesListObject {
   public static final String SERIALIZED_NAME_API_VERSION = "apiVersion";
   @SerializedName(SERIALIZED_NAME_API_VERSION)
