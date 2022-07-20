@@ -90,8 +90,9 @@ public abstract class AbstractScsProcessorAdapter extends AbstractProcessAdapter
         // Env variables
         Map<String, String> envs = new HashMap<>();
 
-        envs.put("MANAGEMENT_ENDPOINT_HEALTH_SHOW-DETAILS", "ALWAYS");
         envs.put("MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE", "*");
+        envs.put("MANAGEMENT_ENDPOINT_HEALTH_SHOW-DETAILS", "ALWAYS");
+        envs.put("MANAGEMENT_ENDPOINT_HEALTH_PROBES_ENABLED", "true");        
 
         V1alpha1Stream inputStream = this.getSingleOrNull(inputStreams);
         V1alpha1Stream outputStream = this.getSingleOrNull(outputStreams);

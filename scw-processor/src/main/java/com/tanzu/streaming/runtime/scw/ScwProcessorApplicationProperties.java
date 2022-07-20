@@ -243,7 +243,5 @@ public class ScwProcessorApplicationProperties {
 
     public void setRocksDbPath(String rocksDbPath) {
         this.rocksDbPath = rocksDbPath;
-    }
-
-    
+    }    
 }

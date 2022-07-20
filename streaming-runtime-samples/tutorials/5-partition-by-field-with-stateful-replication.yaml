@@ -12,7 +12,7 @@ spec:
 apiVersion: streaming.tanzu.vmware.com/v1alpha1
 kind: Processor
 metadata:
-  name: user-partition-processor
+  name: team-partition-processor
 spec:
   inputs:
     - name: data-in-stream
@@ -32,7 +32,7 @@ spec:
 apiVersion: streaming.tanzu.vmware.com/v1alpha1
 kind: Processor
 metadata:
-  name: user-scores-processor
+  name: team-scores-processor
 spec:
   replicas: 3
   inputs:

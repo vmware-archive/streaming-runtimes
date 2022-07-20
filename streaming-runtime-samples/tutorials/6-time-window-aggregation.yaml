@@ -56,7 +56,7 @@ spec:
     spec:
       containers:
         - name: scores-by-user-javascript
-          # Check the '6-user-score-aggregation-js/aggregate.js' for the aggregation implementation.
+          # The UDF implementation is in the './6-user-score-aggregation-js/aggregate.js'
           image: ghcr.io/vmware-tanzu/streaming-runtimes/user-score-js:latest
 ---
 apiVersion: streaming.tanzu.vmware.com/v1alpha1
