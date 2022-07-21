@@ -87,7 +87,7 @@ kind: Processor
 metadata:
   name: iot-monitoring-udf
 spec:
-  type: SCW
+  type: SRP
   inputs:
     - name: "error-count-stream"
   outputs:

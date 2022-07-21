@@ -1,4 +1,4 @@
-# The (SCW) Processor can be assigned with custom User Defined Function running in a side-card container
+# The (SRP) Processor can be assigned with custom User Defined Function running in a side-card container
 # next to the processor in the same Pod.
 # Processor calls the UDF either for every received message or in the case of temporal aggregation calls
 # it once the aggregate is ready. 
@@ -11,19 +11,23 @@
 # Note: The inline transformations can be applied on the outbound message (e.g. the UDF response)
 # before it is sent.
 #
-# Note: SCW specific feature.
+# Note: SRP specific feature.
 #
 apiVersion: streaming.tanzu.vmware.com/v1alpha1
 kind: Processor
 metadata:
   name: udf-transformation
 spec:
+  type: SRP
   inputs:
     - name: data-in
   outputs:
     - name: data-out
+  attributes:
+   srp.grpcPort: "50051"
   template:
     spec:
       containers:
         - name: uppercase-grpc-python
+          # Runs GRPC server on port 50051
           image: ghcr.io/vmware-tanzu/streaming-runtimes/udf-uppercase-python:0.1

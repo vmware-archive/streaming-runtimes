@@ -18,7 +18,7 @@ spec:
     - name: partitioned-by-team-stream
   attributes:
     # The header name used for partitioning must match the outbound stream's spec.keys names!!!
-    scw.output.headers: "team=payload.team"
+    srp.output.headers: "team=payload.team"
 ---
 apiVersion: streaming.tanzu.vmware.com/v1alpha1
 kind: Stream
@@ -42,4 +42,4 @@ spec:
   outputs:
     - name: team-scores
   attributes:
-    scw.spel.expression: "'Team:' + #jsonPath(payload, '$.team') + ', Score:' + #jsonPath(payload, '$.score')"
+    srp.spel.expression: "'Team:' + #jsonPath(payload, '$.team') + ', Score:' + #jsonPath(payload, '$.score')"

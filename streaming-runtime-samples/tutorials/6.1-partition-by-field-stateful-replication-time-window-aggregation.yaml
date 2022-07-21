@@ -65,8 +65,8 @@ spec:
   outputs:
     - name: team-scores-stream
   attributes:
-    scw.window: 5s
-    scw.window.idle.timeout: 140s
+    srp.window: 5s
+    srp.window.idle.timeout: 140s
   template:
     spec:
       containers:

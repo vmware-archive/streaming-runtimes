@@ -111,7 +111,7 @@ kind: Processor
 metadata:
   name: vip-act-upon
 spec:
-  type: SCW
+  type: SRP
   inputs:
     - name: "vip-action-stream"
   outputs:

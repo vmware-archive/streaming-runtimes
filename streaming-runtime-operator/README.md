@@ -75,6 +75,7 @@ The `./scripts/all.sh` combines above two steps.
 ##### Build the operator code and image
 
 ```shell
+./mvnw clean install -DskipTests
 ./mvnw clean install -Dnative -DskipTests spring-boot:build-image
 docker push ghcr.io/vmware-tanzu/streaming-runtimes/streaming-runtime:0.0.4-SNAPSHOT
 ```

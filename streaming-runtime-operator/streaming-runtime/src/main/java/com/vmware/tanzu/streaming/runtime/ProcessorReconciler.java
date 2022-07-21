@@ -56,7 +56,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ProcessorReconciler implements Reconciler {
 
-	private static final String DEFAULT_PROCESSOR_TYPE = "SCW";
+	private static final String DEFAULT_PROCESSOR_TYPE = "SRP";
 
 	private static final Logger LOG = LoggerFactory.getLogger(ProcessorReconciler.class);
 

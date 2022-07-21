@@ -4,17 +4,18 @@
 # - The output.headers expression extracts values from the inbound headers/payload and injects new 
 #   key/value headers to the outbound messages: <header-name>=<[payload.|header.]expression>
 #
-# Note: SCW specific feature.
+# Note: SRP specific feature.
 #
 apiVersion: streaming.tanzu.vmware.com/v1alpha1
 kind: Processor
 metadata:
   name: inline-transformation
 spec:
+  type: SRP
   inputs:
     - name: data-in
   outputs:
     - name: data-out
   attributes:
-    scw.output.headers: "user=payload.fullName"  
-    scw.spel.expression: '''{"'' + #jsonPath(payload, ''$.fullName'') + ''":"'' + #jsonPath(payload, ''$.email'') + ''"}'''
+    srp.output.headers: "user=payload.fullName"  
+    srp.spel.expression: '''{"'' + #jsonPath(payload, ''$.fullName'') + ''":"'' + #jsonPath(payload, ''$.email'') + ''"}'''

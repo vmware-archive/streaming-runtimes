@@ -179,7 +179,7 @@ kind: Processor
 metadata:
   name: topk-songs-udf
 spec:
-  type: SCW
+  type: SRP
   inputs:
     - name: "topk-songs-per-genre-stream"
   outputs:

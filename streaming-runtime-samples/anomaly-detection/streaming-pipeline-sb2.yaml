@@ -92,7 +92,7 @@ kind: Processor
 metadata:
   name: possible-fraud-processor
 spec:
-  type: SCW
+  type: SRP
   inputs:
     - name: "possible-fraud-stream"
   outputs:

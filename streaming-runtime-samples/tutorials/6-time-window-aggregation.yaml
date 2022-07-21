@@ -1,6 +1,6 @@
 #
-# The (SCW) processor supports Tumbling Time-Window Aggregation. 
-# The 'scw.window' attribute defines the window interval. 
+# The (SRP) processor supports Tumbling Time-Window Aggregation. 
+# The 'srp.window' attribute defines the window interval. 
 # The processor collects inbound messages into time-window groups based on the event-time computed for every message.
 # The event-time is computed from message's payload or header metadata. 
 # The inbound Stream 'spec.dataSchemaContext.timeAttributes' defines which payload field (or header attribute) 
@@ -49,9 +49,9 @@ spec:
   outputs:
     - name: user-scores-stream
   attributes:
-    scw.window: 5s # Tumbling Time Window of 5 seconds.
-    scw.window.idle.timeout: 60s # Allow partial release of idle time-windows.
-    scw.lateEventMode: SIDE_CHANNEL # Send late events a side-channel stream. By default late events are discarded.
+    srp.window: 5s # Tumbling Time Window of 5 seconds.
+    srp.window.idle.timeout: 60s # Allow partial release of idle time-windows.
+    srp.lateEventMode: SIDE_CHANNEL # Send late events a side-channel stream. By default late events are discarded.
   template:
     spec:
       containers:

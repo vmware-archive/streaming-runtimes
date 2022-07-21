@@ -24,7 +24,7 @@ spec:
   attributes:
     #  Extract the payload#fullName field value into a message header 'user=<value>'.
     #  The output header name MUST match the output's Stream keys value or the partitioning wont work!
-    scw.output.headers: "user=payload.fullName"
+    srp.output.headers: "user=payload.fullName"
 ---
 apiVersion: streaming.tanzu.vmware.com/v1alpha1
 kind: Stream
@@ -51,10 +51,10 @@ spec:
   outputs:
     - name: user-scores-stream
   attributes:
-#    scw.input.timestampExpression: "header.eventtime"
-    scw.window: 3s
-    scw.window.idle.timeout: 30s
-    scw.output.headers: "team=payload.team"    
+#    srp.input.timestampExpression: "header.eventtime"
+    srp.window: 3s
+    srp.window.idle.timeout: 30s
+    srp.output.headers: "team=payload.team"    
   template:
     spec:
       containers:
@@ -86,9 +86,9 @@ spec:
   outputs:
     - name: team-scores-stream
   attributes:
-    # scw.input.timestampExpression: "header.eventtime"
-    scw.window: 10s
-    scw.window.idle.timeout: 30s
+    # srp.input.timestampExpression: "header.eventtime"
+    srp.window: 10s
+    srp.window.idle.timeout: 30s
   template:
     spec:
       containers:

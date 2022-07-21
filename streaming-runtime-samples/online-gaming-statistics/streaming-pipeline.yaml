@@ -40,7 +40,7 @@ spec:
   attributes:
     #  Extract the payload#fullName value into an output message header 'user'.
     #  Note: header name should match the output stream's 'keys' value for the partitioning wont work!
-    scw.output.headers: 
+    srp.output.headers: 
       "user=payload.fullName"
 
 ---
@@ -69,10 +69,10 @@ spec:
   outputs:
     - name: user-scores-stream
   attributes:
-    scw.window: 2s
-    scw.window.idle.timeout: 30s
-    scw.output.headers: "team=payload.team"
-    scw.lateEventMode: "SIDE_CHANNEL"
+    srp.window: 2s
+    srp.window.idle.timeout: 30s
+    srp.output.headers: "team=payload.team"
+    srp.lateEventMode: "SIDE_CHANNEL"
   template:
     spec:
       containers:
@@ -108,9 +108,9 @@ spec:
   outputs:
     - name: team-scores-stream
   attributes:
-    scw.window: 5s
-    scw.window.idle.timeout: 140s
-    scw.lateEventMode: "SIDE_CHANNEL"
+    srp.window: 5s
+    srp.window.idle.timeout: 140s
+    srp.lateEventMode: "SIDE_CHANNEL"
   template:
     spec:
       containers:

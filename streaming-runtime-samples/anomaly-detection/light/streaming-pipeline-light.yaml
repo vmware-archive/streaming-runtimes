@@ -29,14 +29,14 @@ kind: Processor
 metadata:
   name: fraud-detector
 spec:
-  type: SCW
+  type: SRP
   inputs:
     - name: card-authorizations-stream
   outputs:
     - name: fraud-alert-stream
   attributes:
-    scw.window: 5s
-    scw.window.idle.timeout: 60s
+    srp.window: 5s
+    srp.window.idle.timeout: 60s
   template:
     spec:
       containers:

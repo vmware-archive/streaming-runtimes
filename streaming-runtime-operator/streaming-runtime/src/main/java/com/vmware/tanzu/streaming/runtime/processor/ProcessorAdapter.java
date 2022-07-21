@@ -31,7 +31,7 @@ import io.kubernetes.client.openapi.models.V1OwnerReference;
 public interface ProcessorAdapter {
 
     /**
-     * @return Processor adapter type. Currently supported types are: SCW, SCS, FSQL.
+     * @return Processor adapter type. Currently supported types are: SRP, SCS, FSQL.
      */
     String type();
 

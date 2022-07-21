@@ -15,7 +15,7 @@ metadata:
 spec:
   type: SCS
   outputs:
-    - name: "timestamps-stream"
+    - name: timestamps-stream
   template:
     spec:
       containers:
@@ -34,7 +34,7 @@ metadata:
 spec:
   type: SCS
   inputs:
-    - name: "uppercase-stream"
+    - name: timestamps-stream
   template:
     spec:
       containers:

@@ -40,7 +40,7 @@ spec:
   outputs:
     - name: team-scores-stream
   attributes:
-    scw.spel.expression: '''Team:'' + #jsonPath(payload, ''$.team'') + '', Score:'' + #jsonPath(payload, ''$.score'')'
+    srp.spel.expression: '''Team:'' + #jsonPath(payload, ''$.team'') + '', Score:'' + #jsonPath(payload, ''$.score'')'
 ---
 apiVersion: streaming.tanzu.vmware.com/v1alpha1
 kind: Stream

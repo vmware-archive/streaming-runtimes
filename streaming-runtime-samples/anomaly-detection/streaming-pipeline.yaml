@@ -79,7 +79,7 @@ kind: Processor
 metadata:
   name: fraud-alert
 spec:
-  type: SCW
+  type: SRP
   inputs:
     - name: "possible-fraud-stream"
   outputs:

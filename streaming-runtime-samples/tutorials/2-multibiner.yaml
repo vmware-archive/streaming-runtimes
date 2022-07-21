@@ -33,6 +33,7 @@ kind: Processor
 metadata:
   name: multibinder-processor
 spec:
+  type: SRP
   inputs:
     - name: data-in-stream
   outputs:
