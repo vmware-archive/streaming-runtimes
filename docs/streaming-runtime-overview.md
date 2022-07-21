@@ -41,16 +41,17 @@ and submit it to a Kubernetes cluster:
 kubectl apply -f ./<your-streaming-app>.yaml -n streaming-runtime
 ```
 
-The SR controllers will react on the submission by provisioning and configuring the specified resources.
+The SR controllers react on the submission by provisioning and configuring the specified resources.
+For example the `SRP` processor type instructs the SR to provision its built-in, general purpose, processor implementation (TODO: add link to SRP docs).
 
-This sample application acts as a bridge. It receives input messages from the Apache Kafka, `data-in` topic and re-transmits them, unchanged,  to the output RabbitMQ `data-out` exchange.
+The sample itself acts as a message bridge. It receives input messages from Apache Kafka, `data-in` topic and re-transmits them, unchanged, to the output RabbitMQ `data-out` exchange.
 
-Both the `Processor` and the `Stream` have unique `metadata.name` that can be used as a reference. 
+Both the `Processor` and the `Stream` expose unique `metadata.name`s that can be used as references. 
 For example, Processor uses the Stream names to configure its input and output destinations.
 
-Every Processor can have zero or more input and output Streams specified either via `spec.inputs`/`spec.outputs` fields or by using different conventions, for example the FSQL processor type uses in-SQL placeholders as references.
+Every Processor can have zero or more input and output Streams specified either via `spec.inputs`/`spec.outputs` fields or by using different conventions, for example the [FSQL](./architecture/processors/fsql/overview.md) processor type uses in-SQL placeholders as references.
 
-The `type: SRP` instructs the SR to use its built-in general purpose processor implementation.
+
 
 The collection of `Processors` and `Streams` come together at runtime to constitute streaming `data pipelines`:
 
@@ -68,8 +69,8 @@ Processors from all types can be combined and used interchangeably.
 Streaming Runtime Processor types:
 
 - `SRP` - Built-in, general purpose processor, capable to bridge between multiple message brokers, to compute `Tumbling Time-Window` aggregations and support for polyglot [User Defined Functions](./architecture/udf/overview.md) (UDF).
-- `SCS` - runs [Spring Cloud Stream](https://spring.io/projects/spring-cloud-stream) applications as processors in the pipeline. One can choose for the  extensive set (60+) of [pre-built streaming applications](https://dataflow.spring.io/docs/applications/pre-packaged/#stream-applications) or build a custom one. It is possible to build and deploy [polyglot applications](https://dataflow.spring.io/docs/recipes/polyglot/processor/) as long as they implement the input/output binder communication internally.
-- `FSQL` - supports streaming SQL executions, backed by Apache Flink. Allows running embedded Streaming SQL queries.
+- [SCS](./architecture/processors/scs/overview.md) - runs [Spring Cloud Stream](https://spring.io/projects/spring-cloud-stream) applications as processors in the pipeline. One can choose for the  extensive set (60+) of [pre-built streaming applications](https://dataflow.spring.io/docs/applications/pre-packaged/#stream-applications) or build a custom one. It is possible to build and deploy [polyglot applications](https://dataflow.spring.io/docs/recipes/polyglot/processor/) as long as they implement the input/output binder communication internally.
+- [FSQL](./architecture/processors/fsql/overview.md) - supports streaming SQL executions, backed by Apache Flink. Allows running embedded Streaming SQL queries.
 
 ## Next Steps
 
