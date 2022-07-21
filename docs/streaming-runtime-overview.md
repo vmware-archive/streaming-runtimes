@@ -50,6 +50,8 @@ For example, Processor uses the Stream names to configure its input and output d
 
 Every Processor can have zero or more input and output Streams specified either via `spec.inputs`/`spec.outputs` fields or by using different conventions, for example the FSQL processor type uses in-SQL placeholders as references.
 
+The `type: SRP` instructs the SR to use its built-in general purpose processor implementation.
+
 The collection of `Processors` and `Streams` come together at runtime to constitute streaming `data pipelines`:
 
 ![Streaming Runtime Arch Overview Flow](sr-deployment-pipeline.svg)
