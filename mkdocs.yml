@@ -46,8 +46,8 @@ nav:
   - Home: index.md
   - Streaming Runtime:
       - Install: install.md
-      - Usage: streaming-runtime-usage.md
-      - Architecture:
+      - Overview: streaming-runtime-overview.md
+      - Architecture: 
         - Processors:
           - Overview: architecture/processors/overview.md
           - User Defined Functions:
@@ -59,12 +59,13 @@ nav:
           - Overview: architecture/cluster-streams/overview.md
         - Streams:
           - Overview: architecture/streams/overview.md
+          - Stream Data Schema: architecture/streams/streaming-data-schema.md
         - Service Binding: architecture/service-binding/service-binding.md
-        - Stream Data Schema: architecture/streaming-data-schema.md
+      
       - Build: streaming-runtime-build.md
   - Samples:
       - Overview: samples/overview.md
-      - Instructions: samples/instructions.md
+      - How to Run: samples/instructions.md
       - Use Cases:
         - Anomaly Detection: samples/anomaly-detection/anomaly-detection.md
         - Clickstream Analysis: samples/clickstream/clickstream.md

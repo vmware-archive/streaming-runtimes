@@ -27,7 +27,7 @@ We use the [docs](./docs/) folder to generate documentation website for this pro
 You can build the documentation container image and run it with:
 
 ```bash
-make docs.build docs.serve
+mkdocs serve
 ```
 
 This will serve in `localhost:8000` the docs site.
