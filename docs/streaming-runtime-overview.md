@@ -2,9 +2,9 @@ The Streaming Runtime (SR) implements, architecturally, the streaming data proce
 
 ![Multi In/Out Processor](./sr-multi-in-out-processor.svg)
 
-The `Stream` and the `Processor` are implemented as native Kubernetes resources, using [Custom Resources](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/), Kubernetes API extensions and providing [reconciliation controllers](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/#custom-controllers) for them. [^1]
+The `Stream` and the `Processor` are implemented as native Kubernetes API extensions, by defining [Custom Resources](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/) and providing [Reconciliation Controllers](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/#custom-controllers) for them. [^1]
 
-After [installing](./install.md) the SR operator, one can apply the `kind:Stream` and `kind:Processor` resources to define a streaming application like this:
+After [installing](./install.md) the SR operator, one can use the `kind:Stream` and `kind:Processor` resources to define a new streaming application like this:
 
 ```yaml
 apiVersion: streaming.tanzu.vmware.com/v1alpha1
@@ -45,19 +45,20 @@ The SR controllers will react on the submission by provisioning and configuring 
 
 This sample application acts as a bridge. It receives input messages from the Apache Kafka, `data-in` topic and re-transmits them, unchanged,  to the output RabbitMQ `data-out` exchange.
 
-Both the `Processor` and the `Stream` have unique `metadata.name` that can be used as a reference. For example, Processor uses the Stream names to configure its input and output destinations.
+Both the `Processor` and the `Stream` have unique `metadata.name` that can be used as a reference. 
+For example, Processor uses the Stream names to configure its input and output destinations.
 
-The collection of `Processors` and `Streams` come together at runtime to constitute streaming `data pipelines`. 
-The pipelines can be linear or nonlinear, depending on the data flows between the applications.
+Every Processor can have zero or more input and output Streams specified either via `spec.inputs`/`spec.outputs` fields or by using different conventions, for example the FSQL processor type uses in-SQL placeholders as references.
 
-You can build  streaming data pipelines by chaining multiple `Streams` and `Processors`:
+The collection of `Processors` and `Streams` come together at runtime to constitute streaming `data pipelines`:
 
 ![Streaming Runtime Arch Overview Flow](sr-deployment-pipeline.svg)
+
+The pipelines can be linear or nonlinear, depending on the data flows between the applications.
 
 The `Stream` resource models the access to your messaging infrastructure (aka Apache Kafka, Apache Pulsar or RabbitMQ), along with stream metadata such as [Data Schema](./architecture/streams/streaming-data-schema.md) and data partitioning used by the controllers to configure and wire the underlining connections.
 
 The `Processor` represents an independent event-driven streaming application that can consume one or more input Streams, transform the received data and send the results downstream over one or more output Streams. 
-Every processor can have zero or more input and output Streams. The input and outputs Streams can be specified via Processor's input/output fields or different conventions, for example the FSQL processor type uses in-SQL placeholders as references.
 
 The Streaming Runtime provides a built-in, general purpose Processor of type `SRP` as well as processor types that provide integration to 3rd party streaming technologies, such as Apache Flink (type: `FSQL`) and Spring Cloud Stream/Spring Cloud Function (type: `SCS`). 
 Processors from all types can be combined and used interchangeably.
