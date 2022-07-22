@@ -6,7 +6,7 @@ The `Stream` and the `Processor` are implemented as native Kubernetes API extens
 
 After [installing](./install.md) the SR operator, one can use the `kind:Stream` and `kind:Processor` resources to define a new streaming application like this:
 
-```yaml
+```yaml title="simple-streaming-app.yaml"
 apiVersion: streaming.tanzu.vmware.com/v1alpha1
 kind: Stream
 metadata:
@@ -20,7 +20,7 @@ kind: Processor
 metadata:
   name: multibinder-processor
 spec:
-  type: SRP
+  type: SRP # use the built-in processor implementation
   inputs:
     - name: data-in-stream
   outputs:
@@ -37,21 +37,20 @@ spec:
 
 and submit it to a Kubernetes cluster:
 
-```
-kubectl apply -f ./<your-streaming-app>.yaml -n streaming-runtime
+```bash
+kubectl apply -f ./simple-streaming-app.yaml -n streaming-runtime
 ```
 
 The SR controllers react on the submission by provisioning and configuring the specified resources.
-For example the `SRP` processor type instructs the SR to provision its built-in, general purpose, processor implementation (TODO: add link to SRP docs).
+For example the `SRP` processor type instructs the SR to provision the built-in, general purpose, processor implementation (TODO: add link to SRP docs).
 
-The sample itself acts as a message bridge. It receives input messages from Apache Kafka, `data-in` topic and re-transmits them, unchanged, to the output RabbitMQ `data-out` exchange.
+!!! info ""
+    The sample app itself acts as a message bridge. It receives input messages from Apache Kafka, `data-in` topic and re-transmits them, unchanged, to the output RabbitMQ `data-out` exchange.
 
 Both the `Processor` and the `Stream` expose unique `metadata.name`s that can be used as references. 
 For example, Processor uses the Stream names to configure its input and output destinations.
 
 Every Processor can have zero or more input and output Streams specified either via `spec.inputs`/`spec.outputs` fields or by using different conventions, for example the [FSQL](./architecture/processors/fsql/overview.md) processor type uses in-SQL placeholders as references.
-
-
 
 The collection of `Processors` and `Streams` come together at runtime to constitute streaming `data pipelines`:
 
@@ -78,3 +77,4 @@ After [installing](./install.md) the streaming runtime, follow the [Samples](./s
 
 [^1]: The Streaming Runtime Operator also provides a `ClusterStreams` resource, allowing operators install dynamic Cluster Stream provisioners for developers to consume and create streams e.g. Kafka topics, or they may choose to limit creation of topics to administrators. Every `Stream` must be bound to a `ClusterStream`. 
 Is the `ClusterStream` is not defined explicitly (common for development stage), SR operator will try to auto-provision one for each Stream. 
+
