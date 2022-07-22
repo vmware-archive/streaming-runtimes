@@ -42,7 +42,6 @@ kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.3
 kubectl apply -f https://github.com/rabbitmq/messaging-topology-operator/releases/latest/download/messaging-topology-operator-with-certmanager.yaml
 ```
 
-
 ## Next Steps
 
-Follow the [Usage](streaming-runtime-usage.md) for general how-to use instructions or the [Samples](./samples/overview.md) for various executable examples.
+Follow the [Overview](streaming-runtime-overview.md) for general understanding how the Streaming Runtime works or the [Samples](./samples/overview.md) for various executable examples.

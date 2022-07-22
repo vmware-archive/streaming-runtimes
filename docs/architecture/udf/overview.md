@@ -9,8 +9,8 @@ apiVersion: streaming.tanzu.vmware.com/v1alpha1
 kind: Processor
 metadata: {}
 spec:
-  # Type of the processor. In this case functions use Time window aggregation (TWA)
-  type: TWA
+  # Type of the processor. In this case functions use Streaming Runtime Processor (SRP)
+  type: SRP
   # Name of the input stream to get data from
   inputs:
     - name: <string>

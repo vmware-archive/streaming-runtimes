@@ -41,16 +41,17 @@ and submit it to a Kubernetes cluster:
 kubectl apply -f ./simple-streaming-app.yaml -n streaming-runtime
 ```
 
-The SR controllers react on the submission by provisioning and configuring the specified resources.
-For example the `SRP` processor type instructs the SR to provision the built-in, general purpose, processor implementation (TODO: add link to SRP docs).
+On submission, the SR controllers react by provisioning and configuring the specified resources.
+For example the `SRP` processor type instructs the SR to provision the built-in, general purpose, SRP processor implementation (TODO: add link to SRP docs).
+Likewise if the [ClusterStream](./architecture/cluster-streams/overview.md) controller detects that the requested Apache Kafka and RabbitMQ clusters are not available, it might try to provision such as well.
 
 !!! info ""
     The sample app itself acts as a message bridge. It receives input messages from Apache Kafka, `data-in` topic and re-transmits them, unchanged, to the output RabbitMQ `data-out` exchange.
 
-Both the `Processor` and the `Stream` expose unique `metadata.name`s that can be used as references. 
+Both the `Processor` and the `Stream` expose unique `metadata.name` that are used as references. 
 For example, Processor uses the Stream names to configure its input and output destinations.
 
-Every Processor can have zero or more input and output Streams specified either via `spec.inputs`/`spec.outputs` fields or by using different conventions, for example the [FSQL](./architecture/processors/fsql/overview.md) processor type uses in-SQL placeholders as references.
+Every Processor can have zero or more input and output Streams specified either via `spec.inputs`/`spec.outputs` fields or by using different conventions, for example the [FSQL](./architecture/processors/fsql/overview.md) processor type uses in-SQL placeholder stream references.
 
 The collection of `Processors` and `Streams` come together at runtime to constitute streaming `data pipelines`:
 
