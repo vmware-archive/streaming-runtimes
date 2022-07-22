@@ -50,9 +50,11 @@ nav:
       - Architecture: 
         - Processors:
           - Overview: architecture/processors/overview.md
-          - User Defined Functions:
-              - Overview: architecture/processors/udf/overview.md
-              - Build your function: architecture/processors/udf/usage.md
+          - Streaming Runtime Processor (SRP): 
+            - Overview: architecture/processors/srp/overview.md
+            - User Defined Functions:
+                - Overview: architecture/processors/srp/udf/overview.md
+                - Build your function: architecture/processors/srp/udf/usage.md
           - Spring Cloud Stream: architecture/processors/scs/overview.md
           - FSQL: architecture/processors/fsql/overview.md
         - Cluster Streams:

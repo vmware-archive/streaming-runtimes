@@ -1,14 +1,13 @@
 # Processors
 
-Processors represent user code running a data transformation on a set of input Streams to a set of output Streams.
+The `Processor` represents an independent event-driven streaming application that can consume one or more input Streams, transform the received data and send the results downstream over one or more output Streams. 
 
-The Processor defines how the input(s) should be processed in order to produce results sent to the output streams. 
-Depending on the use cases and the type of the processor, multiple input and output streams are supported.
+![Multi In/Out Processor](../../sr-multi-in-out-processor.svg)
 
-![Processors](./processors-basic-diagram.png)
+The Streaming Runtime provides a built-in, general purpose Processor of type [SRP](srp/overview.md) and to additional processor types to provide integration with 3rd party streaming technologies, such as Apache Flink (type: `FSQL`) and Spring Cloud Stream/Spring Cloud Function (type: `SCS`). 
+Processors from all types can be combined and used interchangeably.
 
-The Streaming Runtime provides one built-in, general purpose processor type (SRP) as well as seamless integration 
-with some of the the best streaming platforms available. Currently integration with Apache Flink (FSQL) and Spring Cloud Stream / Spring Cloud Function (SCS) is provided.
+The Streaming Runtime allows implementing additional Processor types that can provide integration with other streaming systems such as Apache Spark, KSQL and alike.
 
 ## Processor types
 
