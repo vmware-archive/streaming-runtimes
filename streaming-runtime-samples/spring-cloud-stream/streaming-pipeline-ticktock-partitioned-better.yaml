@@ -57,8 +57,6 @@ spec:
   inputs:
     - name: "uppercase-stream"
   replicas: 3  
-  attributes:
-    partitionedInput: "true"
   template:
     spec:
       containers:

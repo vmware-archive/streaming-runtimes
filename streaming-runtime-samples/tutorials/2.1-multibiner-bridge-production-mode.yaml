@@ -1,0 +1,73 @@
+# In production environment the Streaming Runtime will not be allowed to auto-provision 
+# the messaging brokers dynamically. Instead the Administrator will provision the required
+# messaging middleware and declare ClusterStream to provide managed and controlled access to it.
+#
+# The ClusterStreams and the Streams follow the PersistentVolume model: namespaced Stream 
+# declared by a developer (ala PVC) is backed by a ClusterStream resource (ala PV) which 
+# is controlled and provisioned by the administrator.
+#
+
+#################################################
+#  ADMIN responsibility
+#################################################
+
+apiVersion: streaming.tanzu.vmware.com/v1alpha1
+kind: ClusterStream
+metadata:
+  name: kafka-cluster-stream
+spec:
+  name: data-in
+  streamModes: ["read", "write"] # Note enforced yet
+  storage:
+    server:
+      url: "kafka.default.svc.cluster.local:9092"
+      protocol: "kafka"
+    reclaimPolicy: "Retain"
+---
+apiVersion: streaming.tanzu.vmware.com/v1alpha1
+kind: ClusterStream
+metadata:
+  name: rabbitmq-cluster-stream
+spec:
+  name: data-out
+  streamModes: ["read", "write"]
+  storage:
+    server:
+      url: "rabbitmq.default.svc.cluster.local:5672"
+      protocol: "rabbitmq"
+    reclaimPolicy: "Retain"
+---
+#################################################
+#  DEVELOPER responsibility
+#################################################
+
+apiVersion: streaming.tanzu.vmware.com/v1alpha1
+kind: Stream
+metadata:
+  name: data-in-stream
+spec:
+  name: data-in
+  protocol: "kafka"
+  storage:
+    clusterStream: kafka-cluster-stream # Claims the pre-provisioned Kafka ClusterStream.
+---
+apiVersion: streaming.tanzu.vmware.com/v1alpha1
+kind: Processor
+metadata:
+  name: multibinder-processor
+spec:
+  type: SRP
+  inputs:
+    - name: data-in-stream
+  outputs:
+    - name: data-out-stream
+---
+apiVersion: streaming.tanzu.vmware.com/v1alpha1
+kind: Stream
+metadata:
+  name: data-out-stream
+spec:
+  name: data-out
+  protocol: "rabbitmq"
+  storage:
+    clusterStream: rabbitmq-cluster-stream # Claims the pre-provisioned rabbitmq ClusterStream.

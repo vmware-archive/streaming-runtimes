@@ -2,7 +2,7 @@
 
 The Streaming Runtime Operator provides `ClusterStreams` allowing operators install dynamic Cluster Stream provisioners for developers to consume and create streams e.g. Kafka topics, or they may choose to limit creation of topics to administrators.
 
-![Cluster Streams](./clusterstream-stream-relationship.png)
+![Cluster Streams](./clusterstream-stream-relationship.svg)
 
 `ClusterStreams` contains the information where the stream cluster is and its bindings.
 
