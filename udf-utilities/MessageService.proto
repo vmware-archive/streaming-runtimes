@@ -7,6 +7,10 @@ message GrpcMessage {
   map<string, string> headers = 2;
 }
 
+message GrpcPayloadCollection {
+  repeated bytes payload = 1;
+}
+ 
 service MessagingService {
   rpc biStream(stream GrpcMessage) returns (stream GrpcMessage);
 

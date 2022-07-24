@@ -1,4 +1,4 @@
-# The (SRP) Processor can be assigned with custom User Defined Function running in a side-card container
+# The (SRP) Processor can be assigned with custom User Defined Function running in a sidecar container
 # next to the processor in the same Pod.
 # Processor calls the UDF either for every received message or in the case of temporal aggregation calls
 # it once the aggregate is ready. 

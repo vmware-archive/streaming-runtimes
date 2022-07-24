@@ -9,7 +9,9 @@ It enables complex data processing scenarios including Time Windowing Aggregatio
 
 ## Try it out
 
-Follow the [Installation](https://vmware-tanzu.github.io/streaming-runtimes/install) & [Usage](https://vmware-tanzu.github.io/streaming-runtimes/streaming-runtime-usage/) instructions.
+Follow the [Installation](https://vmware-tanzu.github.io/streaming-runtimes/install) & [Overview](https://vmware-tanzu.github.io/streaming-runtimes/streaming-runtime-overview/) instructions.
+
+Explore the [architecture](https://vmware-tanzu.github.io/streaming-runtimes/architecture/processors/overview/) documentation to learn about the Streaming Runtime capabilities or jump to the [samples](https://vmware-tanzu.github.io/streaming-runtimes/samples/overview/) to start learning how to build streaming pipeline.
 
 ### Build & Run
 
@@ -20,7 +22,7 @@ Follow the [Installation](https://vmware-tanzu.github.io/streaming-runtimes/inst
 
 Visit the official site of the [Streaming Runtimes](https://vmware-tanzu.github.io/streaming-runtimes/) for documentation.
 
-### Build it locally
+### run documentation locally
 
 We use the [docs](./docs/) folder to generate documentation website for this project.
 

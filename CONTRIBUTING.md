@@ -85,7 +85,7 @@ This will serve in `localhost:8000` the docs site.
 
 ### Other Folders
 
-YOu can find samples in [./user-defined-functions](./user-defined-functions/README.md) and [./streaming-runtime-samples](./streaming-runtime-samples/README.md)
+You can find samples in [udf-samples](./streaming-runtime-samples/udf-samples/README.md) and [./streaming-runtime-samples](./streaming-runtime-samples/README.md)
 
 ## Contribution Flow
 

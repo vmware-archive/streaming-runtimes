@@ -7,7 +7,7 @@ The `Stream` and the `Processor` [^1] are implemented as native Kubernetes API e
 
 After [installing](./install.md) the SR operator, one can use the `kind:Stream` and `kind:Processor` resources to define a new streaming application like this:
 
-=== "Dev mode"
+=== "Development stage"
     For convenience during the development stage, the SR operator auto-provisions the `ClusterStreams` for all `Streams` that don't have explicitly declared them.
 
     ```yaml title="simple-streaming-app.yaml"
@@ -38,7 +38,7 @@ After [installing](./install.md) the SR operator, one can use the `kind:Stream` 
       name: data-out
       protocol: "rabbitmq"
     ```
-=== "Production mode"
+=== "Production stage"
     In production environment the Streaming Runtime will not be allowed to auto-provision ClusterStreams dynamically. 
     Instead the Administrator will provision the required messaging middleware and declare ClusterStream to provide managed and controlled access for it.
 
@@ -151,7 +151,7 @@ Processors from all types can be combined and used interchangeably.
 
 Streaming Runtime Processor types:
 
-- `SRP` - Built-in, general purpose processor, capable to bridge between multiple message brokers, to compute `Tumbling Time-Window` aggregations and support for polyglot [User Defined Functions](./architecture/udf/overview.md) (UDF).
+- [SRP](./architecture/processors/srp/overview.md) - Built-in, general purpose, processor, capable to compute `Tumbling Time-Window` aggregations and supports polyglot [User Defined Functions](./architecture/udf/overview.md) (UDF).
 - [SCS](./architecture/processors/scs/overview.md) - runs [Spring Cloud Stream](https://spring.io/projects/spring-cloud-stream) applications as processors in the pipeline. One can choose for the  extensive set (60+) of [pre-built streaming applications](https://dataflow.spring.io/docs/applications/pre-packaged/#stream-applications) or build a custom one. It is possible to build and deploy [polyglot applications](https://dataflow.spring.io/docs/recipes/polyglot/processor/) as long as they implement the input/output binder communication internally.
 - [FSQL](./architecture/processors/fsql/overview.md) - supports streaming SQL executions, backed by Apache Flink. Allows running embedded Streaming SQL queries.
 
