@@ -1,15 +1,16 @@
 
 ## Overview
 
-To fulfil its tasks, the Streaming Runtime (SR) interacts with external distributed systems such as Apache Kafka, RabbitMQ, Apache Flink and others. This implies that SR uses credentials to access those systems. 
-Furthermore the SR internally exchanges status information between the managed( ClusterStream, Stream and Processor) resources and part of this information could include sensitive attributes as well.
+To fulfil its tasks, the Streaming Runtime (SR) interacts with external distributed systems such as Apache Kafka, RabbitMQ, Apache Flink and others. 
+This implies that SR uses credentials to access those systems. 
+Furthermore the SR internally exchanges status information between the managed (`ClusterStream`, `Stream` and `Processor`) resources and part of this information could include sensitive attributes as well.
 To avoid configuring and sharing sensitive attributes in plain text the SR needs a mechanism to encapsulate and securely share such attributes amongst its managed resources. 
 
-The [Service Binding Specification for Kubernetes](https://servicebinding.io/) is designed to address this problem by providing aKubernetes-wide specification for communicating service secrets to workloads in an automated way.
+The [Service Binding Specification for Kubernetes](https://servicebinding.io/) is designed to address this problem by providing a Kubernetes-wide specification for communicating service secrets to workloads in an automated way.
 
 ![Streaming Runtime Service Binding](streaming-runtime-service-binding.png)
 
-The ClusterStream CRD offers a dedicated storage.server.binding attribute that can be used to refer to an existing Service Binding Service (e.g. secrets).
+The `ClusterStream` CRD offers a dedicated storage.server.binding attribute that can be used to refer to an existing Service Binding Service (e.g. secrets).
 
 ```yaml
 apiVersion: streaming.tanzu.vmware.com/v1alpha1
@@ -80,7 +81,7 @@ stringData:
   password: guest
 ```
 
-* Create Service Binding contracts to bind the desired services and workloads.
+* Create `Service Binding` contracts to bind the desired services and workloads.
 
 ```yaml
 apiVersion: servicebinding.io/v1beta1

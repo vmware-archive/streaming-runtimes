@@ -20,12 +20,26 @@ spec:
   storage:
     # Information about the Cluster
     server:
+      # Reference to an existing Service Binding Service (e.g. secrets).
+      binding: <string>
+      # Message Broker connection URL
       url: <string>
+      # Message Broker type
       protocol: <string>
     reclaimPolicy: <string>
 ```
 
 For a detailed description of attributes of the resource please read [cluster-stream-crd.yaml](https://github.com/vmware-tanzu/streaming-runtimes/blob/main/streaming-runtime-operator/crds/cluster-stream-crd.yaml){:target="_blank"}
+
+## Stream relation
+
+The `ClusterStreams` and the `Streams` follow the [PersistentVolume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) model: namespaced `Stream` declared by a developer (ala `PVC`) is backed by a `ClusterStream` resource (ala `PV`) which is controlled and provisioned by the administrator.
+For convenience during the development stage, the SR operator auto-provisions the `ClusterStreams` for all `Streams` that don't have explicitly declared them.
+
+## Service Binding
+
+The [Service Binding Specification](../service-binding/service-binding.md) provides a Kubernetes-wide specification for communicating service secrets to workloads in an automated way.
+The Stream `spec.binding` allow to refer existing service binding service (aka secrets).
 
 ## Key Capabilities
 

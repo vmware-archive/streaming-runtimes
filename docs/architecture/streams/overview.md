@@ -29,6 +29,9 @@ spec:
   streamMode: [ <string> ]
   # Protocol to be used for the stream e.g. kafka
   protocol: <string>
+  # (optional) Binding refers to a Secret with the same name. 
+  # The stream controller uses this binding to configure ClusterStream's auto-creation.
+  binding: <string>
   storage:
     # Name of the ClusterStream resource
     clusterStream: <string>
@@ -53,6 +56,12 @@ The data schema context comprises a `schema` of the message payload along with a
 For [SRP](../processors/srp/overview.md) and [SCS](../processors/scs/overview.md) processor types the `key` and `keyExpression` attributes are used to configure a [data partitioning](../processors/data-partitioning.md) of the streamed data.
 
 ![](../processors/data-partitioning-crd-definitions.svg)
+
+## Service Binding
+
+The [Service Binding Specification](../service-binding/service-binding.md) provides a Kubernetes-wide specification for communicating service secrets to workloads in an automated way.
+The Stream `spec.binding` allow to refer existing service binding service (aka secrets).
+
 
 ## Data Policies
 
