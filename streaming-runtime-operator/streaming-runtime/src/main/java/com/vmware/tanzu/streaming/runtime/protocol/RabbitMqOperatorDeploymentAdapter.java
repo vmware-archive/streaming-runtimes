@@ -56,9 +56,9 @@ import org.springframework.util.StreamUtils;
  * (Experimental)
  */
 @Component
-public class RabbitMqOperatorDeploymentEditor implements ProtocolDeploymentAdapter {
+public class RabbitMqOperatorDeploymentAdapter implements ProtocolDeploymentAdapter {
 
-	private static final Logger LOG = LoggerFactory.getLogger(RabbitMqOperatorDeploymentEditor.class);
+	private static final Logger LOG = LoggerFactory.getLogger(RabbitMqOperatorDeploymentAdapter.class);
 
 	private final ApiClient apiClient;
 	private final CoreV1Api coreV1Api;
@@ -73,7 +73,7 @@ public class RabbitMqOperatorDeploymentEditor implements ProtocolDeploymentAdapt
 	private static final Resource rabbitmqService = toResource(
 			"classpath:manifests/protocol/rabbitmq-op/RABBITMQ-CLUSTERSTREAM-AUTOPROVISION-TEMPLATE.yaml");
 
-	public RabbitMqOperatorDeploymentEditor(ApiClient apiClient, CoreV1Api coreV1Api) {
+	public RabbitMqOperatorDeploymentAdapter(ApiClient apiClient, CoreV1Api coreV1Api) {
 		this.apiClient = apiClient;
 		this.coreV1Api = coreV1Api;
 		this.rmqClusterOperatorApi = new DynamicKubernetesApi(
