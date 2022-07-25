@@ -10,7 +10,7 @@ The options allow specifying some configuration details, such as serialization, 
 
 Following diagram illustrates the relationships between the Data Schema Context parts:
 
-![Streaming Data Schema](stream-data-schema.svg)
+![Streaming Data Schema](./stream-data-schema-context.svg)
 
 ## Schema (Payload Data Model)
 

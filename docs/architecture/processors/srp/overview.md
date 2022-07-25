@@ -34,7 +34,11 @@ For simple workloads the SRP Processor offers lighter, configurable [tumbling ti
 A tumbling time-window assigns each message to a window of a specified time interval. Tumbling windows have a fixed size and do not overlap. 
 Find detailed description of SRP [Time-Window capabilities](./time-window-aggregation.md).
 
+![](./time-window-aggregatino-detailed-flow.svg)
+
 
 ## Streaming Data Partitioning
 
 Common [Streaming Data Partitioning Support](../data-partitioning.md) for SRP and SCS Processor types.
+
+![](../data-partitioning-sr-deployment.svg)
