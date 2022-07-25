@@ -123,7 +123,6 @@ kubectl apply -f ./simple-streaming-app.yaml -n streaming-runtime
 On submission, the SR controllers react by provisioning and configuring the specified resources.
 For example the `SRP` processor type instructs the SR to provision the built-in, general purpose, [SRP processor](./architecture/processors/srp/overview.md) implementation.
 Likewise if the messaging middleware declared in Stream's `protocol` (in this case Apache Kafka) is not available, the controller for the [ClusterStream](./architecture/cluster-streams/overview.md) that backs that Stream will detect and provision the required messaging broker.
-Likewise if the [ClusterStream](./architecture/cluster-streams/overview.md) controller detects that the requested Apache Kafka and RabbitMQ clusters are not available, it might try to provision such as well.
 
 !!! info ""
     The sample app itself acts as a message bridge. It receives input messages from Apache Kafka, `data-in` topic and re-transmits them, unchanged, to the output RabbitMQ `data-out` exchange.
