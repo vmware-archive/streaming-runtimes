@@ -121,3 +121,7 @@ spec:
  storage:
    clusterStream: "udf-output-possible-fraud-cluster-stream"
 ```
+
+!!! note "Future Work"
+    The Streaming Runtime should be able to create and manage the ServiceBinding objects internally
+
