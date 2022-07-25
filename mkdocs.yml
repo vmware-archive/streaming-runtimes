@@ -55,8 +55,10 @@ nav:
             - User Defined Functions:
                 - Overview: architecture/processors/srp/udf/overview.md
                 - Build your function: architecture/processors/srp/udf/usage.md
+            - Time-Window Aggregation: architecture/processors/srp/time-window-aggregation.md
           - Spring Cloud Stream (SCS): architecture/processors/scs/overview.md
           - Flink SQL (FSQL): architecture/processors/fsql/overview.md
+          - Data Partitioning: architecture/processors/data-partitioning.md
         - Cluster Streams:
           - Overview: architecture/cluster-streams/overview.md
         - Streams:

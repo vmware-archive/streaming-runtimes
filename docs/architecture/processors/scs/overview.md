@@ -33,3 +33,4 @@ spec:
 ## Examples
 
 - [Spring Cloud Stream pipeline](../../../samples/spring-cloud-stream/tick-tock.md) (SCS) - show how to build streaming pipelines using Spring Cloud Stream application as processors.
+- [streaming-pipeline-ticktock-partitioned-better.yaml](https://github.com/vmware-tanzu/streaming-runtimes/blob/main/streaming-runtime-samples/spring-cloud-stream/streaming-pipeline-ticktock-partitioned-better.yaml) example shows how to data-partition the TickTock application leveraging the SCS [Data-Partitioning](../data-partitioning.md) capabilities.

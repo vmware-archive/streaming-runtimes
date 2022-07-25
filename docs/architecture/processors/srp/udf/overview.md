@@ -36,14 +36,6 @@ spec:
               value: <any>
 ```
 
-## UDF Types
-
-Two types of UDF functions are supported: `Mapping UDF` and `Aggregation UDF`
-![mapping-udf-flow](./udf-types.svg)
-
-- `Mapping UDF` - The SRP forwards the inbound messages, element-wise over the `MessagingService`, to the UDF function. The function computes a result and returns it to the SRP, that sends downstream. Every inbound message produces a single outbound result. 
-- `Aggregation UDF` - When the `Time-Window` aggregation is enabled and a window is complete, then the SRP Processor forwards the window content (e.g. collection of messages) to the UDF function. Later processes the collection to compute one or more aggregation results that via the SRP are sent downstream.
-
 ## UDF Contract
 
 The contract of the function specifies a `GrpcMessage` schema to model the messages exchanged between the multibinder and the function and the `MessagingService` rpc service to interact with the UDF. 
@@ -74,20 +66,38 @@ The [MessageService.proto](https://github.com/vmware-tanzu/streaming-runtimes/bl
 
 The SRP Processor forwards the incoming messages over the `MessagingService` to the pre-configured UDF function.
 The function response in turn is sent to the SRP's output stream.
-If the `Time Windowing Aggregation` is enabled, the SRP will collect all messages part of the window and pass them at once to the function to compute aggregated state.
 
-## Mapping UDF
+## UDF Types
+
+Two types of UDF functions are supported: `Mapping UDF` and `Aggregation UDF`
+![mapping-udf-flow](./udf-types.svg)
+
+- [Mapping UDF](#mapping-udf) - The SRP forwards the inbound messages, element-wise over the `MessagingService`, to the UDF function. The function computes a result, returns it to the SRP, that in turn sends it downstream. Every inbound message produces a single outbound result!
+- [Aggregation UDF](#aggregation-udf) - When the `Time-Window` aggregation is enabled and a window is ready for release, the SRP processor forwards the window content (e.g. collection of messages) to the UDF function. Later processes the collection,  computes one or more aggregation results that are returned to the SRP and sent downstream.
+
+### Mapping UDF
 
 The Mapping UDF function runs a gRPC server with the `MessagingService` implementation. 
 
-The SRP processor converts every inbound SR message into a `GrpcMessage` message and invokes the `requestReply` method of the `MessagingService` implemented by the UDF function. UDF's `requestReply` implementation, handles the invocation, computes a result and returns it back as `GrpcMessage` format as well.
-The SRP processor converts the received GrpcMessage results into SR message format and sends it downstream over the outbound Streams.
+As shown in the following diagram, the SRP processor converts every inbound SR message into a `GrpcMessage` and invokes the `requestReply` method on the `MessagingService`. 
+
+![mapping udf message flow diagram](./mapping-udf-message-flow.svg)
+
+The UDF `MessagingService#requestReply` implementation, handles the invocation, computes a result and returns it back as `GrpcMessage`.
+The SRP processor converts the `GrpcMessage` result into internal SR Message and sends it downstream over the outbound Streams.
+
+The [3.1-polyglot-udf-transformation.yaml](https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-samples/tutorials/3.1-polyglot-udf-transformation.yaml) example, uses a simple Python mapping UDF to convert the payload to upper case.
+Following diagram visualizes how this `polyglot-udf-transformation.yaml` example is deployed by the Streaming Runtime into a running data pipeline:
 
 ![mapping udf details](./mapping-udf-detail-flow.svg)
 
 Processor's `spec.templates.spec.containers` properties are used to register the UDF's image with the SRP processor to use it.
 
-Implementing Mapping UDFs is straightforward. Just implement the `MessageService`#`requestReply` method:
+!!! note "Sidecar"
+    The Streaming RUntime collocates the UDF container along with the SPR processor container in the same Pod. 
+    This simplifies the (gRPC) communication between both containers as they use the 'localhost' network.
+
+Here a few snippets how to implement Mapping UDFs in different languages:
 
 - Java:
 ```java
@@ -95,6 +105,8 @@ public Function<String, String> uppercase() {
     return v -> v.toUpperCase();
 }
 ```
+You can find complete source code [udf-uppercase-java](https://github.com/vmware-tanzu/streaming-runtimes/tree/main/streaming-runtime-samples/udf-samples/udf-uppercase-java).
+If you are building your `Function` in Java you can find more information about the Spring Cloud Function gRPC support [here](https://github.com/spring-cloud/spring-cloud-function/blob/v3.2.1/spring-cloud-function-adapters/spring-cloud-function-grpc/README.md).
 
 - Python:
 ```python
@@ -103,6 +115,7 @@ def requestReply(self, request, context):
     return MessageService_pb2.GrpcMessage(
         payload=str.encode(request.payload.decode().upper()), headers=request.headers)
 ```
+You can find complete source code [udf-uppercase-python](https://github.com/vmware-tanzu/streaming-runtimes/tree/main/streaming-runtime-samples/udf-samples/udf-uppercase-python)
 
 - GoLang:
 ```go
@@ -112,15 +125,31 @@ func (s *server) RequestReply(ctx context.Context, in *pb.GrpcMessage) (*pb.Grpc
     return &pb.GrpcMessage{Payload: []byte(upperCasePayload)}, nil
 }
 ```
+You can find complete source code [udf-uppercase-go](https://github.com/vmware-tanzu/streaming-runtimes/tree/main/streaming-runtime-samples/udf-samples/udf-uppercase-go)
 
-Notes: If you are building your `Function` in Java you can find more information about the Spring Cloud Function gRPC support [here](https://github.com/spring-cloud/spring-cloud-function/blob/v3.2.1/spring-cloud-function-adapters/spring-cloud-function-grpc/README.md).
 
-## Aggregation UDF
+### Aggregation UDF
 
-If the time-window aggregation is enabled, when a window is ready to be released, the SRP converts all messages in the window into a single GrpcMessage sent to the UDF. 
-For this, the payloads (of type byte array) of all messages in the window are serialised into a single byte array payload used in the GrpcMessage. 
-Conversely, the UDF aggregation function then needs to deserialize the GrpcMessage’s payload back into a collection of payloads that represents the original time-window payloads.
-Next the UDF implementation processes the collection (e.g. aggregation) of payloads and computes one or more responses. Then it serialises all computed responses (each of type byte array) into a single byte array used as payload for the returned GrpcMessage.
-On receiving the GrpcMessage response the SRP processor deserialized the GrpcMessage payload into a collection of payloads representing the individual results. For each individual payload a new SR message is constructed and sent downstream. 
+When the `time-window` aggregation is used the `SRP` processor forwards to the UDF not just a single message but the collection of all messages members of a time-window aggregation. Reversely the UDF may return not just a single result but a collection of results that are treated as separate downstream messages.
 
-The GrpcPayloadCollection message format is used to ensure interoperability of serialisation and deserialization of the payloads. 
+The `MessagingService`, used by the `Mapping UDFs`, expects a single `GrpcMessage` as input and single `GrpcMessage` as an output. So if we are to reuse the same gRPC service for `Aggregation UDFs` we need a workaround to allow serializing and deserializing collection of `SR Messages` to and from single `GrpcMessage`. Furthermore we need to do it in interoperable (e.g. language neutral) fashion.  
+
+The `GrpcPayloadCollection` message format is used to ensure interoperability of serialization and deserialization of the payloads for the messages exchanged between the SR Processor and the Aggregation UDF. 
+Following diagram illustrates the message flow:
+
+![aggregation-udf-grpc](./aggregation-udf-grpc-flow2.svg)
+
+The `SR Message` collections (aka time-window) is converted into a single `GrpcMessage`. 
+The headers of the first SR Message in the window is used as headers for the GrpcMessage, including a hardcoded `contentType` header of type `multipart/<inner-message-content-type>`. All SR Message payloads in the window are serialized, with the GrpcPayloadCollection help, into a single byte array used as GrpcMessage payload.
+
+The `Aggregation UDF` is required to deserialize the GrpcMessage payload back into a collection of the original payloads, then apply the aggregation transformation and serialize the collection or results into a single byte array passed as payload in the return GrpcMessage.
+
+Finally the SRP Processor turns the returned GrpcMessage into collection of SR Messages and sends them down streams, one by one.
+
+The [udf-utilities](https://github.com/vmware-tanzu/streaming-runtimes/tree/main/udf-utilities) offers some helpers library that help to hide the gRPC and SerDeser boilerplate code.
+
+!!! Note
+    The `GrpcPayloadCollection` serialization/deserialization approach is a hackish workaround to reuse the existing `MessagingService` applicable for non-aggregated messages exchange. 
+    A proper, cleaner approach would be to implement a dedicated `AggregatedMessagingService` that takes a collection of `GrpcMessage` messages as input and output.
+
+Check the [Time-Window Aggregation](../time-window-aggregation.md) to see how Aggregation UDFs are being used to compute group-by-key results.
