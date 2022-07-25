@@ -37,9 +37,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 @Component
-public class RabbitMqDeploymentEditor implements ProtocolDeploymentEditor {
+public class RabbitMqDeploymentAdapter implements ProtocolDeploymentAdapter {
 
-	private static final Logger LOG = LoggerFactory.getLogger(RabbitMqDeploymentEditor.class);
+	private static final Logger LOG = LoggerFactory.getLogger(RabbitMqDeploymentAdapter.class);
 
 	private final CoreV1Api coreV1Api;
 	private final AppsV1Api appsV1Api;
@@ -50,7 +50,7 @@ public class RabbitMqDeploymentEditor implements ProtocolDeploymentEditor {
 	private static final Resource rabbitmqDeployment = toResource(
 			"classpath:manifests/protocol/rabbitmq/rabbitmq-deployment.yaml");
 
-	public RabbitMqDeploymentEditor(CoreV1Api coreV1Api, AppsV1Api appsV1Api, ObjectMapper yamlMapper) {
+	public RabbitMqDeploymentAdapter(CoreV1Api coreV1Api, AppsV1Api appsV1Api, ObjectMapper yamlMapper) {
 		this.coreV1Api = coreV1Api;
 		this.appsV1Api = appsV1Api;
 		this.yamlMapper = yamlMapper;

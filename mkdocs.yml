@@ -64,9 +64,9 @@ nav:
         - Streams:
           - Overview: architecture/streams/overview.md
           - Stream Data Schema: architecture/streams/streaming-data-schema.md
-        - Service Binding: architecture/service-binding/service-binding.md
-      
+        - Service Binding: architecture/service-binding/service-binding.md      
       - Build: streaming-runtime-build.md
+      - Technical Stack: sr-technical-stack.md
   - Samples:
       - Overview: samples/overview.md
       - How to Run: samples/instructions.md

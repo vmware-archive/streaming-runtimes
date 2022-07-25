@@ -19,7 +19,7 @@ import com.vmware.tanzu.streaming.models.V1alpha1ClusterStream;
 import io.kubernetes.client.openapi.ApiException;
 import io.kubernetes.client.openapi.models.V1OwnerReference;
 
-public interface ProtocolDeploymentEditor {
+public interface ProtocolDeploymentAdapter {
 
 	/**
 	 * @return Identifier of the binder protocol supported by this deployment editor.

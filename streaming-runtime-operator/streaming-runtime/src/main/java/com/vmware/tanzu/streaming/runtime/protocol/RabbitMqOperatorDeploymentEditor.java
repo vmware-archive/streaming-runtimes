@@ -56,7 +56,7 @@ import org.springframework.util.StreamUtils;
  * (Experimental)
  */
 @Component
-public class RabbitMqOperatorDeploymentEditor implements ProtocolDeploymentEditor {
+public class RabbitMqOperatorDeploymentEditor implements ProtocolDeploymentAdapter {
 
 	private static final Logger LOG = LoggerFactory.getLogger(RabbitMqOperatorDeploymentEditor.class);
 

@@ -29,7 +29,7 @@ import com.vmware.tanzu.streaming.apis.StreamingTanzuVmwareComV1alpha1Api;
 import com.vmware.tanzu.streaming.models.V1alpha1ClusterStream;
 import com.vmware.tanzu.streaming.models.V1alpha1ClusterStreamSpecStorageServer;
 import com.vmware.tanzu.streaming.runtime.config.ClusterStreamConfiguration;
-import com.vmware.tanzu.streaming.runtime.protocol.ProtocolDeploymentEditor;
+import com.vmware.tanzu.streaming.runtime.protocol.ProtocolDeploymentAdapter;
 import io.kubernetes.client.custom.V1Patch;
 import io.kubernetes.client.extended.controller.reconciler.Reconciler;
 import io.kubernetes.client.extended.controller.reconciler.Request;
@@ -54,18 +54,18 @@ public class ClusterStreamReconciler implements Reconciler {
 	private static final boolean REQUEUE = true;
 
 	private final Lister<V1alpha1ClusterStream> clusterStreamLister;
-	private final Map<String, ProtocolDeploymentEditor> protocolDeploymentEditors;
+	private final Map<String, ProtocolDeploymentAdapter> protocolDeploymentEditors;
 	private final EventRecorder eventRecorder;
 	private final StreamingTanzuVmwareComV1alpha1Api api;
 
 	public ClusterStreamReconciler(SharedIndexInformer<V1alpha1ClusterStream> clusterStreamInformer,
-			ProtocolDeploymentEditor[] protocolDeploymentEditors, StreamingTanzuVmwareComV1alpha1Api api,
+			ProtocolDeploymentAdapter[] protocolDeploymentEditors, StreamingTanzuVmwareComV1alpha1Api api,
 			EventRecorder eventRecorder) {
 
 		this.api = api;
 		this.clusterStreamLister = new Lister<>(clusterStreamInformer.getIndexer());
 		this.protocolDeploymentEditors = Stream.of(protocolDeploymentEditors)
-				.collect(Collectors.toMap(ProtocolDeploymentEditor::getProtocolDeploymentEditorName,
+				.collect(Collectors.toMap(ProtocolDeploymentAdapter::getProtocolDeploymentEditorName,
 						Function.identity()));
 		this.eventRecorder = eventRecorder;
 	}
@@ -97,7 +97,7 @@ public class ClusterStreamReconciler implements Reconciler {
 
 				String protocolAdapterName = this.getProtocolAdapterName(clusterStream.getSpec().getStorage()
 						.getAttributes(), server.getProtocol());
-				ProtocolDeploymentEditor protocolDeploymentEditor = this.protocolDeploymentEditors
+				ProtocolDeploymentAdapter protocolDeploymentEditor = this.protocolDeploymentEditors
 						.get(protocolAdapterName);
 				protocolDeploymentEditor.createIfNotFound(ownerReference, namespace, clusterStream);
 				protocolDeploymentEditor.postCreateConfiguration(ownerReference, namespace, clusterStream);
@@ -108,7 +108,7 @@ public class ClusterStreamReconciler implements Reconciler {
 
 			V1alpha1ClusterStreamSpecStorageServer server = clusterStream.getSpec().getStorage().getServer();
 
-			ProtocolDeploymentEditor protocolAdapter = this.protocolDeploymentEditors.get(
+			ProtocolDeploymentAdapter protocolAdapter = this.protocolDeploymentEditors.get(
 					getProtocolAdapterName(clusterStream.getSpec().getStorage()
 							.getAttributes(), server.getProtocol()));
 

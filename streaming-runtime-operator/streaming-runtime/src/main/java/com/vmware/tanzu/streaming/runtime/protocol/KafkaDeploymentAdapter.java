@@ -37,9 +37,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 @Component
-public class KafkaDeploymentEditor implements ProtocolDeploymentEditor {
+public class KafkaDeploymentAdapter implements ProtocolDeploymentAdapter {
 
-	private static final Logger LOG = LoggerFactory.getLogger(KafkaDeploymentEditor.class);
+	private static final Logger LOG = LoggerFactory.getLogger(KafkaDeploymentAdapter.class);
 
 	private final CoreV1Api coreV1Api;
 	private final AppsV1Api appsV1Api;
@@ -60,7 +60,7 @@ public class KafkaDeploymentEditor implements ProtocolDeploymentEditor {
 	private static final Resource kafkaUiDeployment = toResource(
 			"classpath:manifests/protocol/kafka/kafka-kowl-ui-deployment.yaml");
 
-	public KafkaDeploymentEditor(CoreV1Api coreV1Api, AppsV1Api appsV1Api, ObjectMapper yamlMapper) {
+	public KafkaDeploymentAdapter(CoreV1Api coreV1Api, AppsV1Api appsV1Api, ObjectMapper yamlMapper) {
 		this.coreV1Api = coreV1Api;
 		this.appsV1Api = appsV1Api;
 		this.yamlMapper = yamlMapper;
