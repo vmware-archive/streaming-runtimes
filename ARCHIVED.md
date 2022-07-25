@@ -4,7 +4,7 @@ VMware is pausing efforts to continue the development of the Streaming Runtime O
 
 ## Where do we stop?
 
-With the current implementation of the Streaming Runtime project, you can build a simple streaming pipeline using the `Processor` and `Stream` resources provided by the operator. Learn more about what you do with them in the [Usage](https://vmware-tanzu.github.io/streaming-runtimes/streaming-runtime-usage/) section.
+With the current implementation of the Streaming Runtime project, you can build a simple streaming pipeline using the `Processor` and `Stream` resources provided by the operator. Learn more about what you do with them in the [Usage](https://vmware-tanzu.github.io/streaming-runtimes/streaming-runtime-overview/) section.
 
 ## How to reach the team
 
