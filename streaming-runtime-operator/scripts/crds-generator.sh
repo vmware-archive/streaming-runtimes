@@ -47,9 +47,9 @@ done
 set -e
 
 # create a KinD cluster on the host
-#kind create cluster
+kind create cluster --name crd-gen
 # We need to ensure the kubernetes cluster is 1.19 in order to generate API classes see https://github.com/kubernetes-client/java/issues/1710
-kind create cluster --name crd-gen --image kindest/node:v1.19.11@sha256:cbecc517bfad65e368cd7975d1e8a4f558d91160c051d0b1d10ff81488f5fb06
+#kind create cluster --name crd-gen --image kindest/node:v1.19.11@sha256:cbecc517bfad65e368cd7975d1e8a4f558d91160c051d0b1d10ff81488f5fb06
 kubectl config use-context kind-crd-gen
 
 # install CRDs to the KinD cluster and dump the swagger spec
