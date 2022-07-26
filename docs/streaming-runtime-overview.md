@@ -3,7 +3,7 @@ The connection between two or more `Processors` is called [Stream](./architectur
 
 ![Multi In/Out Processor](./sr-multi-in-out-processor.svg)
 
-The `Stream` and the `Processor` [^1] are implemented as native Kubernetes API extensions, by defining [Custom Resources](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/) and providing [Reconciliation Controllers](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/#custom-controllers) for them. 
+The `Stream` and the `Processor` [^1] are implemented as native Kubernetes API extensions, by defining [Custom Resources](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/) and providing [Reconciliation Controllers](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/#custom-controllers) for them. The [SR technical stack](./sr-technical-stack.md#implementation-stack) offers implementation details.
 
 After [installing](./install.md) the SR operator, one can use the `kind:Stream` and `kind:Processor` resources to define a new streaming application like this:
 

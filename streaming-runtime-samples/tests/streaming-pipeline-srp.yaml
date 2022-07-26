@@ -47,7 +47,7 @@ spec:
     # Setting the srp.window activates the Tumbling Time-Window Aggregation! Not setting it disables the aggregation.
     # srp.window: 3s
 
-    # Only used if the srp.window is set (e.g. only if TWA is enabled)
+    # Only used if the srp.window is set (e.g. only if time-window aggregation is enabled)
     # srp.window.idle.timeout: 30s
     
     #   Generate output headers using other header values (header.<other header name>)

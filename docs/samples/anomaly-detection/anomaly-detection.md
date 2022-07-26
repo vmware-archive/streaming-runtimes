@@ -202,7 +202,7 @@ kind: Processor
 metadata:
   name: fraud-alert
 spec:
-  type: TWA
+  type: SRP
   inputs:
     - name: "possible-fraud-stream"
   outputs:
