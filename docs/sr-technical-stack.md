@@ -18,7 +18,7 @@ Currently the Streaming Runtime offers a [FSQL](./architecture/processors/fsql/o
 
 The Streaming Runtime implementation stack looks like this:
 
-![](./assets/images/sr-tech-stack5.svg)
+![](./assets/images/sr-tech-stack6.svg)
 
 
 TODO: Provide [CRC documentation](http://agilemodeling.com/artifacts/crcModel.htm) for the implementation stack.
