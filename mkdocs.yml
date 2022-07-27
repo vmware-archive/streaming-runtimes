@@ -9,7 +9,8 @@ theme:
     - navigation.tabs.sticky    
     - navigation.tracking
     - navigation.sections    
-    - navigation.expand    
+    - navigation.expand
+    - navigation.top
   logo: assets/icon-tanzu2.svg
   favicon: assets/icon-tanzu2.svg
   palette:
@@ -61,8 +62,8 @@ nav:
           - Overview: architecture/processors/overview.md
           - SRP Processor: 
             - Overview: architecture/processors/srp/overview.md
-            - User Defined Functions: architecture/processors/srp/udf-overview.md
             - Time-Window Aggregation: architecture/processors/srp/time-window-aggregation.md
+            - User Defined Functions: architecture/processors/srp/udf-overview.md
             - Build UDF: architecture/processors/srp/udf-build.md
           - SCS Processor: architecture/processors/scs/overview.md
           - FSQL Processor: architecture/processors/fsql/overview.md        
