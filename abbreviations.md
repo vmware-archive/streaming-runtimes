@@ -8,5 +8,6 @@
 *[ETL]: Extract Transform Load
 *[ELT]: Extract Load Transform 
 *[UDF]: User Defined Function
+*[UDFs]: User Defined Functions
 *[SCF]: Spring Cloud Function
 *[SQL]: Structured Query Language

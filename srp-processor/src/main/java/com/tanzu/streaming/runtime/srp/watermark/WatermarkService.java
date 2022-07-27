@@ -102,12 +102,13 @@ public class WatermarkService {
 
         Long watermarkMs = null;
         if (!message.getHeaders().containsKey(WATERMARK_HEADER)) {
+            // Source/Edge
             watermarkUpdateStatus = this.updateWatermarks(partition, messageTimestamp,
                     ts -> ts.toMillis() - this.getMaxOutOfOrderness().toMillis() - 1);
         }
         else {
-            // Treat it as a Operator/Processor (e.g. as processor in the middle of the pipeline)
-            // Get the watermark from the input message header
+            // Operator/Processor in the middle of the pipeline.
+            // Get the watermark from the inbound message header.
             watermarkMs = message.getHeaders().get(WATERMARK_HEADER, Long.class);
             watermarkUpdateStatus = this.updateWatermarks(partition, Duration.ofMillis(watermarkMs),
                     ts -> ts.toMillis());
