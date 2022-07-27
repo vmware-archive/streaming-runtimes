@@ -1,3 +1,6 @@
-## Check the clickstream use case: 
- - [clickstream](https://github.com/vmware-tanzu/streaming-runtimes/tree/main/streaming-runtime-samples/clickstream)
- - https://vmware-tanzu.github.io/streaming-runtimes/samples/clickstream/clickstream/
+## Check few FSQL processor applicaitons
+ 
+ - [Anomaly Detection](https://vmware-tanzu.github.io/streaming-runtimes/samples/anomaly-detection/anomaly-detection/) (FSQL, SRP)- detect, in real time, suspicious credit card transactions, and extract them for further processing.
+- [Clickstream Analysis](https://vmware-tanzu.github.io/streaming-runtimes/samples/clickstream/clickstream/) (FSQL, SRP) -   for an input clickstream stream, we want to know who are the high status customers, currently using the website so that we can engage with them or to find how much they buy or how long they stay on the site that day.
+- [IoT Monitoring analysis](https://vmware-tanzu.github.io/streaming-runtimes/samples/iot-monitoring/iot-monitoring/) (FSQL, SRP) - real-time analysis of IoT monitoring log.
+- [Streaming Music Service](https://vmware-tanzu.github.io/streaming-runtimes/samples/top-k-songs/top-k-songs/) (FSQL, SRP) - music ranking application that continuously computes the latest Top-K music charts based on song play events collected in real-time.
