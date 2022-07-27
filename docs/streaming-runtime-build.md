@@ -31,5 +31,5 @@ docker push ghcr.io/vmware-tanzu/streaming-runtimes/streaming-runtime:0.0.4-SNAP
 
 ## User Defined Functions
 
-Follow the [User Defined Function](./architecture/udf/overview.md) documentation to learn how to implement and build UDFs, and how to use them from within a Processor resource.
+Follow the [User Defined Function](./architecture/processors/srp/udf-overview.md) documentation to learn how to implement and build UDFs, and how to use them from within a Processor resource.
 

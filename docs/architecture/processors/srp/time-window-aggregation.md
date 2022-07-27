@@ -9,7 +9,7 @@ A tumbling time-window assigns each message to a window of a specified time inte
 
 This feature is useful for workloads where you need to calculate aggregates continuously. For example, for a retailer streaming order information from different remote stores, it can generate near real-time sales statistics for downstream processing. 
 
-The SRP Processor’s time-window aggregates functionality is commonly used in combination with [Aggregate UDFs](./udf/overview.md#aggregation-udf) that operate on the aggregated window data. 
+The SRP Processor’s time-window aggregates functionality is commonly used in combination with [Aggregate UDFs](./udf-overview.md#aggregation-udf) that operate on the aggregated window data. 
 When enabled the tumbling window functionality groups the inbound messages in windowed aggregates and sends later to the configured, Aggregation UDF. The UDF function returns a value or multiple values that are sent downstream for further processing.
 
 To enable the tumbling window, you need to set the `window duration` with the SRP Processor `srp.window attribute`. This instructs the processor to collect the inbound messages into time-window groups based on a `event-time` computed for every message. The inbound Stream’s `spec.timeAttributes` defines how the message event-time is computed and via the watermark expression, how to generate the input watermarks.

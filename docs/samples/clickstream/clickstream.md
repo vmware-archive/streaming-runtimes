@@ -52,7 +52,7 @@ Processor uses streaming SQL to continuously analyze the input streams and produ
 
 Computed VIP Actions are contentiously written the the output `vip-action-stream`.
 
-The second, `vip-act-upon`, Processor consumes the VIP-Actions events and allows us to implement a domain specific, [User Defined Function](../../architecture/udf/architecture.md) that act and apply some business logic upon the VIP events. 
+The second, `vip-act-upon`, Processor consumes the VIP-Actions events and allows us to implement a domain specific, [User Defined Function](../../architecture/processors/srp/udf-overview.md) that act and apply some business logic upon the VIP events. 
 The UDF can be written in language of our choice!
 
 Following diagram visualizes the [streaming-pipeline.yaml](https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-samples/clickstream/streaming-pipeline.yaml), implementing the clickstream application with the help of `Stream` and `Processor` resources:

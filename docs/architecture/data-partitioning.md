@@ -1,8 +1,8 @@
 # Data Partitioning
 
 !!! info
-    Applicable for the [SRP](./srp/overview.md) and [SCS](./scs/overview.md) processor types. 
-    The [FSQL](./fsql/overview.md) processors use the Apache Flink built-in data partitioning capabilities.
+    Applicable for the [SRP](./processors/srp/overview.md) and [SCS](./processors/scs/overview.md) processor types. 
+    The [FSQL](./processors/fsql/overview.md) processors use the Apache Flink built-in data partitioning capabilities.
 
 Partitioning is an essential concept in stateful data processing. 
 It permits consistent data scaling by ensuring that all related data is processed together. Logically it implements the `group by key` processing. 
@@ -29,7 +29,7 @@ The downstream (user-score-processor) consumes the partitioned input and because
 
 ![](./data-partitioning-sr-deployment.svg)
 
-Learn how to build [partitioned time-window aggregations](./srp/time-window-aggregation.md#partitioned-time-window-aggregation) with the SRP processor.
+Learn how to build [partitioned time-window aggregations](./processors/srp/time-window-aggregation.md#partitioned-time-window-aggregation) with the SRP processor.
 
 Also visit the following example to learn how to define and configure partitioned streaming pipelines:
 

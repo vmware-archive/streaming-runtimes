@@ -3,7 +3,7 @@
 
 For applications which rely on time-ordered delivery of events for a single key, but which do not perform any cross-key operations like joins or repartitioning. 
 These applications include windowing in some cases but not others. 
-Typically, streaming-lite applications run as pipelined workloads in an existing scheduler framework such as TAS or Kubernetes. 
+Typically, streaming-lite applications run as pipelined workloads in an existing scheduler framework such as Kubernetes. 
 Examples include ETL applications and time-series analysis.
 
 The Streaming Runtime [SRP](./architecture/processors/srp/overview.md) and [SCS](./architecture/processors/scs/overview.md) processor types are provided to support the Streaming Light use case. The built-in, general purpose SRP processor is capable of data partitioning, scaling, time-window aggregation and polyglot UDF functions. The SCS processor provide drop-in support for the large Spring Cloud Stream / Spring Cloud Function ecosystems.

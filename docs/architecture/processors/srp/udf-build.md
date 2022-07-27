@@ -46,6 +46,5 @@ For example:
 
 Note that the `my-python-udf-container` (lines `13`-`14`) uses the `udf-uppercase-python:0.1` image.
 
-When deployed by the streaming runtime this processor would look like this:
 
-![Python UDF Flow](./streaming-runtime-python-udf-pipeline.jpg)
+TODO: Add Aggregate UDF implementation instructions.

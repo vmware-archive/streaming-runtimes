@@ -1,6 +1,6 @@
 # Streaming Runtime Processor (SRP)
 
-The SRP processor is built-in the Streaming Runtime, provide common capabilities such as message brokerage, [inline streaming transformations](#inline-transformations), [polyglot user-defined functions](./udf/overview.md), simple [tumbling time-window aggregation](./time-window-aggregation.md) and [data-partitioning capabilities](../data-partitioning.md) to name a few.
+The SRP processor is built-in the Streaming Runtime, provide common capabilities such as message brokerage, [inline streaming transformations](#inline-transformations), [polyglot user-defined functions](./udf-overview.md), simple [tumbling time-window aggregation](./time-window-aggregation.md) and [data-partitioning capabilities](../../data-partitioning.md) to name a few.
 
 ## Message Transformation Options
 
@@ -22,11 +22,11 @@ The `srp.output.headers` attribute allows enriching the outbound message headers
 
 #### User Defined Functions (Polyglot)
 
-Polyglot [User Defined Function (UDF)](./udf/overview.md). The Streaming Runtime allows implementing the message transformation logic in the language of your choice, packaged in a standalone image container and deployed as a sidecard in the same Pod along with the SRP Processor.
+Polyglot [User Defined Function (UDF)](./udf-overview.md). The Streaming Runtime allows implementing the message transformation logic in the language of your choice, packaged in a standalone image container and deployed as a sidecar in the same Pod along with the SRP Processor.
 
 ![Polyglot-UDF](./sr-udf-architecture.svg)
 
-The communication between the SRP Processor and the UDF running in the sidecar is over gRPC and uses a well defined Protobuf Message Service interface:
+The communication between the SRP Processor and the UDF running in the sidecar is over gRPC and uses a well defined ProtocolBuffer Message Service interface:
 
 ## Time-Window Aggregation Capability
 
@@ -39,6 +39,6 @@ Find detailed description of SRP [Time-Window capabilities](./time-window-aggreg
 
 ## Streaming Data Partitioning
 
-Common [Streaming Data Partitioning Support](../data-partitioning.md) for SRP and SCS Processor types.
+Common [Streaming Data Partitioning Support](../../data-partitioning.md) for SRP and SCS Processor types.
 
-![](../data-partitioning-sr-deployment.svg)
+![](../../data-partitioning-sr-deployment.svg)

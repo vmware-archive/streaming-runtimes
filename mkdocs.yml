@@ -6,6 +6,10 @@ theme:
 
   features:
     - navigation.tabs
+    - navigation.tabs.sticky    
+    - navigation.tracking
+    - navigation.sections    
+    - navigation.expand    
   logo: assets/icon-tanzu2.svg
   favicon: assets/icon-tanzu2.svg
   palette:
@@ -31,6 +35,7 @@ markdown_extensions:
   - footnotes
   - tables
   - admonition
+  - abbr
   - attr_list
   - md_in_html
   - pymdownx.highlight:
@@ -40,6 +45,10 @@ markdown_extensions:
   - pymdownx.superfences
   - pymdownx.tabbed:
       alternate_style: true
+  - pymdownx.snippets:
+      auto_append:
+        - ./abbreviations.md
+
 
 # Page tree
 nav:
@@ -50,23 +59,22 @@ nav:
       - Architecture: 
         - Processors:
           - Overview: architecture/processors/overview.md
-          - Streaming Runtime Processor (SRP): 
+          - SRP Processor: 
             - Overview: architecture/processors/srp/overview.md
-            - User Defined Functions:
-                - Overview: architecture/processors/srp/udf/overview.md
-                - Build your function: architecture/processors/srp/udf/usage.md
+            - User Defined Functions: architecture/processors/srp/udf-overview.md
             - Time-Window Aggregation: architecture/processors/srp/time-window-aggregation.md
-          - Spring Cloud Stream (SCS): architecture/processors/scs/overview.md
-          - Flink SQL (FSQL): architecture/processors/fsql/overview.md
-          - Data Partitioning: architecture/processors/data-partitioning.md
-        - Cluster Streams:
-          - Overview: architecture/cluster-streams/overview.md
+            - Build UDF: architecture/processors/srp/udf-build.md
+          - SCS Processor: architecture/processors/scs/overview.md
+          - FSQL Processor: architecture/processors/fsql/overview.md        
         - Streams:
           - Overview: architecture/streams/overview.md
           - Stream Data Schema: architecture/streams/streaming-data-schema.md
-        - Service Binding: architecture/service-binding/service-binding.md      
-      - Build: streaming-runtime-build.md
-      - Technical Stack: sr-technical-stack.md
+        - Cluster Streams: architecture/cluster-streams/overview.md
+        - Data Partitioning: architecture/data-partitioning.md          
+        - Service Binding: architecture/service-binding/service-binding.md            
+      - Technical Stack:
+        - SR Stack: sr-technical-stack.md
+        - Build: streaming-runtime-build.md
   - Samples:
       - Overview: samples/overview.md
       - How to Run: samples/instructions.md

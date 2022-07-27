@@ -152,4 +152,4 @@ The [udf-utilities](https://github.com/vmware-tanzu/streaming-runtimes/tree/main
     The `GrpcPayloadCollection` serialization/deserialization approach is a hackish workaround to reuse the existing `MessagingService` applicable for non-aggregated messages exchange. 
     A proper, cleaner approach would be to implement a dedicated `AggregatedMessagingService` that takes a collection of `GrpcMessage` messages as input and output.
 
-Check the [Time-Window Aggregation](../time-window-aggregation.md) to see how Aggregation UDFs are being used to compute group-by-key results.
+Check the [Time-Window Aggregation](./time-window-aggregation.md) to see how Aggregation UDFs are being used to compute group-by-key results.
