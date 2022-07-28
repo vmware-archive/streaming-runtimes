@@ -85,6 +85,7 @@ nav:
         - IoT Monitoring: samples/iot-monitoring/iot-monitoring.md
         - Music Chart: samples/top-k-songs/top-k-songs.md
         - SCS TickTock: samples/spring-cloud-stream/tick-tock.md
+  - Why?: why/why-streaming-runtime.md
 
 copyright: "Copyright © 2022 The Tanzu Streaming Runtime Authors"
 
