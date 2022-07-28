@@ -4,6 +4,7 @@ kind: Processor
 metadata:
   name: stateless-replication
 spec:
+  type: SRP
   # 3 instances
   replicas: 3
   inputs:

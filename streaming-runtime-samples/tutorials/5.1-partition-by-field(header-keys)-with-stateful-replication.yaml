@@ -4,6 +4,7 @@ kind: Processor
 metadata:
   name: user-partition-processor
 spec:
+  type: SRP
   inputs:
     - name: data-in
   outputs:
@@ -28,6 +29,7 @@ kind: Processor
 metadata:
   name: user-scores-processor
 spec:
+  type: SRP
   replicas: 3
   inputs:
     - name: partitioned-by-team-stream
