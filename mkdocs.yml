@@ -78,16 +78,16 @@ nav:
         - SR Stack: sr-technical-stack.md
         - Build: streaming-runtime-build.md
   - Samples:
-      - Overview: samples/overview.md
-      - How to Run: samples/instructions.md
       - Use Cases:
+        - Overview: samples/overview.md
+        - How to Run: samples/instructions.md
         - Anomaly Detection: samples/anomaly-detection/anomaly-detection.md
         - Clickstream Analysis: samples/clickstream/clickstream.md
         - IoT Monitoring: samples/iot-monitoring/iot-monitoring.md
         - Music Chart: samples/top-k-songs/top-k-songs.md
         - SCS TickTock: samples/spring-cloud-stream/tick-tock.md
       - Tutorials:
-        - Step by step tutorials: samples/tutorials.md
+        - Step by Step Tutorials: samples/tutorials.md
   - Why?: why/why-streaming-runtime.md
 
 copyright: "Copyright © 2022 The Tanzu Streaming Runtime Authors"

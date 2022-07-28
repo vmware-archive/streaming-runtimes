@@ -1,7 +1,4 @@
 # 5.2 Partition by Field - RabbitMQ version
-# 
-# Same as (5.) but with RabbitMQ brokers instead for the partitioning section of the pipeline.
-#
 apiVersion: streaming.tanzu.vmware.com/v1alpha1
 kind: Stream
 metadata:
