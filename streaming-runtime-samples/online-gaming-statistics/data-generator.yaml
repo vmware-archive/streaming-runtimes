@@ -1,0 +1,145 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: online-game-data-generator
+  labels:
+    app: online-game-data-generator
+    component: online-game-data-generator
+    type: streaming-spike
+    spring-deployment-id: online-game-data-generator
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 80
+      name: online-game-data-generator
+      targetPort: 8080
+      protocol: TCP
+  selector:
+    app: online-game-data-generator
+    component: online-game-data-generator
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: online-game-data-generator
+  labels:
+    app: online-game-data-generator
+    type: streaming-spike
+    component: online-game-data-generator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: online-game-data-generator
+  template:
+    metadata:
+      labels:
+        app: online-game-data-generator
+        component: online-game-data-generator
+    spec:
+      terminationGracePeriodSeconds: 15
+      containers:
+        - name: online-game-data-generator
+          image: ghcr.io/logaritex/stream-data-generator:test2
+          env:
+          - name: KAFKA_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: SPRING_CONFIG_LOCATION
+            value: "file:/config/application.yaml"
+          volumeMounts:
+            - name: config
+              mountPath: /config
+          ports:
+            - containerPort: 8080
+      volumes:
+      - configMap:
+          items:
+          - key: application.yaml
+            path: application.yaml
+          name: data-generator-configmap
+        name: config
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: data-generator-configmap
+data:
+  application.yaml: |-
+    stream:
+      data:
+        generator:
+          terminateAfter: 160s
+
+          streams:
+            - streamName: stream-songs
+              destination:
+                type: STREAM
+                name: kafka-stream-songs
+              contextAttributes:
+                - name: "id"
+                  valueFromField: "id"
+                - name: "score_time"
+                  valueFromField: "score_time"
+              valueFormat: JSON
+              avroSchema: |-
+                  namespace: io.twa
+                  type: record
+                  name: User
+                  fields:
+                  - name: id
+                    type: string
+                    doc: "#{id_number.valid}" 
+                  - name: score_time
+                    type:
+                      type: long
+                      logicalType: timestamp-millis
+                    doc: "[[T(System).currentTimeMillis()]]" 
+                  - name: fullName
+                    type: string
+                    doc: "#{options.option 'aaa','bbb','ccc','ddd','eee', 'fff', 'ggg', 'hhh', 'iii', 'jjj', 'kkk', 'lll', 'mmm', 'nnn', 'ooo', 'ppp', 'qqq', 'rrr', 'sss', 'ttt', 'uuu', 'vvv', 'www', 'xxx', 'yyy', 'zzz'}"
+                  - name: email
+                    type: string
+                    doc: "#{internet.emailAddress}"
+                  - name: score
+                    type: int
+                    doc: "#{number.number_between '0','100'}"
+                  - name: team
+                    type: string
+                    doc: "#{options.option 'red','blue','green'}"
+              batch:
+                size: 100            
+                initialDelay: 1ms
+                messageDelay: 100ms
+                delay: 30s
+    server:
+      shutdown: graceful
+
+    spring:  
+      lifecycle:
+        timeout-per-shutdown-phase: "10s"
+
+    # Destination Bindings. 
+    # stream.data.generator.streams.streamName == spring.cloud.stream.bindings.<name>
+      cloud:  
+        stream:           
+          default-binder: kafka
+          bindings:
+            kafka-stream-songs:
+              binder: kafka1
+              destination: data-in
+              contentType: application/json
+          # Binders configurations
+          binders:
+            kafka1:
+              type: kafka
+              environment:
+                spring:
+                  kafka:
+                    bootstrapServers: 'kafka.${KAFKA_NAMESPACE}.svc.cluster.local:9092'
+                    properties:
+                      schema:
+                        registry:
+                          url: 'http://s-registry.${KAFKA_NAMESPACE}.svc.cluster.local:8081'
+                            
