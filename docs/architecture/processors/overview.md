@@ -2,6 +2,9 @@
 
 The `Processor` represents an independent event-driven streaming application that can consume one or more input Streams, transform the received data and send the results downstream over one or more output Streams. 
 
+For a detailed description of attributes of the resource please read [processor-crd.yaml](https://github.com/vmware-tanzu/streaming-runtimes/blob/main/streaming-runtime-operator/crds/processor-crd.yaml){:target="_blank"}
+
+
 ![Multi In/Out Processor](../../sr-multi-in-out-processor.svg)
 
 The Streaming Runtime provides a built-in, general purpose Processor of type [SRP](srp/overview.md) and to additional processor types to provide integration with 3rd party streaming technologies, such as Apache Flink (type: [FSQL](fsql/overview.md)) and Spring Cloud Stream/Spring Cloud Function (type: [SCS](scs/overview.md)). 

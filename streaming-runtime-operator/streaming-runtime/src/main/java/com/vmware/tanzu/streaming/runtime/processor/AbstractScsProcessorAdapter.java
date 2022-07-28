@@ -136,6 +136,8 @@ public abstract class AbstractScsProcessorAdapter extends AbstractProcessAdapter
                 envs.put("SPRING_CONFIG_LOCATION", "file:/config/application.properties");
 
                 envs.put("SPRING_CLOUD_STREAM_BINDINGS_INPUT_CONSUMER_PARTITIONED", "true");
+                // https://cloud.spring.io/spring-cloud-stream-binder-kafka/spring-cloud-stream-binder-kafka.html#kafka-consumer-properties
+                envs.put("SPRING_CLOUD_STREAM_BINDINGS_INPUT_CONSUMER_AUTOREBALANCEENABLED", "false");
                 Integer replicas = processor.getSpec().getReplicas();
                 if (replicas == null) {
                     replicas = 1;
