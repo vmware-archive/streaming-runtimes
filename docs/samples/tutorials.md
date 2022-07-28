@@ -58,10 +58,19 @@ The step by step tutorials introduce the SR features and how to use them.
 --8<-- "streaming-runtime-samples/tutorials/6-time-window-aggregation.yaml"
 ```
 
+``` js title="ghcr.io/vmware-tanzu/streaming-runtimes/user-score-js:latest"
+--8<-- "streaming-runtime-samples/tutorials/6-user-score-aggregation-js/aggregate.js"
+```
+
 --8<-- "streaming-runtime-samples/tutorials/6.1-partition-by-field-stateful-replication-time-window-aggregation.md"
 ``` yaml title="6.1 Partition by Field with replicated Time-Window aggregation"
 --8<-- "streaming-runtime-samples/tutorials/6.1-partition-by-field-stateful-replication-time-window-aggregation.yaml"
 ```
+
+``` js title="ghcr.io/vmware-tanzu/streaming-runtimes/team-score-js:latest"
+--8<-- "streaming-runtime-samples/tutorials/6.1-team-score-aggregation-js/aggregate.js"
+```
+
 
 --8<-- "streaming-runtime-samples/tutorials/7-streaming-join-with-flink-sql.md"
 
