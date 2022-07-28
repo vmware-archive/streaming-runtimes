@@ -77,7 +77,7 @@ nav:
       - Technical Stack:
         - SR Stack: sr-technical-stack.md
         - Build: streaming-runtime-build.md
-  - Samples:
+  - Examples:
       - Use Cases:
         - Overview: samples/overview.md
         - How to Run: samples/instructions.md

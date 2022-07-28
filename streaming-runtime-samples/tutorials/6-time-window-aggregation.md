@@ -8,5 +8,5 @@ The inbound Stream 'spec.dataSchemaContext.timeAttributes' defines which payload
 Furthermore the Watermark expression allows configuring out-of-orderness.
 When no event-time is configured the processor defaults to the less reliable process-time as event-time.
 
-Complete [Tumbling Time-Window](: )https://vmware-tanzu.github.io/streaming-runtimes/architecture/processors/srp/time-window-aggregation)  documentation
+Complete [Tumbling Time-Window](https://vmware-tanzu.github.io/streaming-runtimes/architecture/processors/srp/time-window-aggregation)  documentation
 
