@@ -1,13 +1,4 @@
 # 2.1 Multibinder Bridge - production env
-#
-# In production environment the Streaming Runtime will not be allowed to auto-provision 
-# the messaging brokers dynamically. Instead the Administrator will provision the required
-# messaging middleware and declare ClusterStream to provide managed and controlled access to it.
-#
-# The ClusterStreams and the Streams follow the PersistentVolume model: namespaced Stream 
-# declared by a developer (ala PVC) is backed by a ClusterStream resource (ala PV) which 
-# is controlled and provisioned by the administrator.
-#
 
 #################################################
 #  ADMIN responsibility

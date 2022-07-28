@@ -1,4 +1,4 @@
-## Check few FSQL processor applicaitons
+## 7. FSQL processor examples
  
  - [Anomaly Detection](https://vmware-tanzu.github.io/streaming-runtimes/samples/anomaly-detection/anomaly-detection/) (FSQL, SRP)- detect, in real time, suspicious credit card transactions, and extract them for further processing.
 - [Clickstream Analysis](https://vmware-tanzu.github.io/streaming-runtimes/samples/clickstream/clickstream/) (FSQL, SRP) -   for an input clickstream stream, we want to know who are the high status customers, currently using the website so that we can engage with them or to find how much they buy or how long they stay on the site that day.

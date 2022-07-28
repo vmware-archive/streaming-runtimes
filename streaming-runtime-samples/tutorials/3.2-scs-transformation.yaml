@@ -1,15 +1,4 @@
 # 3.2  SCS (Spring Cloud Stream) Transformation
-#
-# Any Spring Cloud Stream (https://spring.io/projects/spring-cloud-stream) or
-# Spring Cloud Function (https://spring.io/projects/spring-cloud-function) application can be run
-# as Processor.
-# Just build a container image for the application and run it as 'spec.type: SCS' Processor type.
-#
-# Spring Cloud DataFlow provides 60+ pre-built SCS/SCF application that can be used Out-Of-The-Box:
-#   https://docs.spring.io/stream-applications/docs/2021.1.2/reference/html/#applications
-#
-# Use the environment variables to configure the Spring application.
-#
 apiVersion: streaming.tanzu.vmware.com/v1alpha1
 kind: Processor
 metadata:

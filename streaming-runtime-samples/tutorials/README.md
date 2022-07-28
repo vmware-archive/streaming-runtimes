@@ -18,3 +18,4 @@ kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runti
 ```shell
 kubectl delete srs,srcs,srp --all -n streaming-runtime 
 kubectl delete deployments,svc -l app=authorization-attempts-data-generator -n streaming-runtime
+```
