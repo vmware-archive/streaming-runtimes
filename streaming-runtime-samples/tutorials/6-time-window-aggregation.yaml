@@ -1,3 +1,4 @@
+# 6. Tumbling Time-Window Aggregation
 #
 # The (SRP) processor supports Tumbling Time-Window Aggregation. 
 # The 'srp.window' attribute defines the window interval. 
@@ -6,6 +7,8 @@
 # The inbound Stream 'spec.dataSchemaContext.timeAttributes' defines which payload field (or header attribute) 
 # to be used as an Event-Time. Furthermore the Watermark expression allows configuring out-of-orderness.
 # When no event-time is configured the processor defaults to the less reliable process-time as event-time.
+#
+# Complete documentation: https://vmware-tanzu.github.io/streaming-runtimes/architecture/processors/srp/time-window-aggregation/
 #
 apiVersion: streaming.tanzu.vmware.com/v1alpha1
 kind: Stream
@@ -16,7 +19,8 @@ spec:
   protocol: kafka
   dataSchemaContext:
     # Here the schema is used only with descriptive purpose! It is not used to validate the 
-    # stream content. The FSQL samples show to to enforce Avro schemas and use schema registries.
+    # stream content. 
+    # Check the FSQL samples to find how to enforce Avro schemas and use schema registries.
     schema:
       namespace: sr.poc.online.gaming
       name: User

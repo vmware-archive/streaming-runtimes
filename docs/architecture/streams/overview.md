@@ -53,9 +53,9 @@ The data schema context comprises a `schema` of the message payload along with a
 
 ## Data Partitioning
 
-For [SRP](../processors/srp/overview.md) and [SCS](../processors/scs/overview.md) processor types the `key` and `keyExpression` attributes are used to configure a [data partitioning](../data-partitioning.md) of the streamed data.
+For [SRP](../processors/srp/overview.md) and [SCS](../processors/scs/overview.md) processor types the `key` and `keyExpression` attributes are used to configure a [data partitioning](../data-partitioning/data-partitioning.md) of the streamed data.
 
-![](../data-partitioning-crd-definitions.svg)
+![](../data-partitioning/data-partitioning-crd-definitions.svg)
 
 ## Service Binding
 

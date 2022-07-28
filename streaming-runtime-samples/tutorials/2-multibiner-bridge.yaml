@@ -1,3 +1,5 @@
+# 2. Multibinder (e.g. multi-message brokers) Bridge
+#
 # Configure the Stream resources explicitly.
 # The 'spe.protocol' instructs what broker to be provisioned for this Stream. Current runtime implementation 
 # is using # only Apache Kafka and RabbitMQ, but it can easily extended to support those additional 

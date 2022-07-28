@@ -1,3 +1,5 @@
+# 4. Stateless Replication
+#
 # By default the Processor controller deploys one instance for every Processor.
 # The 'spec.replicas' is used to set the desired number of processor instances.
 #

@@ -1,3 +1,5 @@
+# 3.2  SCS (Spring Cloud Stream) Transformation
+#
 # Any Spring Cloud Stream (https://spring.io/projects/spring-cloud-stream) or
 # Spring Cloud Function (https://spring.io/projects/spring-cloud-function) application can be run
 # as Processor.

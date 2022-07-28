@@ -1,6 +1,24 @@
+# 5. Partition by Field with Stateful Replication
 #
+# On the Steam resource that represents the partitioned connection, use the
+# spec.keyExpression to define the what header or payload field to use as a 
+# discriminator to partition the data in the steam. 
+# Additionally use the spec.partitionCount property to configure the number 
+# of partitions you would like the incoming data to be partitioned into. 
+# Those properties are used to instruct the upstream processor(s) to provision 
+# the data partitioning configuration while the downstream processors are 
+# configured for partitioned inputs (e.g. enforce instance ordering and stateful connections). 
 #
-# 
+# If the downstream processor is scaled out (e.g. replications: N), then 
+# the streaming runtime will ensure StatefulSet replication instead of Deployment/ReplicationSet.
+# Additionally, for the processors consuming partitioned Stream, the SR configures 
+# Pod's Ordinal Index to be used as partition instance-index. 
+# Later ensures that event after Pod failure/restart the same partitions will be (re)assigned to it.
+#
+# Complete Data Partitioning documentation:
+# https://vmware-tanzu.github.io/streaming-runtimes/architecture/data-partitioning/
+#
+# (SRP and SCS only)
 apiVersion: streaming.tanzu.vmware.com/v1alpha1
 kind: Stream
 metadata:
@@ -40,7 +58,7 @@ spec:
   outputs:
     - name: team-scores-stream
   attributes:
-    srp.spel.expression: '''Team:'' + #jsonPath(payload, ''$.team'') + '', Score:'' + #jsonPath(payload, ''$.score'')'
+    srp.spel.expression: "'Team:' + #jsonPath(payload, '$.team') + ', Score:' + #jsonPath(payload, '$.score')"
 ---
 apiVersion: streaming.tanzu.vmware.com/v1alpha1
 kind: Stream

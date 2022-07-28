@@ -1,6 +1,6 @@
 # Streaming Runtime Processor (SRP)
 
-The SRP processor is built-in the Streaming Runtime, provide common capabilities such as message brokerage, [inline streaming transformations](#inline-transformations), [polyglot user-defined functions](./udf-overview.md), simple [tumbling time-window aggregation](./time-window-aggregation.md) and [data-partitioning capabilities](../../data-partitioning.md) to name a few.
+The SRP processor is built-in the Streaming Runtime, provide common capabilities such as message brokerage, [inline streaming transformations](#inline-transformations), [polyglot user-defined functions](./udf-overview.md), simple [tumbling time-window aggregation](./time-window-aggregation.md) and [data-partitioning capabilities](../../data-partitioning/data-partitioning.md) to name a few.
 
 ## Message Transformation Options
 
@@ -39,6 +39,6 @@ Find detailed description of SRP [Time-Window capabilities](./time-window-aggreg
 
 ## Streaming Data Partitioning
 
-Common [Streaming Data Partitioning Support](../../data-partitioning.md) for SRP and SCS Processor types.
+Common [Streaming Data Partitioning Support](../../data-partitioning/data-partitioning.md) for SRP and SCS Processor types.
 
-![](../../data-partitioning-sr-deployment.svg)
+![](../../data-partitioning/data-partitioning-sr-deployment.svg)

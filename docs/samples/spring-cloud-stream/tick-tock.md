@@ -27,7 +27,7 @@ The [streaming-pipeline-tiktock.yaml](https://github.com/vmware-tanzu/streaming-
 
 ![SR SCS deployment](./ticktock-deployment.svg)
 
-The [streaming-pipeline-ticktock-partitioned-better.yaml](https://github.com/vmware-tanzu/streaming-runtimes/blob/main/streaming-runtime-samples/spring-cloud-stream/streaming-pipeline-ticktock-partitioned-better.yaml) shows how to data-partition the TickTock application leveraging the SCS [Data-Partitioning](../../architecture/data-partitioning.md) capabilities.
+The [streaming-pipeline-ticktock-partitioned-better.yaml](https://github.com/vmware-tanzu/streaming-runtimes/blob/main/streaming-runtime-samples/spring-cloud-stream/streaming-pipeline-ticktock-partitioned-better.yaml) shows how to data-partition the TickTock application leveraging the SCS [Data-Partitioning](../../architecture/data-partitioning/data-partitioning.md) capabilities.
 
 
 ## Quick start

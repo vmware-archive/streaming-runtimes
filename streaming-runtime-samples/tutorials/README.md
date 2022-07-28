@@ -12,7 +12,7 @@ kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runti
 kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runtimes/main/streaming-runtime-samples/tutorials/data-generator.yaml' -n streaming-runtime
 ```
 
-- Follow the [explore results](../../instructions/#explore-the-results) instructions to see what data is generated and how it is processed though the pipeline. 
+- Follow the [explore results](https://vmware-tanzu.github.io/streaming-runtimes/samples/instructions/#explore-the-results) instructions to see what data is generated and how it is processed though the pipeline. 
 
 - To delete the data pipeline and the data generator:
 ```shell

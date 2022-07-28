@@ -71,7 +71,7 @@ nav:
           - Overview: architecture/streams/overview.md
           - Stream Data Schema: architecture/streams/streaming-data-schema.md
         - Cluster Streams: architecture/cluster-streams/overview.md
-        - Data Partitioning: architecture/data-partitioning.md          
+        - Data Partitioning: architecture/data-partitioning/data-partitioning.md          
         - Service Binding: architecture/service-binding/service-binding.md            
       - Technical Stack:
         - SR Stack: sr-technical-stack.md

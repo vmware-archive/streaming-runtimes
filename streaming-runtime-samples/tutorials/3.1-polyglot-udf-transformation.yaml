@@ -1,3 +1,5 @@
+# 3.1 Polyglot UDF Transformation
+#
 # The (SRP) Processor can be assigned with custom User Defined Function running in a sidecar container
 # next to the processor in the same Pod.
 # Processor calls the UDF either for every received message or in the case of temporal aggregation calls
@@ -6,7 +8,8 @@
 # The communication between the Processor and the custom UDF is performed over gRPC using well defined 
 # Protocol Buffer contract. Because the Protocol Buffers are language-neutral, this allows implementing 
 # the UDF in any language of choice! (e.g. polyglot UDF).
-#
+# 
+# Detailed UDF documentation: https://vmware-tanzu.github.io/streaming-runtimes/architecture/processors/srp/udf-overview/
 #
 # Note: The inline transformations can be applied on the outbound message (e.g. the UDF response)
 # before it is sent.
