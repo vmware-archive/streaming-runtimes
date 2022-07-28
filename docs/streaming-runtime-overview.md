@@ -140,13 +140,13 @@ Likewise if the messaging middleware declared in Stream's `protocol` (in this ca
 !!! info ""
     The sample app itself acts as a message bridge. It receives input messages from Apache Kafka, `data-in` topic and re-transmits them, unchanged, to the output RabbitMQ `data-out` exchange.
 
-The Streaming Runtime offers three different processor types that allow the developers to build and plug their own stream processing logic:
+Developers have different options to build their own data transformation logic and use it with the Streaming Runtime. 
+The following processor types provide complimentary extension options that can be used interchangeably:
 
-- [SRP Processor](./architecture/processors/srp/overview.md) - is a general purpose, processor, that uses polyglot [User Defined Functions](./architecture/processors/srp/udf-overview.md) (UDF), can compute [Tumbling Time-Window](./architecture/processors/srp/time-window-aggregation.md) aggregations and supports [streaming Data Partitioning](./architecture/data-partitioning/data-partitioning.md).
+- [SRP Processor](./architecture/processors/srp/overview.md) - is a general purpose, processor, that allows developers to plug in their own, polyglot [User Defined Functions](./architecture/processors/srp/udf-overview.md) (UDF). The SRP processors provide support for [Tumbling Time-Window](./architecture/processors/srp/time-window-aggregation.md) aggregations and [streaming Data Partitioning](./architecture/data-partitioning/data-partitioning.md).
 - [SCS Processor](./architecture/processors/scs/overview.md) - can run any [Spring Cloud Stream](https://spring.io/projects/spring-cloud-stream) application natively in Kubernetes. One can choose from the  extensive set (60+) of [pre-built streaming applications](https://dataflow.spring.io/docs/applications/pre-packaged/#stream-applications) or build a custom one. The SCS Processor supports stateful and stateless workloads and stream [data partitioning](./architecture/data-partitioning/data-partitioning.md)[^2].
-- [FSQL Processor](./architecture/processors/fsql/overview.md) - supports streaming SQL executions, backed by Apache Flink. It allows running embedded Streaming SQL queries.
-
-Processors from all types can be combined and used interchangeably.
+- [FSQL Processor](./architecture/processors/fsql/overview.md) - is backed by Apache Flink and supports streaming SQL. 
+This allows the developers to implement complex data transformation, such as stream join or windowed aggregation, by defining streaming SQL queries.
 
 ## Next Steps
 
