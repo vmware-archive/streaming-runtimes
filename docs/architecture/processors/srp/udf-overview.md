@@ -4,6 +4,16 @@ The Streaming Runtime provides a pluggable User Defined Functions (UDF) that all
 
 The function is deployed as a sidecar along the [SRP](../overview.md) processor that acts as the connection between the streams and the function deployed. To build your custom function it should adhere to the [UDF Protocol Buffer Contract](#udf-contract) and run as gRPC service.
 
+## UDF Types
+
+Two types of UDF functions are supported: `Mapping UDF` and `Aggregation UDF`
+<!-- ![mapping-udf-flow](./udf-types.svg) -->
+
+![](./mapping-udf-type.svg){ align="left" width="250" } [Mapping UDF](#mapping-udf) - The SRP forwards the inbound messages, element-wise over the `MessagingService`, to the UDF function. The function computes a result, returns it to the SRP, that in turn sends it downstream. Every inbound message produces a single outbound result!  
+The UDF image is registered with the SRP Processor using the spec under the `spec.templates.spec.containers` section. The SR will deploy the image in side-container in the same pod as the SRP Processor.
+
+![](./mapping-udf-type.svg){ align="left" width="250" } [Aggregation UDF](#aggregation-udf) - When the `Time-Window` aggregation is enabled and a window is ready for release, the SRP processor forwards the window content (e.g. collection of messages) to the UDF function. Later processes the collection,  computes one or more aggregation results that are returned to the SRP and sent downstream.
+
 ## Resource Definition
 
 To plug a custom UDF to your SRP Processor, you can refer to UDF’s image from within the Processor resourced definition: 
@@ -67,15 +77,7 @@ The [MessageService.proto](https://github.com/vmware-tanzu/streaming-runtimes/bl
 The SRP Processor forwards the incoming messages over the `MessagingService` to the pre-configured UDF function.
 The function response in turn is sent to the SRP's output stream.
 
-## UDF Types
-
-Two types of UDF functions are supported: `Mapping UDF` and `Aggregation UDF`
-![mapping-udf-flow](./udf-types.svg)
-
-- [Mapping UDF](#mapping-udf) - The SRP forwards the inbound messages, element-wise over the `MessagingService`, to the UDF function. The function computes a result, returns it to the SRP, that in turn sends it downstream. Every inbound message produces a single outbound result!
-- [Aggregation UDF](#aggregation-udf) - When the `Time-Window` aggregation is enabled and a window is ready for release, the SRP processor forwards the window content (e.g. collection of messages) to the UDF function. Later processes the collection,  computes one or more aggregation results that are returned to the SRP and sent downstream.
-
-### Mapping UDF
+## Mapping UDF
 
 The Mapping UDF function runs a gRPC server with the `MessagingService` implementation. 
 
@@ -128,7 +130,7 @@ func (s *server) RequestReply(ctx context.Context, in *pb.GrpcMessage) (*pb.Grpc
 You can find complete source code [udf-uppercase-go](https://github.com/vmware-tanzu/streaming-runtimes/tree/main/streaming-runtime-samples/udf-samples/udf-uppercase-go)
 
 
-### Aggregation UDF
+## Aggregation UDF
 
 When the `time-window` aggregation is used the `SRP` processor forwards to the UDF not just a single message but the collection of all messages members of a time-window aggregation. Reversely the UDF may return not just a single result but a collection of results that are treated as separate downstream messages.
 

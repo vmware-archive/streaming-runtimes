@@ -1,6 +1,9 @@
 ## 5. Partition by Field with Stateful Replication
 
-(`SRP` and `SCS` only)
+__Processor types:__ `SRP`, `SCS`
+
+__Documentation:__ [Data Partitioning ](https://vmware-tanzu.github.io/streaming-runtimes/architecture/data-partitioning/data-partitioning/)
+
 
 On the Steam resource that represents the partitioned connection, use the `spec.keyExpression` to define the what header or payload field to use as a discriminator to partition the data in the steam. 
 Additionally use the spec.partitionCount property to configure the number of partitions you would like the incoming data to be partitioned into. 
@@ -10,4 +13,4 @@ If the downstream processor is scaled out (e.g. `replications: N`), then the str
 Additionally, for the processors consuming partitioned Stream, the SR configures Pod's Ordinal Index to be used as partition instance-index. 
 Later ensures that event after Pod failure/restart the same partitions will be (re)assigned to it.
 
-Read the [Data Partitioning ](https://vmware-tanzu.github.io/streaming-runtimes/architecture/data-partitioning/) documentation.
+
