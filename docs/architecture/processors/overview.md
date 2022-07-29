@@ -7,7 +7,7 @@ For a detailed description of attributes of the resource please read [processor-
 
 ![Multi In/Out Processor](../../sr-multi-in-out-processor.svg)
 
-The Streaming Runtime provides a built-in, general purpose Processor of type [SRP](srp/overview.md) and to additional processor types to provide integration with 3rd party streaming technologies, such as Apache Flink (type: [FSQL](fsql/overview.md)) and Spring Cloud Stream/Spring Cloud Function (type: [SCS](scs/overview.md)). 
+The Streaming Runtime provides a built-in, general purpose Processor of type [SRP](srp/overview.md) and two additional processor types to provide integration with 3rd party streaming technologies, such as Apache Flink (type: [FSQL](fsql/overview.md)) and Spring Cloud Stream/Spring Cloud Function (type: [SCS](scs/overview.md)). 
 Processors from all types can be combined and used interchangeably.
 
 The Streaming Runtime allows implementing additional Processor types that can provide integration with other streaming systems such as Apache Spark, KSQL and alike.
