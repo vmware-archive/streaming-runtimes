@@ -2,7 +2,7 @@
 
 Provide access to Kubernetes cluster.
 You can also run it locally within a [minikube](https://kubernetes.io/docs/tasks/tools/#installation).
-Make sure to provision enough memory (8G+) and CPU (8CP+) resources:
+Make sure to provision enough memory (8G+) and CPU (8+) resources:
 
 
 === "All"

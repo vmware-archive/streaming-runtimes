@@ -3,8 +3,8 @@
 *[SRP]: Streaming Runtime Processor
 *[SCS]: Spring Cloud Stream Processor
 *[FSQL]: Apache Flink Streaming SQL Processor
-*[CRD]: Customer Resource Definition
-*[CRDs]: Customer Resource Definitions
+*[CRD]: Custom Resource Definition
+*[CRDs]: Custom Resource Definitions
 *[ETL]: Extract Transform Load
 *[ELT]: Extract Load Transform 
 *[UDF]: User Defined Function
