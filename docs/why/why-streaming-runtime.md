@@ -2,12 +2,11 @@
 
 ## Control Plane vs Data Plane
 
-In System Design the `Control Plane` is the (sub)system that __defines__ and __controls__ how the work should be done. 
-The `Data Plane` on the other hand is where the actual work is done. 
+As a design pattern, the `Control Plane` (CP) is a sub-system that __defines__ and __controls__ how the work should be done. 
+The `Data Plane` (DP) on the other hand is where the actual work is done. 
+The separation of concerns allows innovating and scaling the Data Plane and Control Plane independently.
 
-Such separation of concerts allow innovation and scale of the Data Plane and Control Plane separately from the other plane.
-
-In the context of the `Streaming Runtime` the `Data Plane` is where most of the data transformations happen and is optimized for *speed of processing*, *availability*, *simplicity* and *regularity*. 
+In the context of the `Streaming Runtime` the `Data Plane` is where most of the data transformations happen and it is optimized for *speed* of processing, *availability*, *simplicity* and *regularity*. 
 ![ControlPlane vs DataPlane](./cp-vs-dp.gif){ align="left" width="350" } 
 The `Control Plane` controls the `Data Plane` and is optimized for *decision making* and in general facilitating and simplifying the `Data Plane` processing. 
 

@@ -13,3 +13,5 @@
 *[UDFs]: User Defined Functions
 *[SCF]: Spring Cloud Function
 *[SQL]: Structured Query Language
+*[CP]: Control Plane
+*[DP]: Data Plane

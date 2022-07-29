@@ -88,7 +88,7 @@ nav:
         - SCS TickTock: samples/spring-cloud-stream/tick-tock.md
       - Tutorials:
         - Step by Step Tutorials: samples/tutorials.md
-  - Why?: why/why-streaming-runtime.md
+  - Why SR: why/why-streaming-runtime.md
 
 copyright: "Copyright © 2022 The Tanzu Streaming Runtime Authors"
 
