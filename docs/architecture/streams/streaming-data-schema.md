@@ -1,12 +1,12 @@
 # Stream Data Schema
 
-The Stream CRDs can provide a data schema context to define the structure, time and serialization details of the messages they represent. 
-The data schema context comprises a schema of the message payload along with additional time-attributes, metadata mappings and configuration options. 
-The data schema describes the structure of the message payload. 
+The Stream CRDs can provide a data schema context to define the structure, time and serialization details of the messages they represent.
+The data schema context comprises a schema of the message payload along with additional time-attributes, metadata mappings and configuration options.
+The data schema describes the structure of the message payload.
 For a convenience, several, semantically equivalent, schema representations are supported.
 The time attributes augment can assign process or event time to schema in order to support streaming data processing.
 The metadata fields can extend the schema with additional, “synthetic”,  fields that are extracted or computed from the message’s metadata.
-The options allow specifying some configuration details, such as serialization, encoding formats, or properties passed directly through the backend sql aggregation engines. 
+The options allow specifying some configuration details, such as serialization, encoding formats, or properties passed directly through the backend sql aggregation engines.
 
 Following diagram illustrates the relationships between the Data Schema Context parts:
 
@@ -14,7 +14,7 @@ Following diagram illustrates the relationships between the Data Schema Context 
 
 ## Schema (Payload Data Model)
 
-The schema describes the structure of the message payload. It can be expressed as an Avro Schema, standard SQL/DDL or using the custom Stream MetaSchema (defined in the CRD and validated as OpenAPISchema). 
+The schema describes the structure of the message payload. It can be expressed as an Avro Schema, standard SQL/DDL or using the custom Stream MetaSchema (defined in the CRD and validated as OpenAPISchema).
 Additionally the payload schema can be retrieved from a remote schema registry such as Confluent Schema Registry using the Avro schema.
 
 Following snippets show the same data structure using the different schema representations.
@@ -54,22 +54,22 @@ Following snippets show the same data structure using the different schema repre
     )
     ```
 
-Note how the Meta-Schema representation extends the data schema content with `metadata` and `time-attributes` information. 
+Note how the Meta-Schema representation extends the data schema content with `metadata` and `time-attributes` information.
 For the other representations this information is applied in the outer Schema Data Context sections (see the examples below).
 
 ## Time Attributes
 
 Streaming data processing can process data based on different notions of time.
 Processing time refers to the machine’s system time that is executing the respective operation.
-Event time refers to the processing of streaming data based on timestamps that are attached to each row. 
+Event time refers to the processing of streaming data based on timestamps that are attached to each row.
 The timestamps can encode when an event has happened.
 
-Time attributes can be part of every Stream’s data schema. 
-They are defined when creating the Stream CR. Once a time attribute is defined, it can be referenced as a field in Processor’s queries and used in time-based operations. 
+Time attributes can be part of every Stream’s data schema.
+They are defined when creating the Stream CR. Once a time attribute is defined, it can be referenced as a field in Processor’s queries and used in time-based operations.
 
 ### Event Time
 
-Event time allows a Processor query to produce results based on timestamps in every message, allowing for consistent results despite out-of-order or late events. 
+Event time allows a Processor query to produce results based on timestamps in every message, allowing for consistent results despite out-of-order or late events.
 It also ensures the replayability of the results of the streaming pipeline when reading messages from persistent storage (such as Kafka).
 
 === "All representations"
@@ -93,18 +93,18 @@ It also ensures the replayability of the results of the streaming pipeline when 
         fields:
         #...
         - name: event_time
-            type: long_timestamp-millis
-            watermark: "`event_time` - INTERVAL '30' SECONDS"    
+          type: long_timestamp-millis
+          watermark: "`event_time` - INTERVAL '30' SECONDS"
     ```
 
 The general syntax for defining Event Time field, assumes adding a timeAttributes entry only with name and watermark expression! (note without or empty watermark stands for Process Time field).
-You can mix Meta-Schema and general definitions. 
+You can mix Meta-Schema and general definitions.
 The general syntax precedes.
 
 ### Processing Time
 
-Processing time allows the streaming processing to produce results based on the time of the local machine. 
-It is the simplest notion of time, but it will generate non-deterministic results. 
+Processing time allows the streaming processing to produce results based on the time of the local machine.
+It is the simplest notion of time, but it will generate non-deterministic results.
 Processing time does not require timestamp extraction or watermark generation.
 
 There are two ways to define a processing time attribute.
@@ -137,7 +137,7 @@ You can mix Meta-Schema and general definitions. In case of conflict the general
 
 ## Metadata 
 
-Represents a special class of schema fields that are inferred or computed from the message’s metadata. 
+Represents a special class of schema fields that are inferred or computed from the message’s metadata.
 For example the message’s timestamp or headers can be used as schema fields.
 
 === "All representations"
@@ -171,14 +171,16 @@ For example the message’s timestamp or headers can be used as schema fields.
     ```
 
 ## Options
+
 Various serialization/deserialization configurations, remote system connection or implementation optimizations.  
-The streaming runtime will try to hide as much as possible those details from the end user by inferring them from the Stream or ClusterStream statuses or assume some reasonable defaults for the common use cases. 
+The streaming runtime will try to hide as much as possible those details from the end user by inferring them from the Stream or ClusterStream statuses or assume some reasonable defaults for the common use cases.
 Yet the end user can use the Options section to further configure/optimize or override the defaults.
 
 ## Primary Key
-Primary key constraint is a hint for Streaming processing to leverage for optimizations. 
-It indicates that a field or a set of fields of a data schema are unique and they do not contain null. 
-Neither of the fields in a primary key can be nullable. 
+
+Primary key constraint is a hint for Streaming processing to leverage for optimizations.
+It indicates that a field or a set of fields of a data schema are unique and they do not contain null.
+Neither of the fields in a primary key can be nullable.
 
 ```yaml
 dataSchemaContext:
@@ -222,13 +224,13 @@ Uses standard [ANSI SQL CREATE TABLE](https://www.w3schools.com/sql/sql_create_t
  )
 ```
 
-- Table name stands for Schema name. 
+- Table name stands for Schema name.
 - Table column names represent the schema field names.
 - The table column types (standard SQL types) represent the field types.
 - The “NOT NULL” type constraint indicates if the schema field is optional or not.
 - The column types used as Time Attribute MUST use the TIMESTAMP(3) type.
 
-No metadata or time attributes fields are defined in this schema. 
+No metadata or time attributes fields are defined in this schema.
 
 ### Inline-Avro Format
 
@@ -380,8 +382,8 @@ dataSchemaContext:
    ddl.scan.startup.mode: earliest-offset
 ```
 
-The above three data schema representations are semantically identical and for each of them the Processor will generate exactly the same executable physical schema. 
-In case of Apache Flink, the processor will generate the following CREATE TABLE DDL: 
+The above three data schema representations are semantically identical and for each of them the Processor will generate exactly the same executable physical schema.
+In case of Apache Flink, the processor will generate the following CREATE TABLE DDL:
 
 ```sql
 CREATE TABLE PlayEvents (
@@ -402,5 +404,5 @@ CREATE TABLE PlayEvents (
 )
 ```
 
-Note how the metadata and the time attributes are mapped. 
-Also most of the options (in the WITH sections) are inferred from the Stream’s status server address and some defaults.  
+Note how the metadata and the time attributes are mapped.
+Also most of the options (in the WITH sections) are inferred from the Stream’s status server address and some defaults.
