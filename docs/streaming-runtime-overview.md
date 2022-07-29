@@ -5,10 +5,10 @@ The connection between two or more `Processors` is called [Stream](./architectur
 
 The `Stream` and the `Processor` [^1] are implemented as Kubernetes API extensions, defined as [Custom Resources](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/) and implementing [Reconciliation Controllers](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/#custom-controllers) for them. Consult the [SR technical stack](./sr-technical-stack.md#implementation-stack) for further implementation details.
 
-The `Streams` CRD instance specifies storage-at-rest of time-ordered [attribute-partitioned](./architecture/data-partitioning/data-partitioning.md), [structured](./architecture/streams/streaming-data-schema.md) data, such as a Kafka topic, or RabbitMQ exchange/queue.
+The `Streams` CR instance specifies storage-at-rest of time-ordered [attribute-partitioned](./architecture/data-partitioning/data-partitioning.md), [structured](./architecture/streams/streaming-data-schema.md) data, such as a Kafka topic, or RabbitMQ exchange/queue.
 This specification is used by the SR controllers to configure and wire the underlining connections.
 
-The `Processor` CRD instance defines the manifest of the event-driven streaming application to be deployed by the SR processor controllers. Once deployed the application continuously receives input streaming data, transforms it and sends the results downstream over the outputs. 
+The `Processor` CR instance defines the manifest of the event-driven streaming application to be deployed by the SR processor controllers. Once deployed the application continuously receives input streaming data, transforms it and sends the results downstream over the outputs. 
 
 The `Processor` can have zero or more input and output `Streams`. The collection of `Processors` and `Streams` come together at runtime to constitute streaming `Data Pipelines` (sometimes referred as `Multistage topologies`):
 
@@ -135,9 +135,9 @@ kubectl apply -f ./simple-streaming-app.yaml -n streaming-runtime
 ```
 
 On submission, the SR controllers react by provisioning and configuring the specified resources.
-For example the `SRP` processor type, defined in the `Processor` CRD, instructs the SR to provision the built-in, general purpose, [SRP processor](./architecture/processors/srp/overview.md) implementation.
+For example the `SRP` processor type, defined in the `Processor` CR, instructs the SR to provision the built-in, general purpose, [SRP processor](./architecture/processors/srp/overview.md) implementation.
 
-Likewise if the messaging middleware claimed by the `Stream` CRDs (in this example: Apache Kafka and RabbitMQ) is not available, the controllers for the [ClusterStreams](./architecture/cluster-streams/overview.md) will detect and auto-provision it.
+Likewise if the messaging middleware claimed by the `Stream` CRs (in this example: Apache Kafka and RabbitMQ) is not available, the controllers for the [ClusterStreams](./architecture/cluster-streams/overview.md) will detect and auto-provision it.
 
 Developers have different options to build their own data transformation logic.
 Depending on the extension approach, processor are grouped in the following types: 
