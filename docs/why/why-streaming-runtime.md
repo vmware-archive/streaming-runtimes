@@ -35,7 +35,7 @@ Another advantage of using Kubernetes as a Framework to build the Streaming Runt
 For example the `RabbitMQ Operator` or `Strimzi Operator` all provisioning and managing RabbitMQ or Kafka cluster in Kubernetes environments.
 
 
-## Steaming vs Batch Processing
+## Streaming vs Batch Processing
 
 In Batch processing the processing and analysis happens on a set of data that have already been stored over a period of time. An example is payroll and billing systems that have to be processed weekly or monthly. 
 
