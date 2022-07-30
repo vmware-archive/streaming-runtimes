@@ -4,35 +4,34 @@
 
 As a design pattern, the `Control Plane` (CP) is a sub-system that __defines__ and __controls__ how the work should be done. 
 The `Data Plane` (DP) on the other hand is where the actual work is done. 
-The separation of concerns allows innovating and scaling the Data Plane and Control Plane independently.
+The separation of concerns allows innovating and scaling both planes independently.
 
-In the context of the `Streaming Runtime` the `Data Plane` is where most of the data transformations happen and it is optimized for *speed* of processing, *availability*, *simplicity* and *regularity*. 
+In the context of the `Streaming Runtime` the `Data Plane` is where most of the data transformations happen and it is optimized for *speed* of processing, *availability*, *simplicity* and *regularity*.  This is where the event-driven applications and the messaging infrastructure work.
 ![ControlPlane vs DataPlane](./cp-vs-dp.gif){ align="left" width="350" } 
-The `Control Plane` controls the `Data Plane` and is optimized for *decision making* and in general facilitating and simplifying the `Data Plane` processing. 
-
-The Control Plane instantiates and tears down `Processors` as needed, provisions and configures the infrastructure backing the `Streams` and `ClusterStream` messaging middleware. 
-The Control Plane manages the partitioning, scaling and internal states of the pipeline run in the Data Plane.
+The SR `Control Plane` controls the `Data Plane` and is optimized for *decision making* and in general facilitating and simplifying the `Data Plane` processing. 
 
 Kubernetes itself is designed around the Control Plane and Data Plane principles. 
-It is comprised of __independent__ and __composable__ __process controllers__ that __continuously drive__ the __current state__ toward the provided __desired state__. 
+The CP is comprised of __independent__ and __composable__ __process controllers__ that __continuously drive__ the __current state__ in the DP toward the provided __desired state__. 
 Controllers operate on a collection of API objects of a certain kind; for example, the built-in pods resource contains a collection of Pod objects.
 
-Kubernetes is extensible, allowing to add new custom APIs and process controllers. 
+Kubernetes is also highly extensible, allowing to add new custom APIs and process controllers. 
 This provides us with a framework to build and run distributed applications resiliently! 
 The framework provides the building blocks for building developer platforms, but preserves user choice and flexibility where it is important.
 
-Kubernetes takes care of scaling and failover and self-healing for your custom platforms, and provides deployment patterns, such as canary or blue/green deployments. 
-Among others it provides:
+To take advantage of those capabilities the Streaming Runtime's CP is built as Kubernetes API extension (e.g. as Kubernetes Operator), with custom resources, such as [Processor](../architecture/processors/overview.md), [Stream](../architecture/streams/overview.md), [ClusterStream](../architecture/cluster-streams/overview.md) CRDs, and reconciliation controllers for them (see the [implementation stack](../sr-technical-stack.md#implementation-stack)).
 
-- Components using the apiserver benefit from common access control, audit logging, and policy extension
-- The Kubernetes apiserver maintains its own strongly-consistent storage via etcd, reducing the number of storage backends needed.
+The SR Control Plane uses the custom resources as declarative policies to instantiate and tear down event-driven applications as needed, to provision the messaging middleware infrastructure and to manage the internal states of the pipelines in the Data Plane.
+
+Kubernetes takes care of scaling and failover and self-healing for Streaming Runtime CP&DP, and provides deployment patterns, such as canary or blue/green deployments. 
+
+Some of the benefits for building the SR's Control Plane as Kubernetes ApiServer extension include:
+
+- common access control, audit logging, and policy extension
+- access to the Kubernetes' own strongly-consistent storage via etcd, reducing the number of storage backends needed.
 - common tools for managing API problems, such as validation and version changes.
-- Lastly, using the apiserver to host additional resources allows the resources to be managed with the same tooling as built-in resources.
-
-Another advantage of using Kubernetes as a Framework to build the Streaming Runtime is the the existing rich ecosystem of Kubernetes operators ([https://operatorhub.io](https://operatorhub.io)) : 
+- using the apiserver to host additional, custom, resources allows the resources to be managed with the same tooling as built-in resources.
+- existing rich ecosystem of [Kubernetes operators](https://operatorhub.io) that can be used to extend and compliment the SR capabilities. The SR already takes advantage of operators such as [Service Binding](https://servicebinding.io/), [RabbitMQ Operator](https://www.rabbitmq.com/kubernetes/operator/operator-overview.html) and [Strimzi](https://strimzi.io/).
 ![operator hub](./ooperator-hub.png)
-
-For example the `RabbitMQ Operator` or `Strimzi Operator` all provisioning and managing RabbitMQ or Kafka cluster in Kubernetes environments.
 
 
 ## Steaming vs Batch Processing
