@@ -1,5 +1,7 @@
 # Why Streaming Runtime?
 
+Microservices, containers, and Kubernetes help to free apps from infrastructure, enabling them to work independently and run anywhere. With Streaming Runtime, you can make the most of these cloud native patterns, automate the security and delivery of containerized streaming workloads, and proactively manage apps in production. It’s all about freeing developers to do their thing: build great apps.
+
 ## Control Plane vs Data Plane
 
 As a design pattern, the `Control Plane` (CP) is a sub-system that __defines__ and __controls__ how the work should be done. 
