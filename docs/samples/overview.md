@@ -1,5 +1,7 @@
 
-Samples below demonstrate how to implement various streaming and event-driven use case scenarios with the help of the `Streaming Runtime`.
+## Use Cases
+
+Example use cases below demonstrate how to implement various streaming and event-driven use case scenarios with the help of the `Streaming Runtime`.
 
 The [setup instructions](./instructions.md) helps to setup the demo infrastructure (e.g. minikube) and to explore the demo results - e.g. exploring the Apache Kafka topics and/or RabbitMQ queues data.
 
@@ -10,3 +12,8 @@ The [setup instructions](./instructions.md) helps to setup the demo infrastructu
 * [Spring Cloud Stream pipeline](spring-cloud-stream/tick-tock.md) (SCS) - show how to build streaming pipelines using Spring Cloud Stream application as processors.
 
 * ... more to come
+
+## Tutorials
+
+[Step by step](./tutorials.md) tutorials introduce the SR features and how to use them.
+

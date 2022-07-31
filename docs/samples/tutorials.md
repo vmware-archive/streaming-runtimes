@@ -2,6 +2,8 @@
 
 The step by step tutorials introduce the SR features and how to use them.
 
+All tutorials snippets are located under the [tutorials](https://github.com/vmware-tanzu/streaming-runtimes/tree/main/streaming-runtime-samples/tutorials) folder.
+
 --8<-- "streaming-runtime-samples/tutorials/README.md"
 
 --8<-- "streaming-runtime-samples/tutorials/1-message-retransmission.md"
