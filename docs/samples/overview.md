@@ -1,4 +1,8 @@
 
+## Tutorials
+
+[Step by step](./tutorials.md) tutorials introduce the Streaming Runtime features and how to use them.
+
 ## Use Cases
 
 Example use cases below demonstrate how to implement various streaming and event-driven use case scenarios with the help of the `Streaming Runtime`.
@@ -13,7 +17,4 @@ The [setup instructions](./instructions.md) helps to setup the demo infrastructu
 
 * ... more to come
 
-## Tutorials
-
-[Step by step](./tutorials.md) tutorials introduce the SR features and how to use them.
 

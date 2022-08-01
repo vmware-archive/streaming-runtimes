@@ -1,6 +1,55 @@
 # Streaming Runtime Processor (SRP)
 
-The SRP processor is built-in the Streaming Runtime, provide common capabilities such as message brokerage, [inline streaming transformations](#inline-transformations), [polyglot user-defined functions](./udf-overview.md), simple [tumbling time-window aggregation](./time-window-aggregation.md) and [data-partitioning capabilities](../../data-partitioning/data-partitioning.md) to name a few.
+The SRP processor provides generic streaming data processing capabilities such as message brokerage, [inline streaming transformations](#inline-transformations), [polyglot user-defined functions](./udf-overview.md), simple [tumbling time-window aggregation](./time-window-aggregation.md) and [data-partitioning capabilities](../../data-partitioning/data-partitioning.md) to name a few.
+
+It uses [Processor CRD](https://github.com/vmware-tanzu/streaming-runtimes/blob/main/streaming-runtime-operator/crds/processor-crd.yaml) based custom resources to configure the processor within the SR Control Plane. 
+
+The [srp-processor](https://github.com/vmware-tanzu/streaming-runtimes/tree/main/srp-processor) event-driven application implements the Data Plane SRP capabilities.
+
+## SRP Attributes
+
+Few specific attributes that start with the `srp.` prefix are used to configure the SRP specific capabilities.
+
+| SRP Attribute | Description                          |
+| ----------- | ------------------------------------ |
+| `srp.envs:` | Adds random environment variable to the SRP container configuration. Example: `"TEST_BAR=FOO;TEST_FOO=BAR"` |
+| `srp.output.headers` | Adds headers to the output messages. Uses expression like: `"user=header.fullName;team=payload.teamName"` |
+| `srp.window`    | Defines the Time-Window aggregation interval. Examples: `5s`, `2m`, `1h` |
+| `srp.window.idle.timeout`    | Defines an interval of inactivity to release the idle windows. Should be larger than the window interval! Example: `2m` |
+| `srp.input.timestampExpression`    | JsonPath expression Example: `header.eventtime`, or `payload.score_time`. Note: It is advised to use the inbound Stream's timeAttributes instead. |
+| `srp.maxOutOfOrderness`    | Supported out of orderness time. Example: `2s`. Note: It is advised to use the inbound Stream's timeAttributes instead. |
+| `srp.allowedLateness`    | Max time to allow late events. (Example `1h`). |
+| `srp.lateEventMode`    | Defines the policy to deal with late event records. Supports: `DROP`, `UPSERT`, `SIDE_CHANNEL` modes (defaults to `DROP`). |
+| `srp.input.schemaRegistryUri`    | configure the Schema Registry uri. Required for `Avro` content types. |
+| `srp.skipUdf`    | Forcefully disables the the UDF call. Defaults to false. Note that if you don't provide side-car container this would effectively skip the UDF. |
+| `forceStatefulSet` | If replication is larger than 1 and the forceStatefulSet is set to true then the SR will deploy the processor as `StatefulSet` event if there is no partitioned input. Defaults to `false'. (applicable for SRP and CSC processors) |
+| `srp.spel.expression` | set an inline, `SpEL` expressions as a data transformation function.  |
+
+Following snippets shows a sample SRP configuration. It uses the `srp.` attributes to configure [tumbling time-window](./time-window-aggregation.md) aggregation interval of 5 seconds, with idle timeout of 60 secs. The late events will be send to dedicated side channel.
+Also an [aggregation UDF](./udf-overview.md) is registered to aggregate the temporal aggregates.
+
+```yaml
+apiVersion: streaming.tanzu.vmware.com/v1alpha1
+kind: Processor
+metadata:
+  name: user-scores-processor
+spec:
+  type: SRP
+  inputs:
+    - name: data-in-stream
+  outputs:
+    - name: user-scores-stream
+  attributes:
+    srp.window: 5s # Tumbling Time Window of 5 seconds.
+    srp.window.idle.timeout: 60s # Allow partial release of idle time-windows.
+    srp.lateEventMode: SIDE_CHANNEL # Send late events a side-channel stream. By default late events are discarded.
+  template:
+    spec:
+      containers:
+        - name: scores-by-user-javascript
+          # The UDF implementation
+          image: ghcr.io/vmware-tanzu/streaming-runtimes/user-score-js:latest
+```
 
 ## Message Transformation Options
 

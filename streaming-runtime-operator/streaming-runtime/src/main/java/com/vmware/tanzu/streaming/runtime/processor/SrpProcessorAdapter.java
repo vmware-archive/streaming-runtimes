@@ -58,7 +58,8 @@ import org.springframework.util.StringUtils;
  * 
  * srp.input.timestampExpression: JsonPath expression Example: header.eventtime, or payload.score_time
  * 
- * srp.maxOutOfOrderness: 5s srp.allowedLateness: 2h
+ * srp.maxOutOfOrderness: 5s 
+ * srp.allowedLateness: 2h
  * 
  * srp.lateEventMode - Defines the policy to deal with late event records. Supports: DROP, UPSERT, SIDE_CHANNEL modes
  * and defaults to DROP.
