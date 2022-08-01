@@ -78,10 +78,10 @@ nav:
         - SR Stack: sr-technical-stack.md
         - Build: streaming-runtime-build.md
   - Examples:
+      - Overview: samples/overview.md
       - Tutorials:
         - Step by Step Tutorials: samples/tutorials.md
       - Use Cases:
-        - Overview: samples/overview.md
         - How to Run: samples/instructions.md
         - Anomaly Detection: samples/anomaly-detection/anomaly-detection.md
         - Clickstream Analysis: samples/clickstream/clickstream.md
