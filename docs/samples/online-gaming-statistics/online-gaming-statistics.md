@@ -6,6 +6,8 @@ Processor types: *SRP*
     The code snippets are fully functional but the documentation is still WIP.
 
 
+Find the [code on GH](https://github.com/vmware-tanzu/streaming-runtimes/blob/main/streaming-runtime-samples/online-gaming-statistics).
+
 Collects, possibly out of order, data statistics from an online, multiplatform gaming platform and continuously computes temporal user and team scores statistics.
 As users play, we would like to maintain fresh, near real-time, view of current scores per user and per team.
 

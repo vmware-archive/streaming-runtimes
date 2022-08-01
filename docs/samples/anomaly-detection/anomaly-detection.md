@@ -1,4 +1,4 @@
-# ![anomaly detection logo](./anomaly-detection-logo.png){ align=left, width="35"} Credit Card Anomaly Detection 
+# ![anomaly detection logo](./anomaly-detection-logo.png){ align=left, width="35"} Credit Card Anomaly Detection - FSQL
 
 Imagine a stream of credit card authorization attempts, representing, for example, people swiping their chip cards into a reader or typing their number into a website. Such stream may look something like this:
 
@@ -233,3 +233,7 @@ spec:
 ```
 
 It uses RabbitMQ message broker and doesn't define an explicit schema assuming the payload data is just a byte-array.
+
+## Next step
+
+Check the alternative anomaly detection implementation: [Anomaly Detection - SRP](./anomaly-detection-srp.md)

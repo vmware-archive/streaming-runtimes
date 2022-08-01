@@ -83,7 +83,8 @@ nav:
         - Step by Step Tutorials: samples/tutorials.md
       - Use Cases:
         - How to Run: samples/instructions.md
-        - Anomaly Detection: samples/anomaly-detection/anomaly-detection.md
+        - Anomaly Detection (FSQL): samples/anomaly-detection/anomaly-detection.md
+        - Anomaly Detection (SRP): samples/anomaly-detection/anomaly-detection-srp.md
         - Clickstream Analysis: samples/clickstream/clickstream.md
         - IoT Monitoring: samples/iot-monitoring/iot-monitoring.md
         - Music Chart: samples/top-k-songs/top-k-songs.md

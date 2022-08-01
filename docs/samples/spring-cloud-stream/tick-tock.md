@@ -55,3 +55,7 @@ The [streaming-pipeline-ticktock-partitioned-better.yaml](https://github.com/vmw
 ```shell
 kubectl delete srs,srcs,srp --all -n streaming-runtime 
 ```
+
+## Next step
+
+Explore the [Online Game Statistics](../online-gaming-statistics/online-gaming-statistics.md) use-case.

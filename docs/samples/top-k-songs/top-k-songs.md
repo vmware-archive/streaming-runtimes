@@ -139,3 +139,7 @@ The [streaming-pipeline.yaml](https://github.com/vmware-tanzu/streaming-runtimes
     kubectl delete srs,srcs,srp --all -n streaming-runtime 
     kubectl delete deployments,svc -l app=top-k-songs-data-generator -n streaming-runtime
     ```
+
+## Next step
+
+Explore the [Spring CLoud Stream TickTock](../spring-cloud-stream/tick-tock.md) use-case.

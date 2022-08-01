@@ -36,7 +36,7 @@ Learn how to build [partitioned time-window aggregations](../processors/srp/time
 
 Also visit the following example to learn how to define and configure partitioned streaming pipelines:
 
-- [5-partition-by-field-with-stateful-replication.yaml](https://github.com/vmware-tanzu/streaming-runtimes/blob/main/streaming-runtime-samples/tutorials/5-partition-by-field-with-stateful-replication.yaml)
-- [5.1-partition-by-field(header-keys)-with-stateful-replication.yaml](https://github.com/vmware-tanzu/streaming-runtimes/blob/main/streaming-runtime-samples/tutorials/5.1-partition-by-field(header-keys)-with-stateful-replication.yaml)
-- [6.1-partition-by-field-stateful-replication-time-window-aggregation.yaml](https://github.com/vmware-tanzu/streaming-runtimes/blob/main/streaming-runtime-samples/tutorials/6.1-partition-by-field-stateful-replication-time-window-aggregation.yaml)
-- [online-gaming-statistics](https://github.com/vmware-tanzu/streaming-runtimes/blob/main/streaming-runtime-samples/online-gaming-statistics/streaming-pipeline.yaml)
+- [Partition by Field with Stateful Replication](../../samples/tutorials.md#5-partition-by-field-with-stateful-replication)
+- [Partition by Field using Header Keys](../../samples/tutorials.md#51-partition-by-field-using-header-keys)
+- [Partition by Field with replicated Time-Window aggregation](../../samples/tutorials.md#61-partition-by-field-with-replicated-time-window-aggregation)
+- [Online Gaming Statistics](../../samples/online-gaming-statistics/online-gaming-statistics.md)

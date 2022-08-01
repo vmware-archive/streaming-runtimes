@@ -237,3 +237,6 @@ spec:
 
 It uses RabbitMQ message broker and doesn't define an explicit schema assuming the payload data is just a byte-array.
 
+## Next step
+
+Explore the [Music Chart](../top-k-songs/top-k-songs.md) use-case.

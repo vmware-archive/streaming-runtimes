@@ -80,3 +80,6 @@ kubectl delete srs,srcs,srp --all -n streaming-runtime
 kubectl delete deployments,svc -l app=clickstream-data-generator -n streaming-runtime 
 ```
 
+## Next step
+
+Explore the [IoT Monitoring](../iot-monitoring/iot-monitoring.md) use-case.
