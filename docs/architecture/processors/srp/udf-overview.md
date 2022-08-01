@@ -10,9 +10,10 @@ Two types of UDF functions are supported: `Mapping UDF` and `Aggregation UDF`
 <!-- ![mapping-udf-flow](./udf-types.svg) -->
 
 ![](./mapping-udf-type.svg){ align="left" width="250" } [Mapping UDF](#mapping-udf) - The SRP forwards the inbound messages, element-wise over the `MessagingService`, to the UDF function. The function computes a result, returns it to the SRP, that in turn sends it downstream. Every inbound message produces a single outbound result!  
-The UDF image is registered with the SRP Processor using the spec under the `spec.templates.spec.containers` section. The SR will deploy the image in side-container in the same pod as the SRP Processor.
 
 ![](./mapping-udf-type.svg){ align="left" width="250" } [Aggregation UDF](#aggregation-udf) - When the `Time-Window` aggregation is enabled and a window is ready for release, the SRP processor forwards the window content (e.g. collection of messages) to the UDF function. Later processes the collection,  computes one or more aggregation results that are returned to the SRP and sent downstream.
+
+The UDF image (for both types) is registered with the SRP Processor using the spec under the `spec.templates.spec.containers` section. The SR will deploy the image in side-container in the same pod as the SRP Processor.
 
 ## Resource Definition
 
