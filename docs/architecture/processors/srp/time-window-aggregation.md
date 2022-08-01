@@ -59,4 +59,7 @@ In short we can reliably scale out the time-window aggregation processors by ens
 
 ![](./partitioned-time-window-aggregation.svg)
 
-Explore the complete [6.1-partition-by-field-stateful-replication-time-window-aggregation.yaml](https://github.com/vmware-tanzu/streaming-runtimes/blob/main/streaming-runtime-samples/tutorials/6.1-partition-by-field-stateful-replication-time-window-aggregation.yaml) example.
+Explore related examples:
+
+- [6.1 Partition by Field with replicated Time-Window aggregation](../../../samples/tutorials.md#61-partition-by-field-with-replicated-time-window-aggregation)
+- [Online Gaming Statistics](../../../samples/online-gaming-statistics/online-gaming-statistics.md)
