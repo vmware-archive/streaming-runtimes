@@ -65,7 +65,7 @@ nav:
             - Overview: architecture/processors/srp/overview.md
             - Time-Window Aggregation: architecture/processors/srp/time-window-aggregation.md
             - User Defined Functions: architecture/processors/srp/udf-overview.md
-            - Build UDF: architecture/processors/srp/udf-build.md
+            - Build UDFs: architecture/processors/srp/udf-build/udf-build.md
           - SCS Processor: architecture/processors/scs/overview.md
           - FSQL Processor: architecture/processors/fsql/overview.md        
         - Streams:
