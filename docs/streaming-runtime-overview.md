@@ -3,7 +3,7 @@ The connection between two or more `Processors` is called [Stream](./architectur
 
 ![Multi In/Out Processor](./sr-multi-in-out-processor.svg)
 
-The `Stream` and the `Processor` [^1] are implemented as Kubernetes API extensions, defined as [Custom Resources](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/) and implementing [Reconciliation Controllers](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/#custom-controllers) for them. Consult the [SR technical stack](./sr-technical-stack.md#implementation-stack) for further implementation details.
+The `Processor` and the `Stream` [^1] are implemented as Kubernetes API extensions, defined as [Custom Resources](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/) and implementing [Reconciliation Controllers](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/#custom-controllers) for them. Consult the [SR technical stack](./sr-technical-stack.md#implementation-stack) for further implementation details.
 
 The `Streams` CR instance specifies storage-at-rest of time-ordered [attribute-partitioned](./architecture/data-partitioning/data-partitioning.md), [structured](./architecture/streams/streaming-data-schema.md) data, such as a Kafka topic, or RabbitMQ exchange/queue.
 This specification is used by the SR controllers to configure and wire the underlining connections.

@@ -1,17 +1,19 @@
 ## Prerequisites
 
 Provide access to Kubernetes cluster.
-You can also run it locally within a [minikube](https://kubernetes.io/docs/tasks/tools/#installation).
-Make sure to provision enough memory (8G+) and CPU (8+) resources:
+You can also run it locally within a [Minikube](https://kubernetes.io/docs/tasks/tools/#installation)[^1] or [Kind](https://kind.sigs.k8s.io/):
 
-
-=== "All"
+=== "minikube"
     ```shell
     minikube start --memory=8196 --cpus 8
     ```
-=== "MacOS"
+=== "minikube (MacOS)"
     ```shell
     minikube start --driver=hyperkit --memory=8196 --cpus 8
+    ```
+=== "kind"
+    ```shell
+    kind create cluster --name sr-cluster
     ```
 
 ## Streaming Runtime Operator
@@ -46,3 +48,5 @@ kubectl apply -f https://github.com/rabbitmq/messaging-topology-operator/release
 ## Next Steps
 
 Follow the [Overview](streaming-runtime-overview.md) for general understanding how the Streaming Runtime works or the [Samples](./samples/overview.md) for various executable examples.
+
+[^1]: Make sure to provision enough memory (8G+) and CPU (8+) resources.
