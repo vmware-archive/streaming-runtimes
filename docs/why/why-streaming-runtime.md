@@ -36,7 +36,6 @@ Some of the benefits for building the SR's Control Plane as Kubernetes ApiServer
 ![operator hub](./ooperator-hub.png)
 
 * [kcp-dev/kcp](https://github.com/kcp-dev/kcp) - multi-tenant Kubernetes control plane for workloads on many clusters.
->Kubernetes is mainly known as a container orchestration platform today, but we believe it can be even more.
 >With the power of CRDs, Kubernetes provides a flexible platform for declarative APIs of all types, and the reconciliation pattern common to Kubernetes controllers is a powerful tool in building robust, expressive systems.
 >At the same time, a diverse and creative community of tools and services has sprung up around Kubernetes APIs.
 * [Crossplane](https://crossplane.io/docs/v1.9/concepts/composition.html) - let you build your own platform with your own opinionated concepts and APIs without needing to write a Kubernetes controller from scratch.
