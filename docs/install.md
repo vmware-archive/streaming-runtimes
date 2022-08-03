@@ -13,7 +13,8 @@ Make sure to provision enough memory (8G+) and CPU (8+) resources:
     ```shell
     minikube start --driver=hyperkit --memory=8196 --cpus 8
     ```
-## Install Streaming Runtime Operator
+
+## Streaming Runtime Operator
 
 This oneliner installs the `Streaming Runtime Operator` in your Kubernetes environment:
 
@@ -23,7 +24,7 @@ kubectl apply -f 'https://raw.githubusercontent.com/vmware-tanzu/streaming-runti
 
 It installs the `streaming-runtime` operator along with the [custom resource definitions (CRDs)](./streaming-runtime-operator/crds) (such as `ClusterStream`, `Stream` and `Processor`) and required roles and binding configurations.
 
-## (Optional) Install Service Binding Operator
+### Service Binding Operator (optional)
 
 If the [Service Binding](./architecture/service-binding/service-binding.md) specification is used to manage the sensitive information in the streaming pipelines, 
 you need to pre-install a compliant operator such as the VMWare-Tanzu [Service Binding Operator](https://github.com/vmware-tanzu/servicebinding):
@@ -32,7 +33,7 @@ you need to pre-install a compliant operator such as the VMWare-Tanzu [Service B
 kubectl apply -f https://github.com/vmware-tanzu/servicebinding/releases/download/v0.7.1/service-bindings-0.7.1.yaml
 ```
 
-## (Optional) Install RabbitMQ Cluster and Message Topology Operators
+### RabbitMQ Cluster and Message Topology Operators (optional)
 
 If you decided to use the RabbitMQ auto-provisioning, based on [RabbitMQ Cluster & Message Topology Operators](https://www.rabbitmq.com/kubernetes/operator/operator-overview.html) the following managers and operators are required:
 
