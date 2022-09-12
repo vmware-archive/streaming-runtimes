@@ -40,7 +40,7 @@ Some of the benefits for building the SR's Control Plane as Kubernetes ApiServer
 >At the same time, a diverse and creative community of tools and services has sprung up around Kubernetes APIs.
 * [Crossplane](https://crossplane.io/docs/v1.9/concepts/composition.html) - let you build your own platform with your own opinionated concepts and APIs without needing to write a Kubernetes controller from scratch.
 
-## Steaming vs Batch Processing
+## Streaming vs Batch Processing
 
 In Batch processing the processing and analysis happens on a set of data that have already been stored over a period of time. An example is payroll and billing systems that have to be processed weekly or monthly. 
 
