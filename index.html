@@ -1,0 +1,2351 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      
+        <link rel="next" href="install/">
+      
+      <link rel="icon" href="assets/icon-tanzu2.svg">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.5">
+    
+    
+      
+        <title>Streaming Runtime - Streaming Runtime</title>
+      
+    
+    
+      <link rel="stylesheet" href="assets/stylesheets/main.558e4712.min.css">
+      
+        
+        <link rel="stylesheet" href="assets/stylesheets/palette.2505c338.min.css">
+      
+      
+
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+
+  <!-- Determine title -->
+  
+  
+
+  <!-- The image needs to have an absolute URL -->
+  
+
+  <!-- Open graph meta tags -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Streaming Runtime" />
+  <meta property="og:description" content="None" />
+  <meta property="og:url" content="None" />
+  <meta property="og:image" content="Noneassets/images/illustrations/banner.png" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:width" content="1080" />
+  <meta property="og:image:height" content="568" />
+
+  <!-- google-site-verification meta-tag -->
+  <meta name="google-site-verification" content="-Rj8YMCn9uu5IwOFdC-WfAzXp4ZOMJtYKxU40ZgcJIU" />
+
+<!-- Extra stylesheets -->
+<!--  <link
+    rel="stylesheet"
+    href="assets/stylesheets/overrides.css"
+  />-->
+
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="" data-md-color-accent="">
+  
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&"object"==typeof palette.color)for(var key of Object.keys(palette.color))document.body.setAttribute("data-md-color-"+key,palette.color[key])</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+    </div>
+    <div data-md-component="announce">
+      
+        <aside class="md-banner">
+          <div class="md-banner__inner md-grid md-typeset">
+            
+            
+    <div class="md-archived-announce">
+      <p>The Streaming Runtimes Operator is <strong><em>archived</em></strong>.
+        <a href="https://github.com/vmware-tanzu/streaming-runtimes/blob/main/ARCHIVED.md">Learn more</a>.
+      </p>
+    </div>
+
+
+          </div>
+          
+        </aside>
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="." title="Streaming Runtime" class="md-header__button md-logo" aria-label="Streaming Runtime" data-md-component="logo">
+      
+  <img src="assets/icon-tanzu2.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Streaming Runtime
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Streaming Runtime
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      <form class="md-header__option" data-md-component="palette">
+        
+          
+          <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="" data-md-color-accent=""  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+          
+            <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6zm0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4zM7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+            </label>
+          
+        
+          
+          <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="" data-md-color-accent=""  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_2">
+          
+            <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3Z"/></svg>
+            </label>
+          
+        
+      </form>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/vmware-tanzu/streaming-runtimes" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-tabs__inner md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+    
+  
+
+
+  <li class="md-tabs__item">
+    <a href="." class="md-tabs__link md-tabs__link--active">
+      Home
+    </a>
+  </li>
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="install/" class="md-tabs__link">
+        Streaming Runtime
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="samples/overview/" class="md-tabs__link">
+        Examples
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="why/why-streaming-runtime/" class="md-tabs__link">
+      Whys
+    </a>
+  </li>
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+
+    
+        
+      
+
+    <!-- Additional styles for landing page -->
+    <style>
+
+        .md-header {
+            position: initial
+        }
+
+        .md-main__inner {
+            margin: 0
+        }
+
+        .md-footer-copyright {
+            display: none
+        }
+
+        .md-footer-nav__inner {
+            display: none
+        }
+
+        .md-content {
+            display: none
+        }
+
+        .md-footer-meta__inner {
+            align-content: center;
+            display: flex;
+            align-items: center;
+            justify-content: center
+        }
+
+        /*
+         Table of content font color
+        */
+        a.md-nav__link {
+            color: #303C55;
+            text-decoration: none;
+        }
+
+        .tx-container {
+            height: fit-content;
+            padding-top: 0rem;
+            background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1123 258'><path d='M1124,2c0,0 0,256 0,256l-1125,0l0,-48c0,0 16,5 55,5c116,0 197,-92 325,-92c121,0 114,46 254,46c140,0 214,-167 572,-166Z' style='fill: white' /></svg>") no-repeat bottom, linear-gradient(to bottom, var(--md-primary-fg-color), #2a978d 99%, #fff 99%)
+        }
+
+        .tx-hero {
+            color: var(--md-primary-bg-color);
+            justify-content: right;
+        }
+
+        .tx-hero h1 {
+            margin-bottom: 0rem;
+            color: currentColor;
+            font-weight: 700
+        }
+
+        .tx-hero__content {
+            padding-bottom: 9rem;
+            justify-content: left;
+            padding-right: 3rem;
+        }
+
+        .tx-hero__content_small {
+            justify-content: left;
+            padding-right: 3rem;
+        }
+
+        .tx-hero__image {
+            max-width: 100%;
+            max-height: 100%;
+            order: 1;
+            padding-right: 2.5rem;
+        }
+
+        .tx-hero .md-button {
+            margin-top: .5rem;
+            margin-right: .5rem;
+            color: var(--md-primary-bg-color)
+        }
+
+        .tx-hero .md-button--primary {
+            background-color: var(--md-primary-bg-color);
+            color: hsla(280deg, 37%, 48%, 1);
+            border-color: var(--md-primary-bg-color)
+        }
+
+        .tx-hero .md-button:focus,
+        .tx-hero .md-button:hover {
+            background-color: var(--md-accent-fg-color);
+            color: var(--md-default-bg-color);
+            border-color: var(--md-accent-fg-color)
+        }
+
+        .tx-container-2 {
+            padding: 0rem;
+            background-color: white;
+            margin-bottom: 0px;
+        }
+
+        .tx-hero__image-2 {
+            max-width: 100%;
+            max-height: 100%;
+            order: 1;
+            padding-right: 0.5rem;
+            padding-left: 0rem;
+            padding-top: 10px;
+            padding-bottom: 10px;
+            float: left;
+        }
+
+        .tx-hero__content-2 {
+            margin-left: 50px;
+            justify-content: left;
+            color: #2a978d;
+            font-weight: 300;
+            padding: 0 0px;
+            padding-bottom: 40px;
+            word-break: break-word;
+            float: right;
+        }
+
+        .tx-hero__content-2 h1 {
+            margin-top: 50px;
+            color: #2a978d;
+            font-weight: 600;
+            font-size: 36px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            line-height: normal;
+            /*font-family: inherit;*/
+        }
+
+        .tx-hero__content-2 p {
+            font-size: 17px;
+            line-height: 1.8em;
+            text-rendering: optimizeLegibility;
+            color: black;
+            display: block;
+        }
+
+        .tx-hero__content-2 a:link {
+            color: #2a978d;
+        }
+
+        .tx-hero__content-2 a:visited {
+            color: #2a978d;
+        }
+
+        .tx-container-3 {
+            height: auto;
+            background: linear-gradient(to bottom, var(--md-primary-fg-color), #02162f 100%, #fff 99%);
+        }
+
+        .tx-container-4 {
+            height: auto;
+            background: linear-gradient(to bottom, #2a978d, #02162f 99%, #fff 99%);
+        }
+
+        .tx-container-testimonial {
+            height: auto;
+            background: #EDEFF0;
+        }
+
+        .tx-hero__image-3 {
+            max-width: 100%;
+            max-height: 100%;
+            order: 1;
+            padding-right: 2.5rem;
+            padding-top: 30px;
+            padding-bottom: 30px;
+        }
+
+        .tx-hero__image-4 {
+            max-width: 100%;
+            max-height: 100%;
+            order: 1;
+            padding-right: 2.5rem;
+            padding-top: 5px;
+            padding-bottom: 15px;
+        }
+
+        .tx-footer {
+            margin: 0px 0rem;
+            background-color: white;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .tx-hero__content-footer {
+            justify-content: left;
+            color: #2a978d;
+            font-weight: 300;
+            padding: 0 0px;
+            word-break: break-word;
+            float: left;
+        }
+
+        .tx-footer p {
+            font-size: 12px;
+            line-height: 1.8em;
+            text-rendering: optimizeLegibility;
+            color: black;
+            display: block;
+            font-family: inherit;
+        }
+
+        .md-banner {
+            /* background-color: hsl(0deg 73% 44% / 87%); */
+            background-color: hsl(0deg 2% 23% / 70%);
+        }
+
+        .md-banner .md-archived-announce {
+            font-size:  20px;
+        }
+
+        .md-banner .md-archived-announce a {
+            color:rgb(237, 239, 240);
+        }
+
+        /**/
+        /*Adjusting Mobile UI */
+        /**/
+        @media screen and (max-width: 30em) {
+            .tx-hero h1 {
+                font-size: 1.4rem
+            }
+
+            .tx-hero__content {
+                margin-left: 20px;
+                margin-right: 20px;
+            }
+
+            .tx-hero__content_small {
+                margin-bottom: 50px;
+                margin-left: 20px;
+                margin-right: 20px;
+                font-size: 1.1rem;
+            }
+
+            .tx-hero__content-2 {
+                margin-left: 20px;
+                margin-right: 20px;
+            }
+
+            .tx-hero__content-3 {
+                margin-left: 20px;
+                margin-right: 20px;
+            }
+
+            .md-typeset .md-button {
+                font-size: 14px;
+            }
+        }
+
+        @media screen and (min-width: 60em) {
+            .md-sidebar--secondary {
+                display: none
+            }
+
+            .tx-hero {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .tx-hero__content {
+                max-width: 28rem;
+                margin-top: 3.5rem;
+                margin-bottom: 3.5rem;
+                margin-left: 1.0rem;
+                margin-right: 4.0rem;
+                align-items: center;
+            }
+        }
+
+        @media screen and (min-width: 76.25em) {
+            .md-sidebar--primary {
+                display: none
+            }
+
+            .top-hr {
+                width: 100%;
+                display: flex;
+                max-width: 61rem;
+                margin-right: auto;
+                margin-left: auto;
+                padding: 0 .2rem;
+            }
+
+            .bottom-hr {
+                margin-top: 10px;
+                width: 100%;
+                display: flex;
+                max-width: 61rem;
+                margin-right: auto;
+                margin-left: auto;
+                padding: 0 .2rem;
+            }
+        }
+
+        .text-center {
+            text-align: center;
+            padding-right: 15px;
+            padding-left: 15px;
+            margin-right: auto;
+            margin-left: auto;
+            margin-top: 15px;
+            font-size: 23px;
+            font-weight: 300;
+            padding-bottom: 10px;
+        }
+
+        .logos {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-flow: row wrap;
+            margin: 0 auto;
+        }
+
+        .logos img {
+            flex: 1 1 auto;
+            padding: 25px;
+            max-height: 130px;
+            vertical-align: middle;
+        }
+    </style>
+
+    <!-- Table Style -->
+    <style>
+        .table-wrapper{
+            margin: 10px 70px 70px;
+            box-shadow: 0px 35px 50px rgba( 0, 0, 0, 0.2 );
+        }
+
+        .fl-table {
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: normal;
+            border: none;
+            border-collapse: collapse;
+            width: 100%;
+            max-width: 100%;
+            white-space: nowrap;
+            background-color: white;
+        }
+
+        .fl-table td, .fl-table th {
+            text-align: left;
+            padding: 8px;
+        }
+
+        .fl-table td {
+            border-right: 1px solid #f8f8f8;
+            font-size: 16px;
+        }
+
+        .fl-table thead th {
+            color: #ffffff;
+            background: #4FC3A1;
+        }
+
+
+        .fl-table thead th:nth-child(odd) {
+            color: #ffffff;
+            background: #324960;
+        }
+
+        .fl-table tr:nth-child(even) {
+            background: #F8F8F8;
+        }
+
+        /* Responsive */
+
+        @media (max-width: 767px) {
+            .fl-table {
+                display: block;
+                width: 100%;
+            }
+            .table-wrapper:before{
+                content: "Scroll horizontally >";
+                display: block;
+                text-align: right;
+                font-size: 10px;
+                color: white;
+                padding: 0 0 10px;
+            }
+            .fl-table thead, .fl-table tbody, .fl-table thead th {
+                display: block;
+            }
+            .fl-table thead th:last-child{
+                border-bottom: none;
+            }
+            .fl-table thead {
+                float: left;
+            }
+            .fl-table tbody {
+                width: auto;
+                position: relative;
+                overflow-x: auto;
+            }
+            .fl-table td, .fl-table th {
+                padding: 20px .625em .625em .625em;
+                height: 90px;
+                vertical-align: middle;
+                box-sizing: border-box;
+                overflow-x: hidden;
+                overflow-y: auto;
+                width: 110px;
+                font-size: 8px;
+                text-overflow: ellipsis;
+            }
+            .fl-table thead th {
+                text-align: left;
+                border-bottom: 1px solid #f7f7f9;
+            }
+            .fl-table tbody tr {
+                display: table-cell;
+            }
+            .fl-table tbody tr:nth-child(odd) {
+                background: none;
+            }
+            .fl-table tr:nth-child(even) {
+                background: transparent;
+            }
+            .fl-table tr td:nth-child(odd) {
+                background: #F8F8F8;
+                border-right: 1px solid #E6E4E4;
+            }
+            .fl-table tr td:nth-child(even) {
+                border-right: 1px solid #E6E4E4;
+            }
+            .fl-table tbody td {
+                display: block;
+                text-align: center;
+            }
+        }
+
+    </style>
+
+    <!-- Testimonial Section Style -->
+    <style>
+        *{
+            box-sizing: border-box
+        }
+        body{
+            margin: 0;
+            padding: 0;
+            font-family: Helvetica;
+            font-weight: 100;
+            color: #777;
+        }
+        .container-testimonial{
+            background: rgb(237, 239, 240);
+            height: 50vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 30px;
+            margin-left: 150px;
+            margin-right: 150px;
+
+        }
+
+        .testimonial-header{
+            margin-top: 50px;
+            margin-bottom: 30px;
+            border-radius: 10px;
+            position: center;
+            justify-content:center;
+            font-size: 42px;
+            color: #2a978d;
+        }
+
+        .testimonial-card{
+            min-height: 400px;
+            width: 350px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 8px 30px rgba(0,0,0,.3);
+            display: flex;
+            flex-flow: column;
+            justify-content:space-between;
+            margin-left: 10px;
+        }
+
+        .text{
+            padding: 2em;
+            line-height: 1.7em;
+            position: relative;
+            font-size: 14px;
+            color: #0a192f;
+            margin-bottom: 50px;
+        }
+        .image{
+            background-color:tomato;
+            height: 120px;
+            width: 120px;
+            border-radius: 50%;
+            border: 5px solid white;
+            position: absolute;
+            top: -50%;
+            left: 50%;
+            transform: translateX(-50%);
+            display:flex;
+            justify-content:center;
+        }
+
+        .footer{
+            background: linear-gradient(90deg, #0a192f 0%, #2a978d 100%);
+            height: 165px;
+            border-radius: 0 0 10px 10px;
+            position:relative;
+        }
+
+        .quote{
+            font-size: 400%;
+            float: right;
+            opacity: .1;
+            transform: rotate(10deg) translate(-10px, -40px);
+            color:#4D3FA3;
+        }
+
+        .person{
+            color:white;
+            position: absolute;
+            margin-top: 0px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -100%);
+            font-size: 1rem;
+            font-weight: 550;
+        }
+
+        .person-title{
+            color:white;
+            position: absolute;
+            margin-top: 10px;
+            top: 90%;
+            left: 50%;
+            transform: translate(-50%, -100%);
+            font-size:0.7rem;
+            font-weight: 300;
+        }
+
+        @media screen and (max-width: 30em) {
+            .container-testimonial{
+                background: rgb(237, 239, 240);
+                height: 50vh;
+                display: table;
+                align-items: center;
+                justify-content: left;
+                margin-bottom: 30px;
+                margin-left: 5px;
+                margin-right: 5px;
+            }
+
+            .testimonial-card {
+                min-height: 400px;
+                width: 350px;
+                background-color: white;
+                border-radius: 10px;
+                box-shadow: 0 8px 30px rgb(0 0 0 / 30%);
+                display: flex;
+                flex-flow: column;
+                justify-content: space-between;
+                margin-left: 10px;
+                margin-bottom: 5px;
+        }
+            .testimonial-header{
+                margin-top: 50px;
+                margin-bottom: 30px;
+                border-radius: 10px;
+                position: center;
+                justify-content:center;
+                font-size: 24px;
+                color: #2a978d;
+            }
+        }
+
+        @media only screen and (min-width: 481px) and (max-width: 1600px) {
+            .container-testimonial{
+                background: rgb(237, 239, 240);
+                height: 50vh;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-top: 100px;
+                margin-bottom: 100px;
+                margin-left: 150px;
+                margin-right: 150px;
+            }
+        }
+
+    </style>
+
+    <!-- Subscription Section Style -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #FFFFFF;
+            color: #FFF;
+            font-size: 62.5%;
+            font-family: 'Roboto', Arial, Helvetica, Sans-serif, Verdana;
+        }
+
+        ul {
+            list-style-type: none;
+        }
+
+        .pricing-table-title {
+            text-transform: uppercase;
+            font-weight: 700;
+            font-size: 2.6em;
+            color: #2a978d;
+            margin-top: 15px;
+            text-align: left;
+            margin-bottom: 25px;
+            text-shadow: 0 1px 1px rgba(0, 0, 0, 0.4);
+        }
+
+        .pricing-table-title a {
+            font-size: 0.6em;
+        }
+
+        .clearfix:after {
+            content: '';
+            display: block;
+            height: 0;
+            width: 0;
+            clear: both;
+        }
+
+        /** ========================
+         * Container
+         ============================*/
+        .pricing-wrapper {
+            width: 1360px;
+            padding-bottom: 40px;
+            margin: 40px auto 0;
+        }
+
+        .pricing-table {
+            margin: 0 10px;
+            text-align: center;
+            width: 300px;
+            float: left;
+            -webkit-box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
+            -webkit-transition: all 0.25s ease;
+            -o-transition: all 0.25s ease;
+            transition: all 0.25s ease;
+        }
+
+        .pricing-table:hover {
+            -webkit-transform: scale(1.06);
+            -ms-transform: scale(1.06);
+            -o-transform: scale(1.06);
+            transform: scale(1.06);
+        }
+
+        .pricing-title {
+            color: #FFF;
+            background: #172a45;
+            padding: 20px 0;
+            font-size: 2em;
+            text-transform: uppercase;
+            text-shadow: 0 1px 1px rgba(0, 0, 0, 0.4);
+        }
+
+        .pricing-table.recommended .pricing-title {
+            background: #2a978d;
+        }
+
+        .pricing-table.recommended .pricing-action {
+            background: #2a978d;
+        }
+
+        .pricing-table .price {
+            background: #403e3d;
+            font-size: 3.4em;
+            font-weight: 700;
+            padding: 20px 0;
+            text-shadow: 0 1px 1px rgba(0, 0, 0, 0.4);
+        }
+
+        .pricing-table .price sup {
+            font-size: 0.4em;
+            position: relative;
+            left: 5px;
+        }
+
+        .table-list {
+            background: #FFF;
+            color: #403d3a;
+        }
+
+        .table-list li {
+            font-size: 1.4em;
+            font-weight: 700;
+            padding: 12px 8px;
+        }
+
+    /*    .table-list li:before {
+            content: "\f00c";
+            font-family: 'FontAwesome';
+            color: #3fab91;
+            display: inline-block;
+            position: relative;
+            right: 5px;
+            font-size: 16px;
+        }*/
+
+        .table-list li span {
+            font-weight: 400;
+        }
+
+        .table-list li span.unlimited {
+            color: #FFF;
+            background: #172a45;
+            font-size: 0.9em;
+            padding: 5px 7px;
+            display: inline-block;
+            -webkit-border-radius: 38px;
+            -moz-border-radius: 38px;
+            border-radius: 38px;
+        }
+
+
+        .table-list li:nth-child(2n) {
+            background: #F0F0F0;
+        }
+
+        .table-buy {
+            background: #FFF;
+            padding: 15px;
+            text-align: left;
+            overflow: hidden;
+        }
+
+        .table-buy p {
+            float: left;
+            color: #37353a;
+            font-weight: 700;
+            font-size: 2.4em;
+        }
+
+        .table-buy p sup {
+            font-size: 0.5em;
+            position: relative;
+            left: 5px;
+        }
+
+        .table-buy .pricing-action {
+            float: right;
+            color: #FFF;
+            background: #172a45;
+            padding: 10px 16px;
+            -webkit-border-radius: 2px;
+            -moz-border-radius: 2px;
+            border-radius: 2px;
+            font-weight: 700;
+            font-size: 1.4em;
+            text-shadow: 0 1px 1px rgba(0, 0, 0, 0.4);
+            -webkit-transition: all 0.25s ease;
+            -o-transition: all 0.25s ease;
+            transition: all 0.25s ease;
+        }
+
+        .table-buy .pricing-action:hover {
+            background: #2a978d;
+        }
+
+        .recommended .table-buy .pricing-action:hover {
+            background: #172a45;
+        }
+
+        /** ================
+         * Responsive
+         ===================*/
+        @media only screen and (min-width: 768px) and (max-width: 959px) {
+            .pricing-wrapper {
+                width: 768px;
+            }
+
+            .pricing-table {
+                width: 236px;
+            }
+
+            .table-list li {
+                font-size: 1.3em;
+            }
+
+        }
+
+        @media only screen and (max-width: 767px) {
+            .pricing-wrapper {
+                width: 420px;
+            }
+
+            .pricing-table {
+                display: block;
+                float: none;
+                margin: 0 0 20px 0;
+                width: 100%;
+            }
+        }
+
+        @media only screen and (max-width: 479px) {
+            .pricing-wrapper {
+                width: 300px;
+            }
+        }
+    </style>
+
+    <!-- Subscription Section Tooltip Style -->
+    <style>
+        /*
+      You want a simple and fancy tooltip?
+      Just copy all [data-tooltip] blocks:
+    */
+        [data-tooltip] {
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Positioning and visibility settings of the tooltip */
+        [data-tooltip]:before,
+        [data-tooltip]:after {
+            position: absolute;
+            visibility: hidden;
+            opacity: 0;
+            left: 50%;
+            bottom: calc(100% + 5px); /* 5px is the size of the arrow */
+            pointer-events: none;
+            transition: 0.2s;
+            will-change: transform;
+        }
+
+        /* The actual tooltip with a dynamic width */
+        [data-tooltip]:before {
+            content: attr(data-tooltip);
+            padding: 10px 18px;
+            min-width: 50px;
+            max-width: 300px;
+            width: max-content;
+            width: -moz-max-content;
+            border-radius: 6px;
+            font-size: 14px;
+            background-color: rgba(59, 72, 80, 0.9);
+            background-image: linear-gradient(30deg,
+            rgba(59, 72, 80, 0.44),
+            rgba(59, 68, 75, 0.44),
+            rgba(60, 82, 88, 0.44));
+            box-shadow: 0px 0px 24px rgba(0, 0, 0, 0.2);
+            color: #fff;
+            text-align: center;
+            white-space: pre-wrap;
+            transform: translate(-50%, -5px) scale(0.5);
+        }
+
+        /* Tooltip arrow */
+        [data-tooltip]:after {
+            content: '';
+            border-style: solid;
+            border-width: 5px 5px 0px 5px; /* CSS triangle */
+            border-color: rgba(55, 64, 70, 0.9) transparent transparent transparent;
+            transition-duration: 0s; /* If the mouse leaves the element,
+                                  the transition effects for the
+                                  tooltip arrow are "turned off" */
+            transform-origin: top;   /* Orientation setting for the
+                                  slide-down effect */
+            transform: translateX(-50%) scaleY(0);
+        }
+
+        /* Tooltip becomes visible at hover */
+        [data-tooltip]:hover:before,
+        [data-tooltip]:hover:after {
+            visibility: visible;
+            opacity: 1;
+        }
+        /* Scales from 0.5 to 1 -> grow effect */
+        [data-tooltip]:hover:before {
+            transition-delay: 0.3s;
+            transform: translate(-50%, -5px) scale(1);
+        }
+        /*
+          Arrow slide down effect only on mouseenter (NOT on mouseleave)
+        */
+        [data-tooltip]:hover:after {
+            transition-delay: 0.5s; /* Starting after the grow effect */
+            transition-duration: 0.2s;
+            transform: translateX(-50%) scaleY(1);
+        }
+        /*
+          That's it.
+        */
+
+        /*
+          If you want some adjustability
+          here are some orientation settings you can use:
+        */
+
+        /* LEFT */
+        /* Tooltip + arrow */
+        [data-tooltip-location="left"]:before,
+        [data-tooltip-location="left"]:after {
+            left: auto;
+            right: calc(100% + 5px);
+            bottom: 50%;
+        }
+
+        /* Tooltip */
+        [data-tooltip-location="left"]:before {
+            transform: translate(-5px, 50%) scale(0.5);
+        }
+        [data-tooltip-location="left"]:hover:before {
+            transform: translate(-5px, 50%) scale(1);
+        }
+
+        /* Arrow */
+        [data-tooltip-location="left"]:after {
+            border-width: 5px 0px 5px 5px;
+            border-color: transparent transparent transparent rgba(55, 64, 70, 0.9);
+            transform-origin: left;
+            transform: translateY(50%) scaleX(0);
+        }
+        [data-tooltip-location="left"]:hover:after {
+            transform: translateY(50%) scaleX(1);
+        }
+
+        /* RIGHT */
+        [data-tooltip-location="right"]:before,
+        [data-tooltip-location="right"]:after {
+            left: calc(100% + 5px);
+            bottom: 50%;
+        }
+
+        [data-tooltip-location="right"]:before {
+            transform: translate(5px, 50%) scale(0.5);
+        }
+        [data-tooltip-location="right"]:hover:before {
+            transform: translate(5px, 50%) scale(1);
+        }
+
+        [data-tooltip-location="right"]:after {
+            border-width: 5px 5px 5px 0px;
+            border-color: transparent rgba(55, 64, 70, 0.9) transparent transparent;
+            transform-origin: right;
+            transform: translateY(50%) scaleX(0);
+        }
+        [data-tooltip-location="right"]:hover:after {
+            transform: translateY(50%) scaleX(1);
+        }
+
+        @media (max-height: 450px) {
+            main {
+                margin: 2rem 0;
+            }
+        }
+
+        @media (max-width: 800px) {
+            html {
+                font-size: 0.9em;
+            }
+        }
+
+        /* Thumbnail settings */
+        @media (max-width: 750px) {
+            html {
+                animation-duration: 0.6s;
+                font-size: 1em;
+            }
+            body {
+                display: flex;
+                background: none;
+                height: 100%;
+                margin: 0px;
+            }
+            main {
+                font-size: 1.1em;
+                padding: 6%;
+            }
+            .info-wrapper p:before,
+            .info-wrapper p:after {
+                display: none;
+            }
+            .example-elements {
+                max-width: 150px;
+                font-size: 22px;
+            }
+            .example-elements a, button {
+                display: none;
+            }
+            .example-elements p:before,
+            .example-elements p:after {
+                visibility: visible;
+                opacity: 1;
+            }
+            .example-elements p:before {
+                content: "Tooltip";
+                font-size: 20px;
+                transform: translate(-50%, -5px) scale(1);
+            }
+            .example-elements p:after {
+                transform: translate(-50%, -1px) scaleY(1);
+            }
+
+
+            [data-tooltip]:after {
+                bottom: calc(100% + 3px);
+            }
+            [data-tooltip]:after {
+                border-width: 7px 7px 0px 7px;
+            }
+        }
+    </style>
+    
+
+<!-- Hero for landing page -->
+<!-- 1st Section -->
+<section class="tx-container">
+    <div class="md-grid md-typeset">
+        <div class="tx-hero">
+
+            <!-- Hero image -->
+            <div class="tx-hero__image" style="margin-top: -150px">
+                <img src="assets/images/topk-deployed.svg" alt="" width="600" draggable="false" >
+            </div>
+
+            <!-- Hero content -->
+            <div class="tx-hero__content">
+                <h1  id="leverage-architecture">Streaming Runtime</h1>
+                <p>
+                    Kubernetes' execution environment, designed to simplify the development and the operation of streaming data processing applications.
+                    It enables complex data processing scenarios including Time Windowing Aggregation, streaming joins as well as user-defined functions to process the streamed data.
+                    <br>
+                </p><br>
+
+                <p>
+
+                <a href="install/" title="Install" class="md-button md-button--primary" >
+                    Get started
+                </a><br>
+
+                <a
+                    href="https://github.com/vmware-tanzu/streaming-runtimes"
+                    title=""
+                    class="md-button">
+                    Contribute on GitHub
+                    <img class = icon src="assets/images/github.svg" alt="" width="24" draggable="false" >
+                </a><br>
+
+                <a href="https://kubernetes.slack.com/archives/C03GFRBHM43" title="Install"
+                 class="md-button md-button--primary" target="_blank">
+                    Join us on Streaming Runtime Slack
+                    <img class = icon src="assets/images/slack-icon.png" alt="" width="22" draggable="false" >
+                </a>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 2nd Section -->
+<!-- WHAT IS SR? -->
+<section class="tx-container-2">
+    <div class="md-grid md-typeset">
+        
+        <div class="tx-hero__image-2" style="margin-top: 50px">
+            <img src="assets/images/sr-deployment-pipeline.svg" alt="" width="800" draggable="false" align="left" />
+        </div>
+
+        <div class="tx-hero">
+            <!-- Hero content -->
+            <div class="tx-hero__content-2">
+                
+                <h1 id="what-is-sr">What is a Streaming Runtime?</h1><br>
+
+                <p>
+                    The <strong>Streaming Runtime</strong> standardizes and streamlines the development and management of polyglot
+                    streaming applications by leveraging Kubernetes custom resource definitions to define the application architecture.            
+                    <br>
+                    The Streaming Runtime offers:
+                    <br>      
+                        - A standardized container runtime contract which moves much of the stream management to runtime managed components.
+                    <br>                    
+                        - Resource autoscaling.
+                    <br>                    
+                        - Declarative Ops management tooling for application management, including rollout and multi-cluster deployment.
+                    <br>            
+                        - Use of OCI images enables integration with existing supply-chain tooling. 
+                    <br>
+                </p>
+                <br>
+                <a href="https://vmware-tanzu.github.io/streaming-runtimes/streaming-runtime-overview" title="Install" class="md-button md-button" > Product Features </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 3rd Section -->
+<!-- WHY SR? -->
+<section class="tx-container-3">
+    <div class="md-grid md-typeset">
+        <div class="tx-hero">
+
+            <!-- Hero image -->
+            <div class="tx-hero__image-3">
+                <!-- <img src="assets/images/udf-types3.svg" alt="" width="3000" draggable="false" /> -->
+                <img src="assets/images/partitioned-time-window-aggregation.svg" alt="" width="2500" draggable="false" />
+            </div>
+
+            <!-- Hero content -->
+            <div class="tx-hero__content_small">
+                <br>
+                <h1 id="why-sr">Why Streaming Runtime?</h1><br>
+
+                <p>
+                    Microservices, containers, and Kubernetes help to free apps from infrastructure, enabling them to work independently and run anywhere. 
+                    With Streaming Runtime, you can make the most of these cloud native patterns, automate the security and delivery of containerized streaming 
+                    workloads, and proactively manage apps in production. 
+                    It’s all about freeing developers to do their thing: build great apps.
+                </p><br>
+                <a href="https://vmware-tanzu.github.io/streaming-runtimes/why/why-streaming-runtime/" title="Install" class="md-button"> Find out more 'Whys' </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 4th Section -->
+<!-- TECH STACK  -->
+<section class="tx-container-2">
+    <div class="md-grid md-typeset">
+        <div class="tx-hero__image-2" style="margin-top: 100px"> 
+            <img src="assets/images/sr-tech-stack6.svg" alt="" width="800" draggable="false" align="left" />
+        </div>
+        <div class="tx-hero">
+            <!-- Hero content -->
+            <div class="tx-hero__content-2">
+                <h1 id="tech-stack">Tech stack</h1>
+
+                <p>
+                <strong>Streaming-Lite </strong> 
+                For applications which rely on time-ordered delivery of events for a single key, 
+                but which do not perform any cross-key operations like joins or repartitioning. 
+                These applications include windowing in some cases but not others. 
+                Typically, streaming-lite applications run as pipelined workloads in an existing scheduler framework such as TAS or Kubernetes. 
+                Examples include ETL applications and time-series analysis.
+                <br>
+                <strong>Streaming-Expert </strong> 
+                For applications which perform cross-stream analysis using joins and/or repartitioning, 
+                or applications which may perform dynamic stream operations (for example, windowing based on data conditions rather than time or rows). 
+                These applications typically using a pool of <strong>worker nodes</strong>, where the code and data is distributed to nodes using a 
+                framework-specific technique. Examples include Apache Spark, Apache Beam, and Apache Flink.
+                <br>
+                </p>
+                <a href="https://vmware-tanzu.github.io/streaming-runtimes/sr-technical-stack/" 
+                    title="Install" class="md-button"> Find out more about Tech Stack </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="." title="Streaming Runtime" class="md-nav__button md-logo" aria-label="Streaming Runtime" data-md-component="logo">
+      
+  <img src="assets/icon-tanzu2.svg" alt="logo">
+
+    </a>
+    Streaming Runtime
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/vmware-tanzu/streaming-runtimes" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+      
+      <a href="." class="md-nav__link md-nav__link--active">
+        Home
+      </a>
+      
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+        
+      
+      <input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2" tabindex="0" aria-expanded="false">
+          Streaming Runtime
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Streaming Runtime" data-md-level="1">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          Streaming Runtime
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="install/" class="md-nav__link">
+        Install
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="streaming-runtime-overview/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+      
+      
+      
+        
+      
+      <input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_2_3" type="checkbox" id="__nav_2_3" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2_3" tabindex="0" aria-expanded="false">
+          Architecture
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Architecture" data-md-level="2">
+        <label class="md-nav__title" for="__nav_2_3">
+          <span class="md-nav__icon md-icon"></span>
+          Architecture
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+        
+      
+      <input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_2_3_1" type="checkbox" id="__nav_2_3_1" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2_3_1" tabindex="0" aria-expanded="false">
+          Processors
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Processors" data-md-level="3">
+        <label class="md-nav__title" for="__nav_2_3_1">
+          <span class="md-nav__icon md-icon"></span>
+          Processors
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="architecture/processors/overview/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+        
+      
+      <input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_2_3_1_2" type="checkbox" id="__nav_2_3_1_2" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2_3_1_2" tabindex="0" aria-expanded="false">
+          SRP Processor
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="SRP Processor" data-md-level="4">
+        <label class="md-nav__title" for="__nav_2_3_1_2">
+          <span class="md-nav__icon md-icon"></span>
+          SRP Processor
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="architecture/processors/srp/overview/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="architecture/processors/srp/time-window-aggregation/" class="md-nav__link">
+        Time-Window Aggregation
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="architecture/processors/srp/udf-overview/" class="md-nav__link">
+        User Defined Functions
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="architecture/processors/srp/udf-build/udf-build/" class="md-nav__link">
+        Build UDFs
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="architecture/processors/scs/overview/" class="md-nav__link">
+        SCS Processor
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="architecture/processors/fsql/overview/" class="md-nav__link">
+        FSQL Processor
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+        
+      
+      <input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_2_3_2" type="checkbox" id="__nav_2_3_2" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2_3_2" tabindex="0" aria-expanded="false">
+          Streams
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Streams" data-md-level="3">
+        <label class="md-nav__title" for="__nav_2_3_2">
+          <span class="md-nav__icon md-icon"></span>
+          Streams
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="architecture/streams/overview/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="architecture/streams/streaming-data-schema/" class="md-nav__link">
+        Stream Data Schema
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="architecture/cluster-streams/overview/" class="md-nav__link">
+        Cluster Streams
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="architecture/data-partitioning/data-partitioning/" class="md-nav__link">
+        Data Partitioning
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="architecture/service-binding/service-binding/" class="md-nav__link">
+        Service Binding
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+      
+      
+      
+        
+      
+      <input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_2_4" type="checkbox" id="__nav_2_4" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2_4" tabindex="0" aria-expanded="false">
+          Technical Stack
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Technical Stack" data-md-level="2">
+        <label class="md-nav__title" for="__nav_2_4">
+          <span class="md-nav__icon md-icon"></span>
+          Technical Stack
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="sr-technical-stack/" class="md-nav__link">
+        SR Stack
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="streaming-runtime-build/" class="md-nav__link">
+        Build
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+        
+      
+      <input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3" tabindex="0" aria-expanded="false">
+          Examples
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Examples" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          Examples
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="samples/overview/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+      
+      
+      
+        
+      
+      <input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_2" type="checkbox" id="__nav_3_2" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_2" tabindex="0" aria-expanded="false">
+          Tutorials
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Tutorials" data-md-level="2">
+        <label class="md-nav__title" for="__nav_3_2">
+          <span class="md-nav__icon md-icon"></span>
+          Tutorials
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="samples/tutorials/" class="md-nav__link">
+        Step by Step Tutorials
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+      
+      
+      
+        
+      
+      <input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_3" type="checkbox" id="__nav_3_3" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_3" tabindex="0" aria-expanded="false">
+          Use Cases
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Use Cases" data-md-level="2">
+        <label class="md-nav__title" for="__nav_3_3">
+          <span class="md-nav__icon md-icon"></span>
+          Use Cases
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="samples/instructions/" class="md-nav__link">
+        How to Run
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="samples/anomaly-detection/anomaly-detection/" class="md-nav__link">
+        Anomaly Detection (FSQL)
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="samples/anomaly-detection/anomaly-detection-srp/" class="md-nav__link">
+        Anomaly Detection (SRP)
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="samples/clickstream/clickstream/" class="md-nav__link">
+        Clickstream Analysis
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="samples/iot-monitoring/iot-monitoring/" class="md-nav__link">
+        IoT Monitoring
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="samples/top-k-songs/top-k-songs/" class="md-nav__link">
+        Music Chart
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="samples/spring-cloud-stream/tick-tock/" class="md-nav__link">
+        SCS TickTock
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="samples/online-gaming-statistics/online-gaming-statistics/" class="md-nav__link">
+        Online Game Statistics
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="why/why-streaming-runtime/" class="md-nav__link">
+        Whys
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+        </div>
+        
+          <a href="#" class="md-top md-icon" data-md-component="top" hidden>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
+            Back to top
+          </a>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright © 2022 The Tanzu Streaming Runtime Authors
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+    <a href="https://github.com/vmware-tanzu/streaming-runtimes" target="_blank" rel="noopener" title="Streaming Runtime Community on Github" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+    </a>
+  
+    
+    
+    <a href="https://kubernetes.slack.com/archives/C03GFRBHM43" target="_blank" rel="noopener" title="Slack" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M94.12 315.1c0 25.9-21.16 47.06-47.06 47.06S0 341 0 315.1c0-25.9 21.16-47.06 47.06-47.06h47.06v47.06zm23.72 0c0-25.9 21.16-47.06 47.06-47.06s47.06 21.16 47.06 47.06v117.84c0 25.9-21.16 47.06-47.06 47.06s-47.06-21.16-47.06-47.06V315.1zm47.06-188.98c-25.9 0-47.06-21.16-47.06-47.06S139 32 164.9 32s47.06 21.16 47.06 47.06v47.06H164.9zm0 23.72c25.9 0 47.06 21.16 47.06 47.06s-21.16 47.06-47.06 47.06H47.06C21.16 243.96 0 222.8 0 196.9s21.16-47.06 47.06-47.06H164.9zm188.98 47.06c0-25.9 21.16-47.06 47.06-47.06 25.9 0 47.06 21.16 47.06 47.06s-21.16 47.06-47.06 47.06h-47.06V196.9zm-23.72 0c0 25.9-21.16 47.06-47.06 47.06-25.9 0-47.06-21.16-47.06-47.06V79.06c0-25.9 21.16-47.06 47.06-47.06 25.9 0 47.06 21.16 47.06 47.06V196.9zM283.1 385.88c25.9 0 47.06 21.16 47.06 47.06 0 25.9-21.16 47.06-47.06 47.06-25.9 0-47.06-21.16-47.06-47.06v-47.06h47.06zm0-23.72c-25.9 0-47.06-21.16-47.06-47.06 0-25.9 21.16-47.06 47.06-47.06h117.84c25.9 0 47.06 21.16 47.06 47.06 0 25.9-21.16 47.06-47.06 47.06H283.1z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    <script id="__config" type="application/json">{"base": ".", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.tracking", "navigation.sections", "navigation.expand", "navigation.top"], "search": "assets/javascripts/workers/search.e5c33ebb.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="assets/javascripts/bundle.51d95adb.min.js"></script>
+      
+    
+  </body>
+</html>
